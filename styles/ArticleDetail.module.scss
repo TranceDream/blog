@@ -1,0 +1,103 @@
+#container {
+    width: 100%;
+    overflow: hidden;
+    min-height: 100vh;
+    font-family: "Zilla Slab", "Comfortaa", "Noto Sans SC", sans-serif;
+    #cover {
+        width: 100%;
+        height: 100vh;
+        z-index: 2;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 100px;
+        h1 {
+            font-size: 4em;
+            color: white;
+            text-align: center;
+            text-shadow: 0 0 10px dimgrey;
+        }
+        .date {
+            color: white;
+            font-size: 1.5em;
+            margin-top: 20px;
+            text-shadow: 0 0 10px dimgrey;
+        }
+    }
+    .coverImage {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 1;
+        transition: 0.6s;
+    }
+    .markdown {
+        background: white;
+        display: flex;
+        flex-direction: column;
+        font-size: 1.2em;
+        align-items: flex-start;
+        padding: 150px 100px;
+        box-shadow: 0 0 5px lightgray;
+        transition: all 0.6s;
+        min-height: 100vh;
+        margin: 10px 200px 200px 200px;
+        position: relative;
+        z-index: 10;
+        &:hover {
+            box-shadow: 0 0 20px lightgray;
+        }
+        .markdownContent {
+            width: 100%;
+            h1 {
+                font-size: 3em;
+            }
+            h2 {
+                font-size: 2.5em;
+            }
+            h3 {
+                font-size: 2.1em;
+            }
+            h4 {
+                font-size: 1.8em;
+            }
+            h5 {
+                font-size: 1.4em;
+            }
+            h6 {
+                font-size: 1.2em;
+            }
+            ul {
+                margin-left: 60px;
+                &:not(:first-child) {
+                    margin-top: 20px;
+                }
+            }
+            :not(:first-child) {
+                margin-top: 10px;
+            }
+            img {
+                align-self: center;
+            }
+            blockquote {
+                padding: 10px 20px;
+                background: #00000022;
+                border-left: 5px solid gray;
+                mix-blend-mode: darken;
+
+                :not(:first-child) {
+                    margin-top: 10px;
+                }
+            }
+            code {
+                font-family: 'Fira Code';
+            }
+        }
+    }
+}

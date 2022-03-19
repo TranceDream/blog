@@ -1,0 +1,70 @@
+#sticky {
+    background-color: #ffffff88;
+    padding: 10px 80px;
+    backdrop-filter: blur(10px);
+    #logo {
+        color: black;
+        visibility: visible;
+        white-space: nowrap;
+        user-select: none;
+    }
+    li {
+        color: black;
+        font-weight: 400;
+        text-shadow: none;
+        &:hover {
+            background-color: black;
+            border-radius: 999px;
+            color: white;
+        }
+    }
+}
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 80px;
+    z-index: 99;
+    transition: 0.6s;
+    * {
+        box-sizing: border-box;
+    }
+    #logo {
+        font-size: 2em;
+        color: white;
+        font-family: "Zilla Slab";
+        font-weight: 900;
+        text-decoration: none;
+        visibility: hidden;
+        cursor: pointer;
+    }
+    ul {
+        display: flex;
+        flex-direction: row;
+        li {
+            list-style: none;
+            padding: 10px 30px;
+            transition: 0.6s;
+            font-size: 1.2em;
+            font-family: "Comfortaa";
+            color: white;
+            text-shadow: 0 0 10px dimgray;
+            text-decoration: none;
+            font-weight: 900;
+            cursor: pointer;
+            margin-left: 10px;
+            user-select: none;
+            &:hover {
+                background-color: white;
+                border-radius: 999px;
+                text-shadow: none;
+                color: black;
+            }
+        }
+    }
+}
