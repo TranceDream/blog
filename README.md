@@ -2,15 +2,15 @@ This is TranceDream's Blog. Built with Next.js and hosted on Vercel.
 
 ## TODO
 
-*   [ ] Home
+* [x] Home
 
     *   [x] Cover
 
     *   [x] Recent Articles
 
-    *   [ ] Recent Moments
+    *   [x] Recent Photo
 
-*   [ ] Articles
+* [ ] Articles
 
     *   [x] Cover
 
@@ -30,8 +30,11 @@ This is TranceDream's Blog. Built with Next.js and hosted on Vercel.
 
     *   [ ] Share URL
 
-*   [ ] Moments
+* [ ] Gallery
+    * [x] Photo Item
 
-*   [ ] Friends
+    * [ ] Photo Viewer
 
-*   [ ] About
+* [ ] Friends
+
+* [ ] About

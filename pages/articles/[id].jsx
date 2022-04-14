@@ -17,7 +17,7 @@ export async function getStaticPaths() {
     const paths = getArticleIds()
     return {
         paths,
-        fallback: false
+        fallback: false,
     }
 }
 
@@ -25,8 +25,8 @@ export async function getStaticProps({ params }) {
     const articleData = getArticleData(params.id)
     return {
         props: {
-            articleData
-        }
+            articleData,
+        },
     }
 }
 
@@ -53,33 +53,61 @@ export default function ArticleDetail({ articleData }) {
     }, [])
 
     return (
-        <div id={s.container}>
+        <div
+            id={s.container}
+            className='w-full overflow-hidden min-h-screen font-["Zilla_Slab","Comfortaa","Noto_Sans_SC",sans-serif]'>
             <Head>
-                <title>{articleData.title + ' | TranceDream\'s Blog'}</title>
+                <title>{articleData.title + " | TranceDream's Blog"}</title>
             </Head>
             <Header sticky={offset + 100 >= innerHeight} />
-            <img className={s.coverImage} src={articleData.cover} alt='cover' style={{
-                filter: offset + 100 >= innerHeight ? 'blur(10px)' : '',
-            }} />
-            <img className={s.coverImage} src={articleData.cover} alt='background' style={{ zIndex: 0 }}></img>
-            <section id={s.cover}>
-                <h1 style={{ opacity: 1 - offset / innerHeight > 0 ? 1 - offset / innerHeight : 0 }}>{articleData.title}</h1>
-                <div style={{ opacity: 1 - offset / innerHeight > 0 ? 1 - offset / innerHeight : 0 }} className={s.date}>{articleData.date}</div>
+            <img
+                className='fixed top-0 left-0 w-full h-full object-cover z-[1] transition-all ease-in-out duration-500'
+                src={articleData.cover}
+                alt='cover'
+                style={{
+                    filter: offset + 100 >= innerHeight ? 'blur(10px)' : '',
+                }}
+            />
+            <img
+                className='fixed top-0 left-0 w-full h-full object-cover transition-all ease-in-out duration-500 z-0'
+                src={articleData.cover}
+                alt='background'></img>
+            <section className='w-full h-screen z-[2] relative overflow-hidden flex flex-col items-center justify-center p-24'>
+                <h1
+                    className='text-white text-7xl text-center font-bold'
+                    style={{
+                        textShadow: '0 0 10px dimgrey',
+                        opacity:
+                            1 - offset / innerHeight > 0
+                                ? 1 - offset / innerHeight
+                                : 0,
+                    }}>
+                    {articleData.title}
+                </h1>
+                <div
+                    className='text-white text-2xl mt-5'
+                    style={{
+                        textShadow: '0 0 10px dimgrey',
+                        opacity:
+                            1 - offset / innerHeight > 0
+                                ? 1 - offset / innerHeight
+                                : 0,
+                    }}>
+                    {articleData.date}
+                </div>
             </section>
-            <section className={s.markdown}>
+            <section className='bg-white flex flex-col text-xl items-start px-36 py-24 mx-72 mt-2.5 mb-72 z-10 min-h-screen relative transition-all ease-in-out duration-500 hover:drop-shadow-[0_0_20px_lightgray]'>
                 <ReactMarkdown
-                    className={s.markdownContent}
+                    className={s.markdown}
                     remarkPlugins={[
                         remarkFrontmatter,
                         remarkMath,
                         remarkGfm,
                         remarkRehype,
                     ]}
-                    rehypePlugins={[
-                        rehypeKatex,
-                        rehypeRaw,
-                        rehypePrism,
-                    ]}>{articleData.content}</ReactMarkdown>
+                    rehypePlugins={[rehypeKatex, rehypeRaw, rehypePrism]}>
+                    {articleData.content}
+                </ReactMarkdown>
             </section>
         </div>
     )
