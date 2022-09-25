@@ -1,0 +1,56 @@
+@use '../mixins';
+
+.container {
+  height: auto;
+  box-sizing: border-box;
+  padding: 16px;
+  background: white;
+  border-top: 0.5px solid lightgray;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  cursor: pointer;
+
+  @include mixins.responsive(sm) {
+    padding: 24px;
+  }
+
+  @include mixins.responsive(lg) {
+    padding: 32px;
+  }
+
+  & > div {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 16px;
+
+    .title {
+      flex-grow: 1;
+      font-size: larger;
+      font-weight: bold;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+
+      @include mixins.responsive(sm) {
+        font-size: x-large;
+      }
+
+      @include mixins.responsive(lg) {
+        font-size: xx-large;
+      }
+    }
+
+    .date {
+      width: fit-content;
+      white-space: nowrap;
+    }
+  }
+
+  .desc {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}

@@ -1,0 +1,88 @@
+@use "../mixins";
+
+.card {
+  border-radius: 8px;
+  background: white;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-flow: column nowrap;
+  font-family: 'Zilla Slab', sans-serif;
+
+  @include mixins.responsive(md) {
+    flex-flow: row nowrap;
+    height: 256px;
+    min-height: 256px;
+  }
+
+  .cover {
+    width: 100%;
+    object-fit: cover;
+    @include mixins.responsive(md) {
+      width: 45%;
+    }
+    @include mixins.responsive(xxl) {
+      width: 40%;
+    }
+    @include mixins.responsive(xxxl) {
+      width: 35%;
+    }
+  }
+
+  .info {
+    flex: 1;
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 32px;
+    gap: 8px;
+
+    .title {
+      font-size: larger;
+      cursor: pointer;
+      @include mixins.responsive(sm) {
+        font-size: x-large;
+      }
+      @include mixins.responsive(lg) {
+        font-size: xx-large;
+      }
+    }
+
+    .tags {
+      display: flex;
+      flex-flow: row wrap;
+      gap: 8px;
+      font-family: Roboto, sans-serif;
+      font-size: x-small;
+
+      @include mixins.responsive(md) {
+        font-size: medium;
+      }
+
+      @include mixins.responsive(lg) {
+        flex-flow: row nowrap;
+      }
+
+      .tag {
+        border-radius: 8px;
+        padding: 0 8px;
+        background: lightgray;
+        cursor: pointer;
+      }
+    }
+
+    .desc {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      text-overflow: ellipsis;
+      flex-grow: 1;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .date {
+      align-self: end;
+    }
+  }
+}

@@ -1,0 +1,41 @@
+@use '../mixins';
+
+.container {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+
+  .tag {
+    padding: 16px;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 16px;
+    font-family: Roboto, sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+
+    @include mixins.responsive(sm) {
+      padding: 24px;
+    }
+
+    @include mixins.responsive(lg) {
+      padding: 32px;
+    }
+
+    .icon {
+      transition: transform .25s ease-in-out;
+    }
+
+    .rotate {
+      transform: rotate(90deg);
+    }
+  }
+
+  .articles {
+    display: flex;
+    overflow: hidden;
+    flex-flow: column nowrap;
+    transition: all .25s ease-in-out;
+  }
+}

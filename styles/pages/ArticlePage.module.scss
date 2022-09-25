@@ -1,0 +1,55 @@
+@use "styles/mixins";
+
+.cover {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5), -1px 1px 1px rgba(255, 255, 255, 0.5), -1px -1px 1px rgba(255, 255, 255, 0.5), 1px -1px 1px rgba(255, 255, 255, 0.5);
+
+  .title {
+    font-size: 4rem;
+    font-weight: bold;
+  }
+
+  .date {
+    font-size: x-large;
+    font-weight: bold;
+  }
+
+  .tags {
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    gap: 16px;
+    font-family: Roboto, sans-serif;
+    margin-top: 16px;
+    justify-content: center;
+    padding: 0 256px;
+
+    .tag {
+      border-radius: 8px;
+      padding: 0 8px;
+      background: rgba(255, 255, 255, 0.828125);
+      cursor: pointer;
+    }
+  }
+}
+
+.content {
+  padding: 128px 20%;
+  position: relative;
+
+  .article {
+    background: white;
+    border-radius: 8px;
+    padding: 64px 128px;
+  }
+}
+
+.markdown {
+  width: 100%;
+  @include mixins.markdown;
+}

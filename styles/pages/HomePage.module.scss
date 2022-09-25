@@ -1,0 +1,45 @@
+@use "styles/mixins";
+
+.main {
+  min-height: 200vh;
+  transition: background 0.25s ease-in-out;
+}
+
+.content {
+  padding: 128px 5%;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 32px;
+
+  @include mixins.responsive(sm) {
+    padding: 128px 10%;
+  }
+
+  @include mixins.responsive(md) {
+    padding: 128px 15%;
+  }
+
+  @include mixins.responsive(xl) {
+    padding: 128px 20%;
+  }
+
+  .label {
+    font-family: Roboto, sans-serif;
+    font-size: xx-large;
+    font-weight: bold;
+    position: relative;
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5), -1px 1px 1px rgba(255, 255, 255, 0.5), -1px -1px 1px rgba(255, 255, 255, 0.5), 1px -1px 1px rgba(255, 255, 255, 0.5);
+  }
+
+  .articles {
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    gap: 32px;
+
+    .more {
+      @include mixins.button
+    }
+  }
+}

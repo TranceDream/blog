@@ -1,0 +1,18 @@
+{
+  "blog": {
+    "logo": "/logo.svg",
+    "background": "/bg.png",
+    "title": "TranceDream's Blog",
+    "slogan": "Let's believe. Destiny is right here by your side."
+  },
+  "intro": {
+    "name": "TranceDream",
+    "avatar": "/avatar.jpg",
+    "social": {
+      "github": "https://github.com/TranceDream",
+      "email": "xgxx111@outlook.com",
+      "wechat": "",
+      "telegram": "https://t.me/TranceDream"
+    }
+  }
+}

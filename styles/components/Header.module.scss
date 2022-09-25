@@ -1,0 +1,120 @@
+@use "../mixins";
+
+.header {
+  max-width: 100vw;
+  min-width: 100vw;
+  width: 100vw;
+  display: flex;
+  background: white;
+  box-shadow: 0 0 8px lightgray;
+  flex-flow: column nowrap;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  z-index: 999;
+
+  @include mixins.responsive(md) {
+    height: 64px;
+    padding: 0 32px;
+    gap: 16px;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+  }
+
+}
+
+.wrapper {
+  display: flex;
+  position: relative;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  padding: 8px;
+
+  @include mixins.responsive(md) {
+    width: auto;
+  }
+
+  .icon {
+    width: 32px;
+    height: 32px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto auto auto 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-self: flex-start;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.25s ease-in-out;
+    float: left;
+    @include mixins.responsive(md) {
+      display: none;
+    }
+
+    &:hover {
+      background: lightgray;
+    }
+  }
+
+  .logo {
+    height: 24px;
+    user-select: none;
+    cursor: pointer;
+    margin: auto;
+    @include mixins.responsive(sm) {
+      height: 32px;
+    }
+  }
+}
+
+.nav {
+  font-family: 'Roboto', serif;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  list-style: none;
+  width: 100%;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease-in-out;
+
+  @include mixins.responsive(md) {
+    flex-flow: row nowrap;
+    max-height: 64px;
+    width: auto;
+    li:not(:first-of-type) {
+      margin-left: 16px;
+    }
+  }
+
+  .link {
+    text-align: center;
+    padding: 8px 16px;
+    width: 100%;
+    transition: background .25s ease-in-out;
+    user-select: none;
+    font-weight: bold;
+    height: 36px;
+    @include mixins.responsive(md) {
+      border-radius: 8px;
+    }
+
+    a {
+      color: black;
+      text-decoration: none;
+    }
+
+    &:hover {
+      background: lightgray;
+    }
+  }
+}
+
+.expanded {
+  max-height: 144px;
+}

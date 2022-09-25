@@ -1,0 +1,478 @@
+@mixin markdown {
+  color: #222222;
+  line-height: 2;
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
+    transition: all .25s ease-in-out;
+  }
+
+  h1 {
+    font-size: 4em;
+    color: black;
+    text-shadow: 0 0 5px gray;
+  }
+
+  h2 {
+    font-size: 3em;
+    color: midnightblue;
+
+    &:hover {
+      color: dodgerblue;
+    }
+  }
+
+  h3 {
+    font-size: 2.5em;
+    color: darkslateblue;
+
+    &:hover {
+      color: dodgerblue;
+    }
+  }
+
+  h4 {
+    font-size: 2em;
+    color: darkslateblue;
+
+    &:hover {
+      color: dodgerblue;
+    }
+  }
+
+  h5 {
+    font-size: 1.5em;
+    color: darkslategray;
+
+    &:hover {
+      color: cadetblue;
+    }
+  }
+
+  h6 {
+    font-size: 1.2em;
+    color: royalblue;
+
+    &:hover {
+      color: dodgerblue;
+    }
+  }
+
+  ul {
+    margin-left: 30px;
+    list-style: disc;
+  }
+
+  img {
+    align-self: center;
+    max-width: 100%;
+  }
+
+  blockquote {
+    padding: 10px 20px;
+    background: #00000022;
+    border-left: 5px solid gray;
+    mix-blend-mode: darken;
+  }
+
+  code {
+    font-family: 'Roboto', monospace;
+  }
+
+  ol {
+    list-style: decimal;
+    margin-left: 30px;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  /**
+   * atom-dark theme for `prism.js`
+   * Based on Atom's `atom-dark` theme: https://github.com/atom/atom-dark-syntax
+   * @author Joe Gibson (@gibsjose)
+   */
+
+  code[class*="language-"],
+  pre[class*="language-"] {
+    color: #c5c8c6;
+    text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+    font-family: Inconsolata, Monaco, Consolas, 'Courier New', Courier, monospace;
+    direction: ltr;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    line-height: 1.5;
+
+    -moz-tab-size: 4;
+    tab-size: 4;
+
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+
+  /* Code blocks */
+  pre[class*="language-"] {
+    padding: 1em;
+    margin: .5em 0;
+    overflow: auto;
+    border-radius: 0.3em;
+  }
+
+  :not(pre) > code[class*="language-"],
+  pre[class*="language-"] {
+    background: #1d1f21;
+  }
+
+  /* Inline code */
+  :not(pre) > code[class*="language-"] {
+    padding: .1em;
+    border-radius: .3em;
+  }
+
+  .token.comment,
+  .token.prolog,
+  .token.doctype,
+  .token.cdata {
+    color: #7C7C7C;
+  }
+
+  .token.punctuation {
+    color: #c5c8c6;
+  }
+
+  .namespace {
+    opacity: .7;
+  }
+
+  .token.property,
+  .token.keyword,
+  .token.tag {
+    color: #96CBFE;
+  }
+
+  .token.class-name {
+    color: #FFFFB6;
+    text-decoration: underline;
+  }
+
+  .token.boolean,
+  .token.constant {
+    color: #99CC99;
+  }
+
+  .token.symbol,
+  .token.deleted {
+    color: #f92672;
+  }
+
+  .token.number {
+    color: #FF73FD;
+  }
+
+  .token.selector,
+  .token.attr-name,
+  .token.string,
+  .token.char,
+  .token.builtin,
+  .token.inserted {
+    color: #A8FF60;
+  }
+
+  .token.variable {
+    color: #C6C5FE;
+  }
+
+  .token.operator {
+    color: #EDEDED;
+  }
+
+  .token.entity {
+    color: #FFFFB6;
+    cursor: help;
+  }
+
+  .token.url {
+    color: #96CBFE;
+  }
+
+  .language-css .token.string,
+  .style .token.string {
+    color: #87C38A;
+  }
+
+  .token.atrule,
+  .token.attr-value {
+    color: #F9EE98;
+  }
+
+  .token.function {
+    color: #DAD085;
+  }
+
+  .token.regex {
+    color: #E9C062;
+  }
+
+  .token.important {
+    color: #fd971f;
+  }
+
+  .token.important,
+  .token.bold {
+    font-weight: bold;
+  }
+
+  .token.italic {
+    font-style: italic;
+  }
+
+  code[class*='language-'],
+  pre[class*='language-'] {
+    color: #d6deeb;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+    font-size: 1em;
+
+    -moz-tab-size: 4;
+    tab-size: 4;
+
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+
+  pre[class*='language-']::-moz-selection,
+  pre[class*='language-'] ::-moz-selection,
+  code[class*='language-']::-moz-selection,
+  code[class*='language-'] ::-moz-selection {
+    text-shadow: none;
+    background: rgba(29, 59, 83, 0.99);
+  }
+
+  pre[class*='language-']::selection,
+  pre[class*='language-'] ::selection,
+  code[class*='language-']::selection,
+  code[class*='language-'] ::selection {
+    text-shadow: none;
+    background: rgba(29, 59, 83, 0.99);
+  }
+
+  @media print {
+    code[class*='language-'],
+    pre[class*='language-'] {
+      text-shadow: none;
+    }
+  }
+
+  /* Code blocks */
+  pre[class*='language-'] {
+    padding: 1em;
+    margin: 0.5em 0;
+    overflow: auto;
+  }
+
+  :not(pre) > code[class*='language-'],
+  pre[class*='language-'] {
+    color: white;
+    background: #011627;
+  }
+
+  :not(pre) > code[class*='language-'] {
+    padding: 0.1em;
+    border-radius: 0.3em;
+    white-space: normal;
+  }
+
+  .token.comment,
+  .token.prolog,
+  .token.cdata {
+    color: rgb(99, 119, 119);
+    font-style: italic;
+  }
+
+  .token.punctuation {
+    color: rgb(199, 146, 234);
+  }
+
+  .namespace {
+    color: rgb(178, 204, 214);
+  }
+
+  .token.deleted {
+    color: rgba(239, 83, 80, 0.56);
+    font-style: italic;
+  }
+
+  .token.symbol,
+  .token.property {
+    color: rgb(128, 203, 196);
+  }
+
+  .token.tag,
+  .token.operator,
+  .token.keyword {
+    color: rgb(127, 219, 202);
+  }
+
+  .token.boolean {
+    color: rgb(255, 88, 116);
+  }
+
+  .token.number {
+    color: rgb(247, 140, 108);
+  }
+
+  .token.constant,
+  .token.function,
+  .token.builtin,
+  .token.char {
+    color: rgb(130, 170, 255);
+  }
+
+  .token.selector,
+  .token.doctype {
+    color: rgb(199, 146, 234);
+    font-style: italic;
+  }
+
+  .token.attr-name,
+  .token.inserted {
+    color: rgb(173, 219, 103);
+    font-style: italic;
+  }
+
+  .token.string,
+  .token.url,
+  .token.entity,
+  .language-css .token.string,
+  .style .token.string {
+    color: rgb(173, 219, 103);
+  }
+
+  .token.class-name,
+  .token.atrule,
+  .token.attr-value {
+    color: rgb(255, 203, 139);
+  }
+
+  .token.regex,
+  .token.important,
+  .token.variable {
+    color: rgb(214, 222, 235);
+  }
+
+  .token.important,
+  .token.bold {
+    font-weight: bold;
+  }
+
+  .token.italic {
+    font-style: italic;
+  }
+
+  pre {
+    overflow-x: auto;
+  }
+
+  /**
+   * Inspired by gatsby remark prism - https://www.gatsbyjs.com/plugins/gatsby-remark-prismjs/
+   * 1. Make the element just wide enough to fit its content.
+   * 2. Always fill the visible space in .code-highlight.
+   */
+  .code-highlight {
+    float: left; /* 1 */
+    min-width: 100%; /* 2 */
+  }
+
+  .code-line {
+    display: block;
+    padding-left: 16px;
+    padding-right: 16px;
+    margin-left: -16px;
+    margin-right: -16px;
+    border-left-width: 4px;
+    border-left-color: rgba(31, 41, 55, 0); /* Set code block color */
+  }
+
+  .code-line.inserted {
+    background-color: rgba(16, 185, 129, 0.2); /* Set inserted line (+) color */
+  }
+
+  .code-line.deleted {
+    background-color: rgba(239, 68, 68, 0.2); /* Set deleted line (-) color */
+  }
+
+  .highlight-line {
+    margin-left: -16px;
+    margin-right: -16px;
+    background-color: rgba(55, 65, 81, 0.5); /* Set highlight bg color */
+    border-left-width: 4px;
+    border-left-color: rgb(
+                    59,
+                    130,
+                    246
+    ); /* Set highlight accent border color */
+  }
+
+  .line-number::before {
+    display: inline-block;
+    width: 1rem;
+    text-align: right;
+    margin-right: 16px;
+    margin-left: -8px;
+    color: rgb(156, 163, 175); /* Line number color */
+    content: attr(line);
+  }
+}
+
+@mixin button {
+  width: fit-content;
+  display: inline;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: white;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  font-family: Roboto, sans-serif;
+  transition: background .25s ease-in-out;
+
+  a {
+    color: black;
+    text-decoration: none;
+  }
+
+  &:hover {
+    background: lightgray;
+  }
+}
+
+$media: (
+        sm: 640px,
+        md: 768px,
+        lg: 1024px,
+        xl: 1280px,
+        xxl: 1536px,
+        xxxl: 1920px,
+);
+
+@mixin responsive($breakpoint) {
+  @each $bp, $size in $media {
+    @if $breakpoint == $bp {
+      @media only screen and (min-width: $size) {
+        @content;
+      }
+    }
+  }
+}

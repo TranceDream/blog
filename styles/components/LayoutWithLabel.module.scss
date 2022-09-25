@@ -1,0 +1,38 @@
+@use '../mixins';
+
+.container {
+  padding: 128px 5% 128px 5%;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 32px;
+  transition: all 0.25s ease-in-out;
+
+  @include mixins.responsive(sm) {
+    padding: 128px 10% 128px 10%;
+  }
+
+  @include mixins.responsive(md) {
+    padding: 256px 15% 128px 15%;
+  }
+
+  @include mixins.responsive(xl) {
+    padding: 256px 20% 128px 20%;
+  }
+
+  .label {
+    font-family: Roboto, sans-serif;
+    font-size: x-large;
+    font-weight: bold;
+    position: relative;
+    transition: all 0.25s ease-in-out;
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5), -1px 1px 1px rgba(255, 255, 255, 0.5), -1px -1px 1px rgba(255, 255, 255, 0.5), 1px -1px 1px rgba(255, 255, 255, 0.5);
+
+    @include mixins.responsive(sm) {
+      font-size: xx-large;
+    }
+
+    @include mixins.responsive(md) {
+      font-size: xxx-large;
+    }
+  }
+}
