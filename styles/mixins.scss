@@ -1,6 +1,10 @@
 @mixin markdown {
   color: #222222;
-  line-height: 2;
+  line-height: 1.6;
+
+  @include responsive(md) {
+    line-height: 2;
+  }
 
   h1, h2, h3, h4, h5, h6 {
     font-weight: bold;
@@ -8,14 +12,20 @@
   }
 
   h1 {
-    font-size: 4em;
+    font-size: 2.5em;
     color: black;
     text-shadow: 0 0 5px gray;
+    @include responsive(sm) {
+      font-size: 4em;
+    }
   }
 
   h2 {
-    font-size: 3em;
+    font-size: 2.25em;
     color: midnightblue;
+    @include responsive(sm) {
+      font-size: 3em;
+    }
 
     &:hover {
       color: dodgerblue;
@@ -23,8 +33,11 @@
   }
 
   h3 {
-    font-size: 2.5em;
+    font-size: 1.8em;
     color: darkslateblue;
+    @include responsive(sm) {
+      font-size: 2.5em;
+    }
 
     &:hover {
       color: dodgerblue;
@@ -32,8 +45,11 @@
   }
 
   h4 {
-    font-size: 2em;
+    font-size: 1.5em;
     color: darkslateblue;
+    @include responsive(sm) {
+      font-size: 2em;
+    }
 
     &:hover {
       color: dodgerblue;
@@ -41,8 +57,11 @@
   }
 
   h5 {
-    font-size: 1.5em;
+    font-size: 1.15em;
     color: darkslategray;
+    @include responsive(sm) {
+      font-size: 1.5em;
+    }
 
     &:hover {
       color: cadetblue;
@@ -50,8 +69,11 @@
   }
 
   h6 {
-    font-size: 1.2em;
+    font-size: 1.05em;
     color: royalblue;
+    @include responsive(sm) {
+      font-size: 1.2em;
+    }
 
     &:hover {
       color: dodgerblue;

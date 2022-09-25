@@ -10,13 +10,28 @@
   text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5), -1px 1px 1px rgba(255, 255, 255, 0.5), -1px -1px 1px rgba(255, 255, 255, 0.5), 1px -1px 1px rgba(255, 255, 255, 0.5);
 
   .title {
-    font-size: 4rem;
+    font-size: xx-large;
     font-weight: bold;
+    text-align: center;
+    transition: font-size 0.25s ease-in-out;
+    @include mixins.responsive(sm) {
+      font-size: xxx-large;
+    }
+    @include mixins.responsive(md) {
+      font-size: 4rem;
+    }
   }
 
   .date {
-    font-size: x-large;
+    font-size: small;
     font-weight: bold;
+    transition: font-size 0.25s ease-in-out;
+    @include mixins.responsive(sm) {
+      font-size: large;
+    }
+    @include mixins.responsive(md) {
+      font-size: x-large;
+    }
   }
 
   .tags {
@@ -32,20 +47,44 @@
     .tag {
       border-radius: 8px;
       padding: 0 8px;
+      white-space: nowrap;
       background: rgba(255, 255, 255, 0.828125);
       cursor: pointer;
+      font-size: x-small;
+      transition: font-size 0.25s ease-in-out;
+      @include mixins.responsive(md) {
+        font-size: medium;
+      }
     }
   }
 }
 
 .content {
-  padding: 128px 20%;
+  padding: 128px 5%;
   position: relative;
+
+  @include mixins.responsive(sm) {
+    padding: 128px 10%;
+  }
+
+  @include mixins.responsive(md) {
+    padding: 128px 15%;
+  }
+
+  @include mixins.responsive(xl) {
+    padding: 128px 20%;
+  }
 
   .article {
     background: white;
     border-radius: 8px;
-    padding: 64px 128px;
+    padding: 32px 16px;
+    @include mixins.responsive(sm) {
+      padding: 32px;
+    }
+    @include mixins.responsive(md) {
+      padding: 64px;
+    }
   }
 }
 
