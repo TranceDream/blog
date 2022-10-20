@@ -6,15 +6,18 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "append": "node lib/append.mjs"
   },
   "dependencies": {
     "@fontsource/roboto": "^4.5.8",
     "@fontsource/zilla-slab": "^4.5.3",
+    "chalk": "^5.1.2",
     "copy-to-clipboard": "^3.3.2",
     "dayjs": "^1.11.0",
     "framer-motion": "^6.2.8",
     "gray-matter": "^4.0.3",
+    "nanoid": "^4.0.0",
     "next": "12.1.0",
     "nprogress": "^0.2.0",
     "prop-types": "^15.8.1",
