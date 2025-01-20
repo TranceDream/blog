@@ -1,0 +1,228 @@
+@use '/utils/mixins' as *;
+
+.main {
+    min-height: 100vh;
+    width: 100%;
+
+    .header {
+        min-height: 100vh;
+
+        padding: 64px;
+        box-sizing: border-box;
+
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: flex-end;
+        gap: 8px;
+
+        h1,
+        p {
+            margin: 0;
+
+            text-shadow: 0 0 16px black;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-decoration: underline whitesmoke solid;
+
+            @include respond-to('md') {
+                font-size: 2.2rem;
+            }
+        }
+
+        .date {
+            font-size: 0.8rem;
+        }
+
+        .tags {
+            display: flex;
+            flex-flow: row wrap;
+            gap: 16px;
+
+            line-height: 1;
+            font-size: 0.8rem;
+
+            span {
+                user-select: none;
+
+                text-decoration: underline solid;
+            }
+        }
+
+
+        @include respond-to('md') {
+            padding: 32px;
+        }
+
+        @include respond-to('sm') {
+            padding: 16px;
+        }
+    }
+
+    article {
+        background: whitesmoke;
+        background-attachment: fixed;
+
+        min-height: 100vh;
+
+        /* Markdown 渲染样式 */
+        line-height: 1.8;
+        color: #333;
+
+        padding: 64px 25%;
+        margin: 0 auto;
+        box-sizing: border-box;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+        overflow-x: auto;
+        white-space: normal;
+
+        /* 标题 */
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 0.5em;
+            color: #2c3e50;
+            text-decoration: underline solid;
+        }
+
+        h2 {
+            font-size: 2em;
+            margin-bottom: 0.5em;
+            color: #34495e;
+            text-decoration: underline solid;
+        }
+
+        h3 {
+            font-size: 1.75em;
+            margin-bottom: 0.5em;
+            color: #4a4a4a;
+            text-decoration: underline solid;
+        }
+
+        h4,
+        h5,
+        h6 {
+            font-size: 1.5em;
+            margin-bottom: 0.5em;
+            color: #555;
+        }
+
+        /* 段落 */
+        p {
+            margin-bottom: 1em;
+        }
+
+        /* 链接 */
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* 引用块 */
+        blockquote {
+            margin: 1em 0;
+            padding: 0.5em 1em;
+            border-left: 4px solid #3498db;
+            background-color: #ecf5ff;
+            color: #555;
+            font-style: italic;
+        }
+
+        /* 列表 */
+        ul,
+        ol {
+            padding-left: 1.5em;
+            margin-bottom: 1em;
+        }
+
+        ul li {
+            list-style-type: disc;
+        }
+
+        ol li {
+            list-style-type: decimal;
+        }
+
+        /* 代码块 */
+        pre {
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: var(--font-jetbrains-mono), monospace;
+
+            code {
+                padding: 0;
+            }
+        }
+
+        code {
+            padding: 0.2rem 0.4rem;
+            border-radius: 8px;
+            font-family: var(--font-jetbrains-mono), monospace;
+            font-size: 0.9em;
+        }
+
+        p code {
+            padding: 0.2rem 0.4rem;
+            border-radius: 8px;
+            font-family: var(--font-jetbrains-mono), monospace;
+            font-size: 0.9em;
+            background: gainsboro;
+        }
+
+        /* 表格 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1em;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 0.5em;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        /* 图片 */
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        /* 分隔线 */
+        hr {
+            border: 0;
+            border-top: 1px solid #ccc;
+            margin: 1.5em 0;
+        }
+
+
+        @include respond-to('xl') {
+            padding: 64px 20%;
+        }
+
+        @include respond-to('lg') {
+            padding: 64px 15%;
+        }
+
+        @include respond-to('md') {
+            padding: 64px 10%;
+        }
+
+        @include respond-to('sm') {
+            padding: 64px 5%;
+        }
+    }
+}

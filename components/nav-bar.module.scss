@@ -1,0 +1,111 @@
+@use '/utils/mixins' as *;
+
+.nav {
+    position: fixed;
+    top: 0;
+    z-index: 999;
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 32px 8px;
+
+    font-weight: bold;
+    text-shadow: 0 0 16px black;
+
+    user-select: none;
+
+    .logo {
+        display: flex;
+        flex-flow: row nowrap;
+        gap: 16px;
+        align-items: baseline;
+
+        margin: 0;
+
+        span {
+            font-size: 2rem;
+            white-space: nowrap;
+
+
+            @include respond-to('xl') {
+                font-size: 1.8rem;
+            }
+
+            @include respond-to('lg') {
+                font-size: 1.6rem;
+            }
+        }
+
+        .button {
+            font-size: 1rem;
+
+            display: none;
+        }
+    }
+
+
+    ul {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+
+        li {
+            padding: 16px 8px 8px;
+
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline solid;
+            }
+
+            a {
+                color: unset;
+                text-decoration: none;
+                font-size: 1.2rem;
+            }
+        }
+    }
+
+    @include respond-to('md') {
+        flex-flow: column nowrap;
+
+        .logo {
+            .button {
+                display: inline;
+                transition: all 0.25s;
+
+                font-weight: bold;
+            }
+
+            .rotate {
+                transform: rotate(90deg);
+            }
+        }
+
+        ul {
+            flex-flow: column nowrap;
+        }
+
+        .hidden {
+            max-height: 0px;
+            overflow: hidden;
+        }
+    }
+}
+
+.dark {
+    background: whitesmoke;
+
+    color: #333;
+    text-shadow: none;
+}

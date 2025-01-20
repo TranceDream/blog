@@ -1,0 +1,69 @@
+@use "/utils/mixins" as *;
+
+.main {
+    min-height: 100vh;
+
+    display: flex;
+    flex-flow: column nowrap;
+
+    .header {
+        height: 100vh;
+
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+
+        text-shadow: 0 0 16px black;
+
+        h1 {
+            margin: 0;
+
+            font-size: 4rem;
+            white-space: nowrap;
+
+            user-select: none;
+
+            @include respond-to('xl') {
+                font-size: 3.5rem;
+            }
+
+            @include respond-to('lg') {
+                font-size: 3rem;
+            }
+
+            @include respond-to('md') {
+                font-size: 2.5rem;
+            }
+
+            @include respond-to('sm') {
+                font-size: 2rem;
+            }
+        }
+
+        p {
+            margin: 0;
+
+            font-size: 2rem;
+            text-decoration: underline whitesmoke solid;
+
+
+            @include respond-to('xl') {
+                font-size: 1.8rem;
+            }
+
+            @include respond-to('lg') {
+                font-size: 1.6rem;
+            }
+
+            @include respond-to('md') {
+                font-size: 1.4rem;
+            }
+
+            @include respond-to('sm') {
+                font-size: 1.2rem;
+            }
+        }
+    }
+}
