@@ -1,4 +1,8 @@
 :root {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+
   font-size: 18px;
   font-family: var(--font-crimson-pro), var(--font-noto-serif-sc), serif, sans-serif;
 
@@ -7,8 +11,6 @@
   background: url("/background.jpg") no-repeat fixed, linear-gradient(150deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%) no-repeat fixed;
   background-size: cover;
   background-position: center;
-
-  transition: background ease .5s;
 
   body {
     margin: 0;
