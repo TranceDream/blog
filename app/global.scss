@@ -1,7 +1,5 @@
 :root {
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
+  overflow: hidden;
 
   font-size: 18px;
   font-family: var(--font-crimson-pro), var(--font-noto-serif-sc), serif, sans-serif;
@@ -15,7 +13,7 @@
   body {
     margin: 0;
 
-    min-height: 100vh;
+    height: 100vh;
 
     overflow-y: scroll;
   }
