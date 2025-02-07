@@ -46,7 +46,7 @@ tags: [${answers.tags
       .split(',')
       .map(tag => `"${tag.trim()}"`)
       .join(', ')}]
-date: "${dayjs(date).format('YYYY-MM-DDTHH:mm:ss')}"${answers.cover ? `\ncover: "${answer.cover}"` : ''}
+date: "${dayjs(date).format('YYYY-MM-DDTHH:mm:ss')}"${answers.cover ? `\ncover: "${answers.cover}"` : ''}
 ---
 
 `
