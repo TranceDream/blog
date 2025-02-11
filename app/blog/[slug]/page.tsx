@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import { Metadata } from 'next'
 
 import type { Frontmatter, Article } from '@/types/article'
+import BackgroundWrapper from '@/components/background-wrapper'
 
 interface BlogPageParams {
   params: Promise<{ slug: string }>
@@ -31,32 +32,26 @@ export default async function BlogPage({ params }: BlogPageParams) {
   const article: Article = await getPostData(decodeURIComponent(slug))
 
   return (
-    <main className={styles.main}>
-      <section
-        className={styles.header}
-        style={{
-          background: article.cover
-            ? `url('${article.cover}')`
-            : `url('/placeholder.jpg')`,
-          backgroundAttachment: 'fixed',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
-        <h1>{article.title}</h1>
-        <p className={styles.date}>
-          {dayjs(article.date).format('YYYY-MM-DD')}
-        </p>
-        <p className={styles.tags}>
-          {article.tags.map(tag => (
-            <span key={tag}>#{tag}</span>
-          ))}
-        </p>
-        <p>{article.description}</p>
-      </section>
-      <article>
-        <div dangerouslySetInnerHTML={{ __html: article.content }} />
-      </article>
-    </main>
+    <BackgroundWrapper
+      backgroundImage={article.cover ? article.cover : '/placeholder.jpg'}
+    >
+      <main className={styles.main}>
+        <section className={styles.header}>
+          <h1>{article.title}</h1>
+          <p className={styles.date}>
+            {dayjs(article.date).format('YYYY-MM-DD')}
+          </p>
+          <p className={styles.tags}>
+            {article.tags.map(tag => (
+              <span key={tag}>#{tag}</span>
+            ))}
+          </p>
+          <p>{article.description}</p>
+        </section>
+        <article>
+          <div dangerouslySetInnerHTML={{ __html: article.content }} />
+        </article>
+      </main>
+    </BackgroundWrapper>
   )
 }

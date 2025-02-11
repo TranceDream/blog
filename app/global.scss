@@ -6,9 +6,12 @@
 
   color: whitesmoke;
 
-  background: url("/background.jpg") no-repeat fixed, linear-gradient(150deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%) no-repeat fixed;
-  background-size: cover;
-  background-position: center;
+  .background-wrapper {
+    height: var(--vh, 100vh);
+    background: var(--background-image, url('/background.jpg')) no-repeat fixed, linear-gradient(150deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%) no-repeat fixed;
+    background-size: cover;
+    background-position: center;
+  }
 
   body {
     margin: 0;
