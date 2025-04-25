@@ -1,5 +1,4 @@
 'use client'
-import styles from '@/app/tool/page.module.scss'
 
 export default function ToolPage() {
   const emojiMap = {
@@ -56,36 +55,35 @@ export default function ToolPage() {
   }
 
   return (
-    <main className={styles.main}>
+    <main>
       <h2>表情代码对照表</h2>
       <table>
         <caption>表情代码对照表(点击复制)</caption>
         <thead>
-          <tr>
-            <th>表情</th>
-            <th>代码</th>
-          </tr>
+        <tr>
+          <th>表情</th>
+          <th>代码</th>
+        </tr>
         </thead>
         <tbody>
-          {Object.entries(emojiMap).map(([key, value]) => {
-            return (
-              <tr key={`@${key}@`}>
-                <td>
-                  <img src={value} alt={key} className='custom-emojis'></img>
-                </td>
-                <td>
-                  <p
-                    className={styles.code}
-                    onClick={() => {
-                      navigator.clipboard.writeText(`@${key}@`)
-                    }}
-                  >
-                    @{key}@
-                  </p>
-                </td>
-              </tr>
-            )
-          })}
+        {Object.entries(emojiMap).map(([key, value]) => {
+          return (
+            <tr key={`@${key}@`}>
+              <td>
+                <img src={value} alt={key} className="custom-emojis"></img>
+              </td>
+              <td>
+                <p
+                  onClick={() => {
+                    navigator.clipboard.writeText(`@${key}@`)
+                  }}
+                >
+                  @{key}@
+                </p>
+              </td>
+            </tr>
+          )
+        })}
         </tbody>
       </table>
     </main>

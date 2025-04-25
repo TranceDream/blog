@@ -74,7 +74,7 @@ Homebrew拿下之后就可以立即把iTerm2装起来了，后面就可以告别
 brew install --cask iterm2
 ```
 
-### Z Shell配置 - Oh My Zsh
+### Z Shell配置 - Oh My Posh
 
 当前版本的macOS已经默认装载了Zsh作为默认的Shell，所以这里无需额外安装，可以直接进行配置，我使用Oh My Posh框架来配置我的Zsh。这里使用Oh My Posh的原因主要是Oh My Posh的主题比较美观，而且现在Oh My Posh已经不再局限于Powershell平台，在其他的Shell上也可以方便配置。
 
