@@ -30,6 +30,12 @@ export function MainNav() {
         >
           关于
         </Link>
+        <Link
+          href="/funchat"
+          className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+        >
+          函钩网
+        </Link>
       </nav>
     </div>
   )
