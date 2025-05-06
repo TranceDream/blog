@@ -9,6 +9,7 @@ import rehypeRaw from 'rehype-raw'
 import rehypeReact from 'rehype-react'
 import { createElement, Fragment } from 'react'
 import remarkCustomEmojis from '@/lib/remark-custom-emojis'
+import rehypePrettyCode from 'rehype-pretty-code'
 
 // 表情符号映射
 const emojiMap = {
@@ -137,8 +138,13 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
       .use(remarkParse) // 解析Markdown
       .use(remarkCustomEmojis, emojiMap) // 处理自定义表情符号
       .use(remarkRehype, { allowDangerousHtml: true }) // 转换为HTML
+      .use(rehypePrettyCode, {
+        theme: 'one-dark-pro',      // VS Code 主题名或自定义 theme 对象
+        onVisitLine(node) {         // 可选：给每行包一层 <span> 以便加行号
+          node.properties.className = ['line']
+        },
+      })
       .use(rehypeRaw) // 处理HTML标签
-      .use(rehypeShiki, { theme: 'one-dark-pro' }) // 代码高亮
       .use(rehypeReact, { createElement, Fragment, components }) // 转换为React组件
 
     const processed = await processor.process(content)

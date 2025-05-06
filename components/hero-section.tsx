@@ -26,10 +26,10 @@ export function HeroSection() {
       <div className="absolute inset-0 -z-1 bg-gradient-to-b from-background/50 via-background/30 to-transparent" />
 
       <div className="space-y-6 max-w-3xl z-10">
-        <h1 className="text-5xl font-bold tracking-tighter sm:text-6xl md:text-7xl drop-shadow-md">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tighter truncate">
           {isCyberpunk ? <GlitchText text="TranceDream's Blog" /> : <NeonText intensity="high">TranceDream's Blog</NeonText>}
         </h1>
-        <p className="text-xl text-foreground md:text-2xl drop-shadow">
+        <p className="text-lg sm:text-xl md:text-2xl text-foreground truncate drop-shadow">
           After we're gone, the spirit carries on.
         </p>
         <div className="flex justify-center">

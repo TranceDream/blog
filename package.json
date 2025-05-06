@@ -10,6 +10,11 @@
     "new": "node lib/new.mjs",
     "touch": "node lib/touch.mjs"
   },
+  "pnpm": {
+    "overrides": {
+      "date-fns": "^3.0.0"
+    }
+  },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
     "@radix-ui/react-accordion": "^1.2.2",
@@ -45,7 +50,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
-    "date-fns": "4.1.0",
+    "date-fns": "^3.0.0",
     "dayjs": "^1.11.13",
     "embla-carousel-react": "8.5.1",
     "fs": "latest",
@@ -68,11 +73,13 @@
     "react-syntax-highlighter": "latest",
     "recharts": "2.15.0",
     "rehype-highlight": "^6.0.0",
+    "rehype-pretty-code": "^0.14.1",
     "rehype-raw": "^6.1.1",
     "rehype-react": "^7.1.2",
     "rehype-stringify": "^9.0.3",
     "remark-parse": "^10.0.1",
     "remark-rehype": "^10.1.0",
+    "shiki": "^3.3.0",
     "sonner": "^1.7.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss": "^3.4.17",

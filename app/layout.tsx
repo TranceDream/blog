@@ -36,7 +36,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur-sm">
             <div className="container flex h-16 items-center justify-between py-4">
               <MainNav />
-              <ModeToggle />
             </div>
           </header>
           <main className="flex-1">{children}</main>
