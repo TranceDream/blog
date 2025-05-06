@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { unified } from 'unified'
 import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
-import rehypeShiki from '@shikijs/rehype'
+import rehypePrism from 'rehype-prism-plus'
 import rehypeRaw from 'rehype-raw'
 import rehypeReact from 'rehype-react'
 import { createElement, Fragment } from 'react'
@@ -137,8 +137,8 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
       .use(remarkParse) // 解析Markdown
       .use(remarkCustomEmojis, emojiMap) // 处理自定义表情符号
       .use(remarkRehype, { allowDangerousHtml: true }) // 转换为HTML
+      .use(rehypePrism, { ignoreMissing: true })
       .use(rehypeRaw) // 处理HTML标签
-      .use(rehypeShiki, { theme: 'one-dark-pro' }) // 代码高亮
       .use(rehypeReact, { createElement, Fragment, components }) // 转换为React组件
 
     const processed = await processor.process(content)

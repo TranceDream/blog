@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  date-fns: ^3.0.0
+
 importers:
 
   .:
@@ -111,8 +114,8 @@ importers:
         specifier: 1.0.4
         version: 1.0.4(@types/react-dom@19.1.2(@types/react@19.1.0))(@types/react@19.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       date-fns:
-        specifier: 4.1.0
-        version: 4.1.0
+        specifier: ^3.0.0
+        version: 3.6.0
       dayjs:
         specifier: ^1.11.13
         version: 1.11.13
@@ -155,12 +158,18 @@ importers:
       path:
         specifier: latest
         version: 0.12.7
+      prism-themes:
+        specifier: ^1.9.0
+        version: 1.9.0
+      prismjs:
+        specifier: ^1.30.0
+        version: 1.30.0
       react:
         specifier: ^19
         version: 19.1.0
       react-day-picker:
         specifier: 8.10.1
-        version: 8.10.1(date-fns@4.1.0)(react@19.1.0)
+        version: 8.10.1(date-fns@3.6.0)(react@19.1.0)
       react-dom:
         specifier: ^19
         version: 19.1.0(react@19.1.0)
@@ -179,6 +188,9 @@ importers:
       rehype-highlight:
         specifier: ^6.0.0
         version: 6.0.0
+      rehype-prism-plus:
+        specifier: ^2.0.1
+        version: 2.0.1
       rehype-raw:
         specifier: ^6.1.1
         version: 6.1.1
@@ -1309,6 +1321,9 @@ packages:
   '@types/parse5@6.0.3':
     resolution: {integrity: sha512-SuT16Q1K51EAVPz1K29DJ/sXjhSQ0zjvsypYJ6tlwVsRV9jwW5Adq2ch8Dq8kDBCkYnELS7N7VNCSB5nC56t/g==}
 
+  '@types/prismjs@1.26.5':
+    resolution: {integrity: sha512-AUZTa7hQ2KY5L7AmtSiqxlhWxb4ina0yd8hNbl4TWuqnv/pFP0nDMb3YrfSBf4hJVGLh2YEIBfKaBW/9UEl6IQ==}
+
   '@types/react-dom@19.1.2':
     resolution: {integrity: sha512-XGJkWF41Qq305SKWEILa1O8vzhb3aOo3ogBlSmiqNko/WmRb6QIaweuZCXjKygVDXpzXb5wyxKTSOsmkuqj+Qw==}
     peerDependencies:
@@ -1554,8 +1569,8 @@ packages:
     resolution: {integrity: sha512-ndfJ/JxxMd3nw31uyKoY2naivF+r29V+Lc0svZxe1JvvIRmi8hUsrMvdOwgS1o6uBHmiz91geQ0ylPP0aj1VUA==}
     engines: {node: '>=12'}
 
-  date-fns@4.1.0:
-    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
+  date-fns@3.6.0:
+    resolution: {integrity: sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==}
 
   dayjs@1.11.13:
     resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
@@ -1629,6 +1644,10 @@ packages:
 
   emoji-regex@9.2.2:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
+
+  entities@6.0.0:
+    resolution: {integrity: sha512-aKstq2TDOndCn4diEyp9Uq/Flu2i1GlLkc6XIDQSDMuaFE3OPW5OphLCyQ5SpSJZTb4reN+kTcYru5yIfXoRPw==}
+    engines: {node: '>=0.12'}
 
   esast-util-from-estree@2.0.0:
     resolution: {integrity: sha512-4CyanoAudUSBAn5K13H4JhsMH6L9ZP7XbLVe/dKybkxMO7eDyLsT8UHl9TRNrU2Gr9nz+FovfSIjuXWJ81uVwQ==}
@@ -1750,8 +1769,14 @@ packages:
   hast-to-hyperscript@10.0.3:
     resolution: {integrity: sha512-NuBoUStp4fRwmvlfbidlEiRSTk0gSHm+97q4Xn9CJ10HO+Py7nlTuDi6RhM1qLOureukGrCXLG7AAxaGqqyslQ==}
 
+  hast-util-from-html@2.0.3:
+    resolution: {integrity: sha512-CUSRHXyKjzHov8yKsQjGOElXy/3EKpyX56ELnkHH34vDVw1N1XSQ1ZcAvTyAPtGqLTuKP/uxM+aLkSPqF/EtMw==}
+
   hast-util-from-parse5@7.1.2:
     resolution: {integrity: sha512-Nz7FfPBuljzsN3tCQ4kCBKqdNhQE2l0Tn+X1ubgKBPRoiDIu1mL08Cfw4k7q71+Duyaw7DXDN+VTAp4Vh3oCOw==}
+
+  hast-util-from-parse5@8.0.3:
+    resolution: {integrity: sha512-3kxEVkEKt0zvcZ3hCRYI8rqrgwtlIOFMWkbclACvjlDw8Li9S2hk/d51OI0nr/gIpdMHNepwgOKqZ/sy0Clpyg==}
 
   hast-util-is-element@2.1.3:
     resolution: {integrity: sha512-O1bKah6mhgEq2WtVMk+Ta5K7pPMqsBBlmzysLdcwKVrqzZQ0CHqUPiIVspNhAG1rvxpvJjtGee17XfauZYKqVA==}
@@ -1761,6 +1786,9 @@ packages:
 
   hast-util-parse-selector@3.1.1:
     resolution: {integrity: sha512-jdlwBjEexy1oGz0aJ2f4GKMaVKkA9jwjr4MjAAI22E5fM/TXVZHuS5OpONtdeIkRKqAaryQ2E9xNQxijoThSZA==}
+
+  hast-util-parse-selector@4.0.0:
+    resolution: {integrity: sha512-wkQCkSYoOGCRKERFWcxMVMOcYE2K1AaNLU8DXS9arxnLOUEWbOXKXiJUNzEpqZ3JOKpnha3jkFrumEjVliDe7A==}
 
   hast-util-raw@7.2.3:
     resolution: {integrity: sha512-RujVQfVsOrxzPOPSzZFiwofMArbQke6DJjnFfceiEbFh7S05CbPt0cYN+A5YeD3pso0JQk6O1aHBnx9+Pm2uqg==}
@@ -1797,6 +1825,9 @@ packages:
 
   hastscript@7.2.0:
     resolution: {integrity: sha512-TtYPq24IldU8iKoJQqvZOuhi5CyCQRAbvDOX0x1eW6rsHSxa/1i2CCiptNTotGHJ3VoHRGmqiv6/D3q113ikkw==}
+
+  hastscript@9.0.1:
+    resolution: {integrity: sha512-g7df9rMFX/SPi34tyGCyUBREQoKkapwdY/T04Qn9TDWfHhAYt4/I0gMVirzK5wEzeUqIjEB+LXC/ypb7Aqno5w==}
 
   highlight.js@10.7.3:
     resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
@@ -2281,8 +2312,14 @@ packages:
   parse-entities@4.0.2:
     resolution: {integrity: sha512-GG2AQYWoLgL877gQIKeRPGO1xF9+eG1ujIb5soS5gPvLQ1y2o8FL90w2QWNdf9I361Mpp7726c+lj3U0qK1uGw==}
 
+  parse-numeric-range@1.3.0:
+    resolution: {integrity: sha512-twN+njEipszzlMJd4ONUYgSfZPDxgHhT9Ahed5uTigpQn90FggW4SA/AIPq/6a149fTbE9qBEcSwE3FAEp6wQQ==}
+
   parse5@6.0.1:
     resolution: {integrity: sha512-Ofn/CTFzRGTTxwpNEs9PP93gXShHcTq255nzRYSKe8AkVpZY7e1fpmTfOyoIvjP5HG7Z2ZM7VS9PPhQGW2pOpw==}
+
+  parse5@7.3.0:
+    resolution: {integrity: sha512-IInvU7fabl34qmi9gY8XOVxhYyMyuH2xUNpb2q8/Y+7552KlejkRvqvD19nMoUW/uQGGbqNpA6Tufu5FL5BZgw==}
 
   path-key@3.1.1:
     resolution: {integrity: sha512-ojmeN0qd+y0jszEtoY48r0Peq5dwMEkIlCOu6Q5f41lfkswXuKtYrhgoTpLnyIcHm24Uhqx+5Tqm2InSwLhE6Q==}
@@ -2362,6 +2399,9 @@ packages:
     resolution: {integrity: sha512-dle9A3yYxlBSrt8Fu+IpjGT8SY8hN0mlaA6GY8t0P5PjIOZemULz/E2Bnm/2dcUOena75OTNkHI76uZBNUUq3A==}
     engines: {node: ^10 || ^12 || >=14}
 
+  prism-themes@1.9.0:
+    resolution: {integrity: sha512-tX2AYsehKDw1EORwBps+WhBFKc2kxfoFpQAjxBndbZKr4fRmMkv47XN0BghC/K1qwodB1otbe4oF23vUTFDokw==}
+
   prismjs@1.27.0:
     resolution: {integrity: sha512-t13BGPUlFDR7wRB5kQDG4jjl7XeuH6jbJGt11JHPL96qwsEHNX2+68tFXqc1/k+/jALsbSWJKUOT/hcYAZ5LkA==}
     engines: {node: '>=6'}
@@ -2392,7 +2432,7 @@ packages:
   react-day-picker@8.10.1:
     resolution: {integrity: sha512-TMx7fNbhLk15eqcMt+7Z7S2KF7mfTId/XJDjKE8f+IUcFn0l08/kI4FiYTL/0yuOLmEcbR4Fwe3GJf/NiiMnPA==}
     peerDependencies:
-      date-fns: ^2.28.0 || ^3.0.0
+      date-fns: ^3.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
   react-dom@19.1.0:
@@ -2501,6 +2541,9 @@ packages:
   refractor@3.6.0:
     resolution: {integrity: sha512-MY9W41IOWxxk31o+YvFCNyNzdkc9M20NoZK5vq6jkv4I/uh2zkWcfudj0Q1fovjUQJrNewS9NMzeTtqPf+n5EA==}
 
+  refractor@4.9.0:
+    resolution: {integrity: sha512-nEG1SPXFoGGx+dcjftjv8cAjEusIh6ED1xhf5DG3C0x/k+rmZ2duKnc3QLpt6qeHv5fPb8uwN3VWN2BT7fr3Og==}
+
   regenerator-runtime@0.14.1:
     resolution: {integrity: sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==}
 
@@ -2515,6 +2558,12 @@ packages:
 
   rehype-highlight@6.0.0:
     resolution: {integrity: sha512-q7UtlFicLhetp7K48ZgZiJgchYscMma7XjzX7t23bqEJF8m6/s+viXQEe4oHjrATTIZpX7RG8CKD7BlNZoh9gw==}
+
+  rehype-parse@9.0.1:
+    resolution: {integrity: sha512-ksCzCD0Fgfh7trPDxr2rSylbwq9iYDkSn8TCDmEJ49ljEUBxDVCzCHv7QNzZOfODanX4+bWQ4WZqLCRWYLfhag==}
+
+  rehype-prism-plus@2.0.1:
+    resolution: {integrity: sha512-Wglct0OW12tksTUseAPyWPo3srjBOY7xKlql/DPKi7HbsdZTyaLCAoO58QBKSczFQxElTsQlOY3JDOFzB/K++Q==}
 
   rehype-raw@6.1.1:
     resolution: {integrity: sha512-d6AKtisSRtDRX4aSPsJGTfnzrX2ZkHQLE5kiUuGOeEoLpbEulFF4hj0mLPbsa+7vmguDKOVVEQdHKDSwoaIDsQ==}
@@ -2747,6 +2796,9 @@ packages:
   unified@11.0.5:
     resolution: {integrity: sha512-xKvGhPWw3k84Qjh8bI3ZeJjqnyadK+GEFtazSfZv/rKeTkTjOJho6mFqh2SM96iIcZokxiOpg78GazTSg8+KHA==}
 
+  unist-util-filter@5.0.1:
+    resolution: {integrity: sha512-pHx7D4Zt6+TsfwylH9+lYhBhzyhEnCXs/lbq/Hstxno5z4gVdyc2WEW0asfjGKPyG4pEKrnBv5hdkO6+aRnQJw==}
+
   unist-util-find-after@4.0.1:
     resolution: {integrity: sha512-QO/PuPMm2ERxC6vFXEPtmAutOopy5PknD+Oq64gGwxKtk4xwo9Z97t9Av1obPmGU0IyTa6EKYUfTrK2QJS3Ozw==}
 
@@ -2848,6 +2900,9 @@ packages:
 
   vfile-location@4.1.0:
     resolution: {integrity: sha512-YF23YMyASIIJXpktBa4vIGLJ5Gs88UB/XePgqPmTa7cDA+JeO3yclbpheQYCHjVHBn/yePzrXuygIL+xbvRYHw==}
+
+  vfile-location@5.0.3:
+    resolution: {integrity: sha512-5yXvWDEgqeiYiBe1lbxYF7UMAIm/IcopxMHrMQDq3nvKcjPKIhZklUKL+AE7J7uApI4kwe2snsK+eI6UTj9EHg==}
 
   vfile-matter@5.0.1:
     resolution: {integrity: sha512-o6roP82AiX0XfkyTHyRCMXgHfltUNlXSEqCIS80f+mbAyiQBE2fxtDVMtseyytGx75sihiJFo/zR6r/4LTs2Cw==}
@@ -4019,6 +4074,8 @@ snapshots:
 
   '@types/parse5@6.0.3': {}
 
+  '@types/prismjs@1.26.5': {}
+
   '@types/react-dom@19.1.2(@types/react@19.1.0)':
     dependencies:
       '@types/react': 19.1.0
@@ -4241,7 +4298,7 @@ snapshots:
 
   d3-timer@3.0.1: {}
 
-  date-fns@4.1.0: {}
+  date-fns@3.6.0: {}
 
   dayjs@1.11.13: {}
 
@@ -4298,6 +4355,8 @@ snapshots:
   emoji-regex@8.0.0: {}
 
   emoji-regex@9.2.2: {}
+
+  entities@6.0.0: {}
 
   esast-util-from-estree@2.0.0:
     dependencies:
@@ -4445,6 +4504,15 @@ snapshots:
       style-to-object: 0.4.4
       web-namespaces: 2.0.1
 
+  hast-util-from-html@2.0.3:
+    dependencies:
+      '@types/hast': 3.0.4
+      devlop: 1.1.0
+      hast-util-from-parse5: 8.0.3
+      parse5: 7.3.0
+      vfile: 6.0.3
+      vfile-message: 4.0.2
+
   hast-util-from-parse5@7.1.2:
     dependencies:
       '@types/hast': 2.3.10
@@ -4453,6 +4521,17 @@ snapshots:
       property-information: 6.5.0
       vfile: 5.3.7
       vfile-location: 4.1.0
+      web-namespaces: 2.0.1
+
+  hast-util-from-parse5@8.0.3:
+    dependencies:
+      '@types/hast': 3.0.4
+      '@types/unist': 3.0.3
+      devlop: 1.1.0
+      hastscript: 9.0.1
+      property-information: 7.0.0
+      vfile: 6.0.3
+      vfile-location: 5.0.3
       web-namespaces: 2.0.1
 
   hast-util-is-element@2.1.3:
@@ -4465,6 +4544,10 @@ snapshots:
   hast-util-parse-selector@3.1.1:
     dependencies:
       '@types/hast': 2.3.10
+
+  hast-util-parse-selector@4.0.0:
+    dependencies:
+      '@types/hast': 3.0.4
 
   hast-util-raw@7.2.3:
     dependencies:
@@ -4589,6 +4672,14 @@ snapshots:
       comma-separated-tokens: 2.0.3
       hast-util-parse-selector: 3.1.1
       property-information: 6.5.0
+      space-separated-tokens: 2.0.2
+
+  hastscript@9.0.1:
+    dependencies:
+      '@types/hast': 3.0.4
+      comma-separated-tokens: 2.0.3
+      hast-util-parse-selector: 4.0.0
+      property-information: 7.0.0
       space-separated-tokens: 2.0.2
 
   highlight.js@10.7.3: {}
@@ -5332,7 +5423,13 @@ snapshots:
       is-decimal: 2.0.1
       is-hexadecimal: 2.0.1
 
+  parse-numeric-range@1.3.0: {}
+
   parse5@6.0.1: {}
+
+  parse5@7.3.0:
+    dependencies:
+      entities: 6.0.0
 
   path-key@3.1.1: {}
 
@@ -5404,6 +5501,8 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
+  prism-themes@1.9.0: {}
+
   prismjs@1.27.0: {}
 
   prismjs@1.30.0: {}
@@ -5426,9 +5525,9 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
-  react-day-picker@8.10.1(date-fns@4.1.0)(react@19.1.0):
+  react-day-picker@8.10.1(date-fns@3.6.0)(react@19.1.0):
     dependencies:
-      date-fns: 4.1.0
+      date-fns: 3.6.0
       react: 19.1.0
 
   react-dom@19.1.0(react@19.1.0):
@@ -5566,6 +5665,13 @@ snapshots:
       parse-entities: 2.0.0
       prismjs: 1.27.0
 
+  refractor@4.9.0:
+    dependencies:
+      '@types/hast': 2.3.10
+      '@types/prismjs': 1.26.5
+      hastscript: 7.2.0
+      parse-entities: 4.0.2
+
   regenerator-runtime@0.14.1: {}
 
   regex-recursion@6.0.2:
@@ -5585,6 +5691,21 @@ snapshots:
       lowlight: 2.9.0
       unified: 10.1.2
       unist-util-visit: 4.1.2
+
+  rehype-parse@9.0.1:
+    dependencies:
+      '@types/hast': 3.0.4
+      hast-util-from-html: 2.0.3
+      unified: 11.0.5
+
+  rehype-prism-plus@2.0.1:
+    dependencies:
+      hast-util-to-string: 3.0.1
+      parse-numeric-range: 1.3.0
+      refractor: 4.9.0
+      rehype-parse: 9.0.1
+      unist-util-filter: 5.0.1
+      unist-util-visit: 5.0.0
 
   rehype-raw@6.1.1:
     dependencies:
@@ -5897,6 +6018,12 @@ snapshots:
       trough: 2.2.0
       vfile: 6.0.3
 
+  unist-util-filter@5.0.1:
+    dependencies:
+      '@types/unist': 3.0.3
+      unist-util-is: 6.0.0
+      unist-util-visit-parents: 6.0.1
+
   unist-util-find-after@4.0.1:
     dependencies:
       '@types/unist': 2.0.11
@@ -6021,6 +6148,11 @@ snapshots:
     dependencies:
       '@types/unist': 2.0.11
       vfile: 5.3.7
+
+  vfile-location@5.0.3:
+    dependencies:
+      '@types/unist': 3.0.3
+      vfile: 6.0.3
 
   vfile-matter@5.0.1:
     dependencies:

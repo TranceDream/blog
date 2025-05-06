@@ -14,7 +14,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const decodedSlug = decodeURIComponent(params.slug)
+  const decodedSlug = decodeURIComponent((await params).slug)
   const post = await getPostBySlug(decodedSlug)
 
   if (!post) {
