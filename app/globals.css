@@ -118,7 +118,7 @@
 /* 改进的赛博朋克主题特殊样式 - 减少视觉干扰 */
 .cyberpunk .neon-text {
   /* 减少霓虹发光效果，提高可读性 */
-  text-shadow: 0 0 2px theme("colors.cyan.400");
+  text-shadow: 0 0 2px theme('colors.cyan.400');
   /* 增加字体粗细，提高可读性 */
   font-weight: 600;
 }
@@ -127,36 +127,39 @@
 
 /* 不同强度的霓虹文本效果 */
 .cyberpunk .neon-text {
-  text-shadow: 0 0 1px theme("colors.cyan.400");
+  text-shadow: 0 0 1px theme('colors.cyan.400');
   font-weight: 600;
 }
 
 .cyberpunk .neon-text-medium {
-  text-shadow: 0 0 2px theme("colors.cyan.400"), 0 0 5px theme("colors.cyan.700");
+  text-shadow: 0 0 2px theme('colors.cyan.400'),
+    0 0 5px theme('colors.cyan.700');
   font-weight: 600;
 }
 
 .cyberpunk .neon-text-high {
-  text-shadow: 0 0 3px theme("colors.cyan.400"), 0 0 7px theme("colors.cyan.600"), 0 0 10px theme("colors.cyan.800");
+  text-shadow: 0 0 3px theme('colors.cyan.400'),
+    0 0 7px theme('colors.cyan.600'), 0 0 10px theme('colors.cyan.800');
   font-weight: 600;
 }
 
 .cyberpunk .neon-border {
   /* 减少边框发光效果 */
-  box-shadow: 0 0 3px theme("colors.pink.500");
+  box-shadow: 0 0 3px theme('colors.pink.500');
 }
 
 /* 不同强度的霓虹边框效果 */
 .cyberpunk .neon-border {
-  box-shadow: 0 0 2px theme("colors.pink.500");
+  box-shadow: 0 0 2px theme('colors.pink.500');
 }
 
 .cyberpunk .neon-border-medium {
-  box-shadow: 0 0 3px theme("colors.pink.500"), 0 0 5px theme("colors.pink.700");
+  box-shadow: 0 0 3px theme('colors.pink.500'), 0 0 5px theme('colors.pink.700');
 }
 
 .cyberpunk .neon-border-high {
-  box-shadow: 0 0 4px theme("colors.pink.500"), 0 0 8px theme("colors.pink.600"), 0 0 12px theme("colors.pink.800");
+  box-shadow: 0 0 4px theme('colors.pink.500'), 0 0 8px theme('colors.pink.600'),
+    0 0 12px theme('colors.pink.800');
 }
 
 /* 减少故障效果的视觉干扰 */
@@ -179,14 +182,14 @@
 
 .cyberpunk .glitch-effect:hover::before {
   left: 2px;
-  text-shadow: -1px 0 theme("colors.pink.500");
+  text-shadow: -1px 0 theme('colors.pink.500');
   clip: rect(44px, 450px, 56px, 0);
   animation: glitch-anim 5s infinite linear alternate-reverse;
 }
 
 .cyberpunk .glitch-effect:hover::after {
   left: -2px;
-  text-shadow: 1px 0 theme("colors.cyan.400");
+  text-shadow: 1px 0 theme('colors.cyan.400');
   clip: rect(44px, 450px, 56px, 0);
   animation: glitch-anim2 5s infinite linear alternate-reverse;
 }
@@ -204,8 +207,8 @@
 .cyberpunk .prose h3,
 .cyberpunk .prose h4 {
   /* 标题使用霓虹效果，但减少发光强度 */
-  text-shadow: 0 0 2px theme("colors.cyan.400");
-  color: theme("colors.cyan.300");
+  text-shadow: 0 0 2px theme('colors.cyan.400');
+  color: theme('colors.cyan.300');
 }
 
 .cyberpunk .prose p,
@@ -213,33 +216,33 @@
 .cyberpunk .prose ol,
 .cyberpunk .prose li {
   /* 正文文本使用更高对比度的颜色 */
-  color: theme("colors.gray.100");
+  color: theme('colors.gray.100');
 }
 
 .cyberpunk .prose a {
   /* 链接使用霓虹粉色，增加可识别性 */
-  color: theme("colors.pink.400");
+  color: theme('colors.pink.400');
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
 .cyberpunk .prose a:hover {
   /* 悬停时增加发光效果 */
-  text-shadow: 0 0 3px theme("colors.pink.500");
+  text-shadow: 0 0 3px theme('colors.pink.500');
 }
 
 .cyberpunk .prose blockquote {
   /* 引用块使用更明显的边框 */
-  border-left-color: theme("colors.cyan.500");
-  background-color: theme("colors.gray.900");
+  border-left-color: theme('colors.cyan.500');
+  background-color: theme('colors.gray.900');
   padding: 1rem;
   border-radius: 0.25rem;
 }
 
 .cyberpunk .prose code {
   /* 内联代码使用更明显的背景 */
-  background-color: theme("colors.gray.800");
-  color: theme("colors.pink.300");
+  background-color: theme('colors.gray.800');
+  color: theme('colors.pink.300');
   padding: 0.2rem 0.4rem;
   border-radius: 0.25rem;
 }
@@ -382,36 +385,37 @@
 /* 为卡片内容增加可读性 */
 .cyberpunk .card {
   /* 增加卡片背景不透明度 */
-  background-color: theme("colors.gray.900");
+  background-color: theme('colors.gray.900');
 }
 
 .cyberpunk .card-content {
   /* 增加卡片内容的可读性 */
-  color: theme("colors.gray.100");
+  color: theme('colors.gray.100');
 }
 
 /* 增强卡片和内容区域的可读性 */
 .cyberpunk .bg-background\/80 {
   /* 增加背景不透明度，提高可读性 */
-  background-color: theme("colors.gray.900") !important;
+  background-color: theme('colors.gray.900') !important;
   backdrop-filter: blur(8px);
 }
 
 .cyberpunk .text-muted-foreground {
   /* 提高次要文本的对比度 */
-  color: theme("colors.gray.300") !important;
+  color: theme('colors.gray.300') !important;
 }
 
 /* 代码高亮样式 */
-pre[class*="language-"] {
+pre[class*='language-'] {
   @apply text-sm;
 }
 
-code[class*="language-"],
-pre[class*="language-"] {
+code[class*='language-'],
+pre[class*='language-'] {
   color: #f8f8f2;
   background: none;
-  font-family: "Fira Code", Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  font-family: 'Fira Code', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono',
+    monospace;
   text-align: left;
   white-space: pre;
   word-spacing: normal;
@@ -515,8 +519,8 @@ pre[class*="language-"] {
 }
 
 /* 改进的赛博朋克主题的代码高亮 - 提高可读性 */
-.cyberpunk code[class*="language-"],
-.cyberpunk pre[class*="language-"] {
+.cyberpunk code[class*='language-'],
+.cyberpunk pre[class*='language-'] {
   /* 减少文本阴影，提高可读性 */
   text-shadow: 0 0 1px #00ffff;
   /* 增加字体大小 */
