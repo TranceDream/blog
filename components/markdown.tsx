@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import { unified } from 'unified'
 import remarkParse from 'remark-parse'
 import remarkGfm from 'remark-gfm'
@@ -10,6 +10,7 @@ import rehypeRaw from 'rehype-raw'
 import rehypeReact from 'rehype-react'
 import { createElement, Fragment } from 'react'
 import remarkCustomEmojis from '@/lib/remark-custom-emojis'
+import rehypeEmojiElement from '@/lib/rehype-emoji-element'
 
 // 表情符号映射
 const emojiMap = {
@@ -103,12 +104,33 @@ const components = {
             {...props}
         />
     ),
+    'emoji-img': (props: any) => (
+        <img
+            {...props}
+            className={[props.className, 'custom-emojis']
+                .filter(Boolean)
+                .join(' ')}
+            style={{
+                display: 'inline',
+                verticalAlign: 'middle',
+                height: '1.2em',
+                width: 'auto',
+                margin: '0 0.1em',
+            }}
+        />
+    ),
     img: (props: any) => {
-        // 检查是否是内联表情符号
-        if (props.className === 'inline-emoji') {
+        const cn = props.className ?? ''
+        const isEmoji =
+            /custom-emojis/.test(cn) || props['data-emoji'] !== undefined
+
+        if (isEmoji) {
+            // 不要强行覆盖 className；保留插件给的类
+            const { className, ...rest } = props
             return (
                 <img
-                    {...props}
+                    {...rest}
+                    className={className}
                     style={{
                         display: 'inline',
                         verticalAlign: 'middle',
@@ -119,8 +141,16 @@ const components = {
                 />
             )
         }
-        // 普通图片
-        return <img className='rounded-md border' {...props} />
+
+        // 普通图片：合并类，不要覆盖掉 props.className（如果有）
+        return (
+            <img
+                {...props}
+                className={[props.className, 'rounded-md border']
+                    .filter(Boolean)
+                    .join(' ')}
+            />
+        )
     },
     hr: (props: any) => (
         <hr className='my-8 border-muted-foreground/20' {...props} />
@@ -171,25 +201,29 @@ interface MarkdownContentProps {
     content: string
 }
 
-export function MarkdownContent({ content }: MarkdownContentProps) {
-    // 使用useMemo缓存处理结果，避免不必要的重新渲染
-    const processedContent = useMemo(async () => {
-        const processor = unified()
-            .use(remarkParse) // 解析Markdown
-            .use(remarkCustomEmojis, emojiMap) // 处理自定义表情符号
-            .use(remarkGfm)
-            .use(remarkRehype, { allowDangerousHtml: true }) // 转换为HTML
-            .use(rehypePrism, { ignoreMissing: true })
-            .use(rehypeRaw) // 处理HTML标签
-            .use(rehypeReact, { createElement, Fragment, components }) // 转换为React组件
+export function MarkdownContent({ content }: { content: string }) {
+    const [node, setNode] = useState<React.ReactNode>(null)
 
-        const processed = await processor.process(content)
-        return processed.result
+    useEffect(() => {
+        let cancelled = false
+        ;(async () => {
+            const file = await unified()
+                .use(remarkParse)
+                .use(remarkCustomEmojis, emojiMap)
+                .use(remarkGfm)
+                .use(remarkRehype, { allowDangerousHtml: true })
+                .use(rehypePrism, { ignoreMissing: true })
+                .use(rehypeRaw)
+                .use(rehypeEmojiElement)
+                .use(rehypeReact, { createElement, Fragment, components })
+                .process(content)
+
+            if (!cancelled) setNode(file.result as React.ReactNode)
+        })()
+        return () => {
+            cancelled = true
+        }
     }, [content])
 
-    return (
-        <div className='prose dark:prose-invert max-w-none'>
-            {processedContent}
-        </div>
-    )
+    return <div className='prose dark:prose-invert max-w-none'>{node}</div>
 }
