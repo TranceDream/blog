@@ -106,7 +106,7 @@ const components = {
     img: (props: any) => {
         const cn = props.className ?? ''
         const isEmoji =
-            /\bcustom-emojis\b/.test(cn) || props['data-emoji'] !== undefined
+            /custom-emojis/.test(cn) || props['data-emoji'] !== undefined
 
         if (isEmoji) {
             // 不要强行覆盖 className；保留插件给的类
