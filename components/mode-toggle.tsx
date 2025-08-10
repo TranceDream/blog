@@ -10,12 +10,14 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 export function ModeToggle() {
     const { theme, setTheme } = useTheme()
+    const isMobile = useIsMobile()
 
     return (
-        <DropdownMenu>
+        <DropdownMenu modal={isMobile}>
             <DropdownMenuTrigger asChild>
                 <Button variant='outline' size='icon' className='relative'>
                     <Sun className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 cyberpunk:scale-0 cyberpunk:-rotate-90' />

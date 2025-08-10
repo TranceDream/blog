@@ -10,7 +10,7 @@ export function HeroSection() {
     const isCyberpunk = theme === 'cyberpunk'
 
     // 使用单一背景图片，不再根据主题切换
-    const heroImage = '/background.jpg'
+    const heroImage = 'https://s2.loli.net/2025/08/11/sVJhu6l7fYyBgXC.webp'
 
     return (
         <section

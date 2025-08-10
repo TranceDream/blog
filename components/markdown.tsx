@@ -3,6 +3,7 @@
 import { useMemo } from 'react'
 import { unified } from 'unified'
 import remarkParse from 'remark-parse'
+import remarkGfm from 'remark-gfm'
 import remarkRehype from 'remark-rehype'
 import rehypePrism from 'rehype-prism-plus'
 import rehypeRaw from 'rehype-raw'
@@ -176,6 +177,7 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
         const processor = unified()
             .use(remarkParse) // 解析Markdown
             .use(remarkCustomEmojis, emojiMap) // 处理自定义表情符号
+            .use(remarkGfm)
             .use(remarkRehype, { allowDangerousHtml: true }) // 转换为HTML
             .use(rehypePrism, { ignoreMissing: true })
             .use(rehypeRaw) // 处理HTML标签

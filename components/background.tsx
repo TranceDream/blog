@@ -8,7 +8,7 @@ interface BackgroundProps {
 
 export function Background({ children }: BackgroundProps) {
     // 使用单一背景图片
-    const bgImage = '/background.jpg'
+    const bgImage = 'https://s2.loli.net/2025/08/11/sVJhu6l7fYyBgXC.webp'
 
     return (
         <div className='min-h-screen'>
@@ -23,7 +23,7 @@ export function Background({ children }: BackgroundProps) {
 
             {/* 半透明遮罩层 */}
             <div
-                className='fixed inset-0 -z-10 bg-background/75 backdrop-blur-sm'
+                className='fixed inset-0 -z-10 bg-background/25 backdrop-blur-lg'
                 style={{ backgroundAttachment: 'fixed' }}
             />
 
