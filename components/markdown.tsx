@@ -1,5 +1,3 @@
-'use client'
-
 import { useMemo } from 'react'
 import { unified } from 'unified'
 import remarkParse from 'remark-parse'
