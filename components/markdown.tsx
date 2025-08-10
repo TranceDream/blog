@@ -105,7 +105,7 @@ const components = {
     ),
     img: (props: any) => {
         // 检查是否是内联表情符号
-        if (props.className === 'inline-emoji') {
+        if (props.className === 'custom-emojis') {
             return (
                 <img
                     {...props}
