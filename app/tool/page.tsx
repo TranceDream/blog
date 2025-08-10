@@ -55,41 +55,73 @@ export default function ToolPage() {
     }
 
     return (
-        <main>
-            <h2>表情代码对照表</h2>
-            <table>
-                <caption>表情代码对照表(点击复制)</caption>
-                <thead>
-                    <tr>
-                        <th>表情</th>
-                        <th>代码</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {Object.entries(emojiMap).map(([key, value]) => {
-                        return (
-                            <tr key={`@${key}@`}>
-                                <td>
-                                    <img
-                                        src={value}
-                                        alt={key}
-                                        className='custom-emojis'></img>
-                                </td>
-                                <td>
-                                    <p
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(
-                                                `@${key}@`
-                                            )
-                                        }}>
-                                        @{key}@
-                                    </p>
-                                </td>
-                            </tr>
-                        )
-                    })}
-                </tbody>
-            </table>
+        <main className='container mx-auto px-4 py-8 max-w-4xl'>
+            <h2 className='text-3xl font-bold text-gray-800 text-center mb-8'>
+                表情代码对照表
+            </h2>
+
+            <div className='bg-white rounded-lg shadow-lg overflow-hidden'>
+                <table className='w-full'>
+                    <caption className='bg-gray-50 px-6 py-4 text-lg font-semibold text-gray-700 border-b'>
+                        表情代码对照表(点击复制)
+                    </caption>
+                    <thead>
+                        <tr className='bg-gradient-to-r from-blue-500 to-purple-600 text-white'>
+                            <th className='px-6 py-4 text-left font-semibold text-lg w-1/3'>
+                                表情
+                            </th>
+                            <th className='px-6 py-4 text-left font-semibold text-lg w-2/3'>
+                                代码
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Object.entries(emojiMap).map(([key, value], index) => {
+                            return (
+                                <tr
+                                    key={`@${key}@`}
+                                    className={`
+                                ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
+                                hover:bg-blue-50 transition-colors duration-200
+                                border-b border-gray-200 last:border-b-0
+                            `}>
+                                    <td className='px-6 py-4'>
+                                        <div className='flex justify-center'>
+                                            <img
+                                                src={value}
+                                                alt={key}
+                                                className='w-8 h-8 object-contain hover:scale-110 transition-transform duration-200'
+                                            />
+                                        </div>
+                                    </td>
+                                    <td className='px-6 py-4'>
+                                        <p
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(
+                                                    `@${key}@`
+                                                )
+                                            }}
+                                            className='
+                                        inline-block px-4 py-2 bg-gray-100 
+                                        hover:bg-blue-100 active:bg-blue-200
+                                        rounded-md cursor-pointer 
+                                        font-mono text-sm text-gray-700
+                                        transition-all duration-200
+                                        hover:shadow-md
+                                        select-none
+                                        border border-gray-200
+                                        hover:border-blue-300
+                                    '
+                                            title='点击复制代码'>
+                                            @{key}@
+                                        </p>
+                                    </td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            </div>
         </main>
     )
 }
