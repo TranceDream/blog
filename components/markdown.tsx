@@ -10,6 +10,7 @@ import rehypeRaw from 'rehype-raw'
 import rehypeReact from 'rehype-react'
 import { createElement, Fragment } from 'react'
 import remarkCustomEmojis from '@/lib/remark-custom-emojis'
+import rehypeEmojiElement from '@/lib/rehype-emoji-element'
 
 // 表情符号映射
 const emojiMap = {
@@ -101,6 +102,21 @@ const components = {
         <blockquote
             className='mt-6 border-l-2 pl-6 italic [&>*]:text-muted-foreground'
             {...props}
+        />
+    ),
+    'emoji-img': (props: any) => (
+        <img
+            {...props}
+            className={[props.className, 'custom-emojis']
+                .filter(Boolean)
+                .join(' ')}
+            style={{
+                display: 'inline',
+                verticalAlign: 'middle',
+                height: '1.2em',
+                width: 'auto',
+                margin: '0 0.1em',
+            }}
         />
     ),
     img: (props: any) => {
@@ -198,6 +214,7 @@ export function MarkdownContent({ content }: { content: string }) {
                 .use(remarkRehype, { allowDangerousHtml: true })
                 .use(rehypePrism, { ignoreMissing: true })
                 .use(rehypeRaw)
+                .use(rehypeEmojiElement)
                 .use(rehypeReact, { createElement, Fragment, components })
                 .process(content)
 
