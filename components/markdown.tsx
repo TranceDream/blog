@@ -185,7 +185,12 @@ const components = {
         // 检查是否是代码块
         const isCodeBlock = props.className?.includes('language-')
         if (isCodeBlock) {
-            return <code {...props} />
+            return (
+                <code
+                    className='mb-4 mt-6 overflow-x-auto rounded-lg border bg-black py-4'
+                    {...props}
+                />
+            )
         }
         // 内联代码
         return (
