@@ -175,31 +175,6 @@ const components = {
             {...props}
         />
     ),
-    pre: (props: any) => (
-        <pre
-            className='mb-4 mt-6 overflow-x-auto rounded-lg border bg-black py-4'
-            {...props}
-        />
-    ),
-    code: (props: any) => {
-        // 检查是否是代码块
-        const isCodeBlock = props.className?.includes('language-')
-        if (isCodeBlock) {
-            return (
-                <code
-                    className='mb-4 mt-6 overflow-x-auto rounded-lg border bg-black py-4'
-                    {...props}
-                />
-            )
-        }
-        // 内联代码
-        return (
-            <code
-                className='relative rounded border px-[0.3rem] py-[0.2rem] font-mono text-sm'
-                {...props}
-            />
-        )
-    },
 }
 
 interface MarkdownContentProps {
