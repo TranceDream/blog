@@ -5,457 +5,457 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 222.2 84% 4.9%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 222.2 84% 4.9%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+        --primary: 222.2 47.4% 11.2%;
+        --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+        --secondary: 210 40% 96.1%;
+        --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+        --accent: 210 40% 96.1%;
+        --accent-foreground: 222.2 47.4% 11.2%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+        --border: 214.3 31.8% 91.4%;
+        --input: 214.3 31.8% 91.4%;
+        --ring: 222.2 84% 4.9%;
 
-    --radius: 0.5rem;
-  }
+        --radius: 0.5rem;
+    }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    .dark {
+        --background: 222.2 84% 4.9%;
+        --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+        --card: 222.2 84% 4.9%;
+        --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+        --popover: 222.2 84% 4.9%;
+        --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+        --primary: 210 40% 98%;
+        --primary-foreground: 222.2 47.4% 11.2%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+        --secondary: 217.2 32.6% 17.5%;
+        --secondary-foreground: 210 40% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+        --muted: 217.2 32.6% 17.5%;
+        --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+        --accent: 217.2 32.6% 17.5%;
+        --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-  }
+        --border: 217.2 32.6% 17.5%;
+        --input: 217.2 32.6% 17.5%;
+        --ring: 212.7 26.8% 83.9%;
+    }
 
-  /* 改进的赛博朋克主题 - 提高可读性 */
-  .cyberpunk {
-    /* 更深的背景色，减少眼睛疲劳 */
-    --background: 240 30% 10%;
-    /* 更亮、更白的前景色，提高可读性 */
-    --foreground: 180 15% 95%;
+    /* 改进的赛博朋克主题 - 提高可读性 */
+    .cyberpunk {
+        /* 更深的背景色，减少眼睛疲劳 */
+        --background: 240 30% 10%;
+        /* 更亮、更白的前景色，提高可读性 */
+        --foreground: 180 15% 95%;
 
-    --card: 240 30% 13%;
-    --card-foreground: 180 15% 95%;
+        --card: 240 30% 13%;
+        --card-foreground: 180 15% 95%;
 
-    --popover: 240 30% 13%;
-    --popover-foreground: 180 15% 95%;
+        --popover: 240 30% 13%;
+        --popover-foreground: 180 15% 95%;
 
-    /* 保持霓虹粉色，但稍微降低饱和度 */
-    --primary: 320 90% 60%;
-    --primary-foreground: 240 15% 10%;
+        /* 保持霓虹粉色，但稍微降低饱和度 */
+        --primary: 320 90% 60%;
+        --primary-foreground: 240 15% 10%;
 
-    /* 降低青色的饱和度，提高可读性 */
-    --secondary: 180 70% 50%;
-    --secondary-foreground: 240 15% 10%;
+        /* 降低青色的饱和度，提高可读性 */
+        --secondary: 180 70% 50%;
+        --secondary-foreground: 240 15% 10%;
 
-    --muted: 240 20% 20%;
-    /* 提高次要文本的对比度 */
-    --muted-foreground: 180 30% 80%;
+        --muted: 240 20% 20%;
+        /* 提高次要文本的对比度 */
+        --muted-foreground: 180 30% 80%;
 
-    --accent: 270 70% 60%;
-    --accent-foreground: 240 15% 10%;
+        --accent: 270 70% 60%;
+        --accent-foreground: 240 15% 10%;
 
-    --destructive: 0 90% 60%;
-    --destructive-foreground: 240 15% 10%;
+        --destructive: 0 90% 60%;
+        --destructive-foreground: 240 15% 10%;
 
-    --border: 180 70% 50% / 0.3;
-    --input: 240 30% 20%;
-    --ring: 320 90% 60%;
+        --border: 180 70% 50% / 0.3;
+        --input: 240 30% 20%;
+        --ring: 320 90% 60%;
 
-    --radius: 0.25rem;
-  }
+        --radius: 0.25rem;
+    }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
 }
 
 /* 改进的赛博朋克主题特殊样式 - 减少视觉干扰 */
 .cyberpunk .neon-text {
-  /* 减少霓虹发光效果，提高可读性 */
-  text-shadow: 0 0 2px theme('colors.cyan.400');
-  /* 增加字体粗细，提高可读性 */
-  font-weight: 600;
+    /* 减少霓虹发光效果，提高可读性 */
+    text-shadow: 0 0 2px theme('colors.cyan.400');
+    /* 增加字体粗细，提高可读性 */
+    font-weight: 600;
 }
 
 /* 添加到globals.css文件中 */
 
 /* 不同强度的霓虹文本效果 */
 .cyberpunk .neon-text {
-  text-shadow: 0 0 1px theme('colors.cyan.400');
-  font-weight: 600;
+    text-shadow: 0 0 1px theme('colors.cyan.400');
+    font-weight: 600;
 }
 
 .cyberpunk .neon-text-medium {
-  text-shadow: 0 0 2px theme('colors.cyan.400'),
-    0 0 5px theme('colors.cyan.700');
-  font-weight: 600;
+    text-shadow: 0 0 2px theme('colors.cyan.400'),
+        0 0 5px theme('colors.cyan.700');
+    font-weight: 600;
 }
 
 .cyberpunk .neon-text-high {
-  text-shadow: 0 0 3px theme('colors.cyan.400'),
-    0 0 7px theme('colors.cyan.600'), 0 0 10px theme('colors.cyan.800');
-  font-weight: 600;
+    text-shadow: 0 0 3px theme('colors.cyan.400'),
+        0 0 7px theme('colors.cyan.600'), 0 0 10px theme('colors.cyan.800');
+    font-weight: 600;
 }
 
 .cyberpunk .neon-border {
-  /* 减少边框发光效果 */
-  box-shadow: 0 0 3px theme('colors.pink.500');
+    /* 减少边框发光效果 */
+    box-shadow: 0 0 3px theme('colors.pink.500');
 }
 
 /* 不同强度的霓虹边框效果 */
 .cyberpunk .neon-border {
-  box-shadow: 0 0 2px theme('colors.pink.500');
+    box-shadow: 0 0 2px theme('colors.pink.500');
 }
 
 .cyberpunk .neon-border-medium {
-  box-shadow: 0 0 3px theme('colors.pink.500'), 0 0 5px theme('colors.pink.700');
+    box-shadow: 0 0 3px theme('colors.pink.500'),
+        0 0 5px theme('colors.pink.700');
 }
 
 .cyberpunk .neon-border-high {
-  box-shadow: 0 0 4px theme('colors.pink.500'), 0 0 8px theme('colors.pink.600'),
-    0 0 12px theme('colors.pink.800');
+    box-shadow: 0 0 4px theme('colors.pink.500'),
+        0 0 8px theme('colors.pink.600'), 0 0 12px theme('colors.pink.800');
 }
 
 /* 减少故障效果的视觉干扰 */
 .cyberpunk .glitch-effect {
-  position: relative;
-  /* 增加字体粗细，提高可读性 */
-  font-weight: 600;
+    position: relative;
+    /* 增加字体粗细，提高可读性 */
+    font-weight: 600;
 }
 
 /* 只在悬停时显示故障效果，减少视觉干扰 */
 .cyberpunk .glitch-effect:hover::before,
 .cyberpunk .glitch-effect:hover::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .cyberpunk .glitch-effect:hover::before {
-  left: 2px;
-  text-shadow: -1px 0 theme('colors.pink.500');
-  clip: rect(44px, 450px, 56px, 0);
-  animation: glitch-anim 5s infinite linear alternate-reverse;
+    left: 2px;
+    text-shadow: -1px 0 theme('colors.pink.500');
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch-anim 5s infinite linear alternate-reverse;
 }
 
 .cyberpunk .glitch-effect:hover::after {
-  left: -2px;
-  text-shadow: 1px 0 theme('colors.cyan.400');
-  clip: rect(44px, 450px, 56px, 0);
-  animation: glitch-anim2 5s infinite linear alternate-reverse;
+    left: -2px;
+    text-shadow: 1px 0 theme('colors.cyan.400');
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch-anim2 5s infinite linear alternate-reverse;
 }
 
 /* 为长文本内容添加更好的可读性 */
 .cyberpunk .prose {
-  /* 增加行高，提高可读性 */
-  line-height: 1.8;
-  /* 增加字间距，提高可读性 */
-  letter-spacing: 0.01em;
+    /* 增加行高，提高可读性 */
+    line-height: 1.8;
+    /* 增加字间距，提高可读性 */
+    letter-spacing: 0.01em;
 }
 
 .cyberpunk .prose h1,
 .cyberpunk .prose h2,
 .cyberpunk .prose h3,
 .cyberpunk .prose h4 {
-  /* 标题使用霓虹效果，但减少发光强度 */
-  text-shadow: 0 0 2px theme('colors.cyan.400');
-  color: theme('colors.cyan.300');
+    /* 标题使用霓虹效果，但减少发光强度 */
+    text-shadow: 0 0 2px theme('colors.cyan.400');
+    color: theme('colors.cyan.300');
 }
 
 .cyberpunk .prose p,
 .cyberpunk .prose ul,
 .cyberpunk .prose ol,
 .cyberpunk .prose li {
-  /* 正文文本使用更高对比度的颜色 */
-  color: theme('colors.gray.100');
+    /* 正文文本使用更高对比度的颜色 */
+    color: theme('colors.gray.100');
 }
 
 .cyberpunk .prose a {
-  /* 链接使用霓虹粉色，增加可识别性 */
-  color: theme('colors.pink.400');
-  text-decoration: underline;
-  text-underline-offset: 2px;
+    /* 链接使用霓虹粉色，增加可识别性 */
+    color: theme('colors.pink.400');
+    text-decoration: underline;
+    text-underline-offset: 2px;
 }
 
 .cyberpunk .prose a:hover {
-  /* 悬停时增加发光效果 */
-  text-shadow: 0 0 3px theme('colors.pink.500');
+    /* 悬停时增加发光效果 */
+    text-shadow: 0 0 3px theme('colors.pink.500');
 }
 
 .cyberpunk .prose blockquote {
-  /* 引用块使用更明显的边框 */
-  border-left-color: theme('colors.cyan.500');
-  background-color: theme('colors.gray.900');
-  padding: 1rem;
-  border-radius: 0.25rem;
+    /* 引用块使用更明显的边框 */
+    border-left-color: theme('colors.cyan.500');
+    background-color: theme('colors.gray.900');
+    padding: 1rem;
+    border-radius: 0.25rem;
 }
 
 .cyberpunk .prose code {
-  /* 内联代码使用更明显的背景 */
-  background-color: theme('colors.gray.800');
-  color: theme('colors.pink.300');
-  padding: 0.2rem 0.4rem;
-  border-radius: 0.25rem;
+    /* 内联代码使用更明显的背景 */
+    background-color: theme('colors.gray.800');
+    color: theme('colors.pink.300');
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
 }
 
 /* 保留动画关键帧定义 */
 @keyframes glitch-anim {
-  /* 保持原有的关键帧定义 */
-  0% {
-    clip: rect(31px, 9999px, 94px, 0);
-  }
-  5% {
-    clip: rect(70px, 9999px, 71px, 0);
-  }
-  10% {
-    clip: rect(29px, 9999px, 83px, 0);
-  }
-  15% {
-    clip: rect(16px, 9999px, 91px, 0);
-  }
-  20% {
-    clip: rect(2px, 9999px, 23px, 0);
-  }
-  25% {
-    clip: rect(60px, 9999px, 73px, 0);
-  }
-  30% {
-    clip: rect(14px, 9999px, 56px, 0);
-  }
-  35% {
-    clip: rect(89px, 9999px, 23px, 0);
-  }
-  40% {
-    clip: rect(24px, 9999px, 31px, 0);
-  }
-  45% {
-    clip: rect(75px, 9999px, 93px, 0);
-  }
-  50% {
-    clip: rect(57px, 9999px, 70px, 0);
-  }
-  55% {
-    clip: rect(57px, 9999px, 68px, 0);
-  }
-  60% {
-    clip: rect(60px, 9999px, 23px, 0);
-  }
-  65% {
-    clip: rect(89px, 9999px, 98px, 0);
-  }
-  70% {
-    clip: rect(33px, 9999px, 71px, 0);
-  }
-  75% {
-    clip: rect(69px, 9999px, 65px, 0);
-  }
-  80% {
-    clip: rect(26px, 9999px, 39px, 0);
-  }
-  85% {
-    clip: rect(13px, 9999px, 76px, 0);
-  }
-  90% {
-    clip: rect(97px, 9999px, 91px, 0);
-  }
-  95% {
-    clip: rect(40px, 9999px, 24px, 0);
-  }
-  100% {
-    clip: rect(44px, 9999px, 14px, 0);
-  }
+    /* 保持原有的关键帧定义 */
+    0% {
+        clip: rect(31px, 9999px, 94px, 0);
+    }
+    5% {
+        clip: rect(70px, 9999px, 71px, 0);
+    }
+    10% {
+        clip: rect(29px, 9999px, 83px, 0);
+    }
+    15% {
+        clip: rect(16px, 9999px, 91px, 0);
+    }
+    20% {
+        clip: rect(2px, 9999px, 23px, 0);
+    }
+    25% {
+        clip: rect(60px, 9999px, 73px, 0);
+    }
+    30% {
+        clip: rect(14px, 9999px, 56px, 0);
+    }
+    35% {
+        clip: rect(89px, 9999px, 23px, 0);
+    }
+    40% {
+        clip: rect(24px, 9999px, 31px, 0);
+    }
+    45% {
+        clip: rect(75px, 9999px, 93px, 0);
+    }
+    50% {
+        clip: rect(57px, 9999px, 70px, 0);
+    }
+    55% {
+        clip: rect(57px, 9999px, 68px, 0);
+    }
+    60% {
+        clip: rect(60px, 9999px, 23px, 0);
+    }
+    65% {
+        clip: rect(89px, 9999px, 98px, 0);
+    }
+    70% {
+        clip: rect(33px, 9999px, 71px, 0);
+    }
+    75% {
+        clip: rect(69px, 9999px, 65px, 0);
+    }
+    80% {
+        clip: rect(26px, 9999px, 39px, 0);
+    }
+    85% {
+        clip: rect(13px, 9999px, 76px, 0);
+    }
+    90% {
+        clip: rect(97px, 9999px, 91px, 0);
+    }
+    95% {
+        clip: rect(40px, 9999px, 24px, 0);
+    }
+    100% {
+        clip: rect(44px, 9999px, 14px, 0);
+    }
 }
 
 @keyframes glitch-anim2 {
-  /* 保持原有的关键帧定义 */
-  0% {
-    clip: rect(96px, 9999px, 2px, 0);
-  }
-  5% {
-    clip: rect(6px, 9999px, 35px, 0);
-  }
-  10% {
-    clip: rect(85px, 9999px, 73px, 0);
-  }
-  15% {
-    clip: rect(91px, 9999px, 86px, 0);
-  }
-  20% {
-    clip: rect(80px, 9999px, 66px, 0);
-  }
-  25% {
-    clip: rect(67px, 9999px, 93px, 0);
-  }
-  30% {
-    clip: rect(47px, 9999px, 35px, 0);
-  }
-  35% {
-    clip: rect(20px, 9999px, 35px, 0);
-  }
-  40% {
-    clip: rect(26px, 9999px, 56px, 0);
-  }
-  45% {
-    clip: rect(45px, 9999px, 49px, 0);
-  }
-  50% {
-    clip: rect(57px, 9999px, 70px, 0);
-  }
-  55% {
-    clip: rect(86px, 9999px, 73px, 0);
-  }
-  60% {
-    clip: rect(76px, 9999px, 98px, 0);
-  }
-  65% {
-    clip: rect(12px, 9999px, 23px, 0);
-  }
-  70% {
-    clip: rect(10px, 9999px, 11px, 0);
-  }
-  75% {
-    clip: rect(42px, 9999px, 1px, 0);
-  }
-  80% {
-    clip: rect(23px, 9999px, 92px, 0);
-  }
-  85% {
-    clip: rect(98px, 9999px, 92px, 0);
-  }
-  90% {
-    clip: rect(51px, 9999px, 73px, 0);
-  }
-  95% {
-    clip: rect(1px, 9999px, 53px, 0);
-  }
-  100% {
-    clip: rect(44px, 9999px, 77px, 0);
-  }
+    /* 保持原有的关键帧定义 */
+    0% {
+        clip: rect(96px, 9999px, 2px, 0);
+    }
+    5% {
+        clip: rect(6px, 9999px, 35px, 0);
+    }
+    10% {
+        clip: rect(85px, 9999px, 73px, 0);
+    }
+    15% {
+        clip: rect(91px, 9999px, 86px, 0);
+    }
+    20% {
+        clip: rect(80px, 9999px, 66px, 0);
+    }
+    25% {
+        clip: rect(67px, 9999px, 93px, 0);
+    }
+    30% {
+        clip: rect(47px, 9999px, 35px, 0);
+    }
+    35% {
+        clip: rect(20px, 9999px, 35px, 0);
+    }
+    40% {
+        clip: rect(26px, 9999px, 56px, 0);
+    }
+    45% {
+        clip: rect(45px, 9999px, 49px, 0);
+    }
+    50% {
+        clip: rect(57px, 9999px, 70px, 0);
+    }
+    55% {
+        clip: rect(86px, 9999px, 73px, 0);
+    }
+    60% {
+        clip: rect(76px, 9999px, 98px, 0);
+    }
+    65% {
+        clip: rect(12px, 9999px, 23px, 0);
+    }
+    70% {
+        clip: rect(10px, 9999px, 11px, 0);
+    }
+    75% {
+        clip: rect(42px, 9999px, 1px, 0);
+    }
+    80% {
+        clip: rect(23px, 9999px, 92px, 0);
+    }
+    85% {
+        clip: rect(98px, 9999px, 92px, 0);
+    }
+    90% {
+        clip: rect(51px, 9999px, 73px, 0);
+    }
+    95% {
+        clip: rect(1px, 9999px, 53px, 0);
+    }
+    100% {
+        clip: rect(44px, 9999px, 77px, 0);
+    }
 }
 
 /* 为卡片内容增加可读性 */
 .cyberpunk .card {
-  /* 增加卡片背景不透明度 */
-  background-color: theme('colors.gray.900');
+    /* 增加卡片背景不透明度 */
+    background-color: theme('colors.gray.900');
 }
 
 .cyberpunk .card-content {
-  /* 增加卡片内容的可读性 */
-  color: theme('colors.gray.100');
+    /* 增加卡片内容的可读性 */
+    color: theme('colors.gray.100');
 }
 
 /* 增强卡片和内容区域的可读性 */
 .cyberpunk .bg-background\/80 {
-  /* 增加背景不透明度，提高可读性 */
-  background-color: theme('colors.gray.900') !important;
-  backdrop-filter: blur(8px);
+    /* 增加背景不透明度，提高可读性 */
+    background-color: theme('colors.gray.900') !important;
+    backdrop-filter: blur(8px);
 }
 
 .cyberpunk .text-muted-foreground {
-  /* 提高次要文本的对比度 */
-  color: theme('colors.gray.300') !important;
+    /* 提高次要文本的对比度 */
+    color: theme('colors.gray.300') !important;
 }
 
 /* 代码高亮样式 */
 pre[class*='language-'] {
-  @apply text-sm;
+    @apply text-sm;
 }
 
 code[class*='language-'],
 pre[class*='language-'] {
-  color: #f8f8f2;
-  background: none;
-  font-family: 'Fira Code', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono',
-    monospace;
-  text-align: left;
-  white-space: pre;
-  word-spacing: normal;
-  word-break: normal;
-  word-wrap: normal;
-  line-height: 1.5;
-  tab-size: 4;
-  hyphens: none;
+    color: #f8f8f2;
+    font-family: 'Fira Code', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono',
+        monospace;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+    tab-size: 4;
+    hyphens: none;
 }
 
 .code-line {
-  @apply block pl-4 pr-4 -mx-4 border-l-4 border-transparent;
+    @apply block pl-4 pr-4 -mx-4 border-l-4 border-transparent;
 }
 
 .code-line.inserted {
-  @apply bg-green-500/20;
+    @apply bg-green-500/20;
 }
 
 .code-line.deleted {
-  @apply bg-red-500/20;
+    @apply bg-red-500/20;
 }
 
 .highlight-line {
-  @apply block -mx-4 bg-zinc-700/30 border-l-4 border-primary;
+    @apply block -mx-4 bg-zinc-700/30 border-l-4 border-primary;
 }
 
 .line-number::before {
-  @apply inline-block w-4 text-right mr-4 text-gray-500;
-  content: attr(line);
+    @apply inline-block w-4 text-right mr-4 text-gray-500;
+    content: attr(line);
 }
 
 .token.comment,
 .token.prolog,
 .token.doctype,
 .token.cdata {
-  @apply text-gray-400;
+    @apply text-gray-400;
 }
 
 .token.punctuation {
-  @apply text-gray-300;
+    @apply text-gray-300;
 }
 
 .token.property,
@@ -463,12 +463,12 @@ pre[class*='language-'] {
 .token.constant,
 .token.symbol,
 .token.deleted {
-  @apply text-red-400;
+    @apply text-red-400;
 }
 
 .token.boolean,
 .token.number {
-  @apply text-orange-400;
+    @apply text-orange-400;
 }
 
 .token.selector,
@@ -477,7 +477,7 @@ pre[class*='language-'] {
 .token.char,
 .token.builtin,
 .token.inserted {
-  @apply text-green-400;
+    @apply text-green-400;
 }
 
 .token.operator,
@@ -486,58 +486,58 @@ pre[class*='language-'] {
 .language-css .token.string,
 .style .token.string,
 .token.variable {
-  @apply text-yellow-400;
+    @apply text-yellow-400;
 }
 
 .token.atrule,
 .token.attr-value,
 .token.function,
 .token.class-name {
-  @apply text-blue-400;
+    @apply text-blue-400;
 }
 
 .token.keyword {
-  @apply text-purple-400;
+    @apply text-purple-400;
 }
 
 .token.regex,
 .token.important {
-  @apply text-red-400;
+    @apply text-red-400;
 }
 
 .token.important,
 .token.bold {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .token.italic {
-  font-style: italic;
+    font-style: italic;
 }
 
 .token.entity {
-  cursor: help;
+    cursor: help;
 }
 
 /* 改进的赛博朋克主题的代码高亮 - 提高可读性 */
 .cyberpunk code[class*='language-'],
 .cyberpunk pre[class*='language-'] {
-  /* 减少文本阴影，提高可读性 */
-  text-shadow: 0 0 1px #00ffff;
-  /* 增加字体大小 */
-  font-size: 0.95rem;
+    /* 减少文本阴影，提高可读性 */
+    text-shadow: 0 0 1px #00ffff;
+    /* 增加字体大小 */
+    font-size: 0.95rem;
 }
 
 .cyberpunk .token.comment,
 .cyberpunk .token.prolog,
 .cyberpunk .token.doctype,
 .cyberpunk .token.cdata {
-  /* 提高注释的可读性 */
-  color: #999;
+    /* 提高注释的可读性 */
+    color: #999;
 }
 
 .cyberpunk .token.punctuation {
-  /* 减少标点符号的亮度 */
-  color: #7fdbff;
+    /* 减少标点符号的亮度 */
+    color: #7fdbff;
 }
 
 .cyberpunk .token.property,
@@ -545,14 +545,14 @@ pre[class*='language-'] {
 .cyberpunk .token.constant,
 .cyberpunk .token.symbol,
 .cyberpunk .token.deleted {
-  /* 减少属性的亮度 */
-  color: #f08;
+    /* 减少属性的亮度 */
+    color: #f08;
 }
 
 .cyberpunk .token.boolean,
 .cyberpunk .token.number {
-  /* 减少布尔值和数字的亮度 */
-  color: #f7df1e;
+    /* 减少布尔值和数字的亮度 */
+    color: #f7df1e;
 }
 
 .cyberpunk .token.selector,
@@ -561,8 +561,8 @@ pre[class*='language-'] {
 .cyberpunk .token.char,
 .cyberpunk .token.builtin,
 .cyberpunk .token.inserted {
-  /* 减少字符串的亮度 */
-  color: #7fff00;
+    /* 减少字符串的亮度 */
+    color: #7fff00;
 }
 
 .cyberpunk .token.operator,
@@ -571,25 +571,25 @@ pre[class*='language-'] {
 .cyberpunk .language-css .token.string,
 .cyberpunk .style .token.string,
 .cyberpunk .token.variable {
-  /* 减少运算符的亮度 */
-  color: #f90;
+    /* 减少运算符的亮度 */
+    color: #f90;
 }
 
 .cyberpunk .token.atrule,
 .cyberpunk .token.attr-value,
 .cyberpunk .token.function,
 .cyberpunk .token.class-name {
-  /* 减少函数的亮度 */
-  color: #7fdbff;
+    /* 减少函数的亮度 */
+    color: #7fdbff;
 }
 
 .cyberpunk .token.keyword {
-  /* 减少关键字的亮度 */
-  color: #f08;
+    /* 减少关键字的亮度 */
+    color: #f08;
 }
 
 .cyberpunk .token.regex,
 .cyberpunk .token.important {
-  /* 减少正则表达式的亮度 */
-  color: #f00;
+    /* 减少正则表达式的亮度 */
+    color: #f00;
 }
