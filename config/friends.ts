@@ -8,4 +8,10 @@ export const friendLinks: FriendLink[] = [
         url: 'https://www.gypsophila.xin/',
         description: '唯有热爱可抵岁月漫长',
     },
+    {
+        avatar: 'https://i.postimg.cc/J4PjtCGx/download.jpg',
+        name: '宇佐见函钩',
+        url: 'https://functionhooktju.github.io/fxHook.io/index.html',
+        description: '神人东方&舟&母鸡卡 up主，内含计算机学习笔记',
+    },
 ]
