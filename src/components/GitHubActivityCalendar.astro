@@ -1,0 +1,470 @@
+---
+import type {
+  WeekdayIndex,
+  GitHubActivityApiResponse,
+  GitHubActivityDay,
+  GitHubActivityWeek,
+  GitHubActivityMonthLabel,
+} from '~/types'
+
+interface Props {
+  username: string
+  year?: number
+}
+
+const { username, year = 'last' } = Astro.props
+const componentId = `github-calendar-${Math.random().toString(36).substring(7)}`
+---
+
+<article
+  id={componentId}
+  class="w-max max-w-full flex flex-col gap-2 text-sm"
+  data-username={username}
+  data-year={year}
+>
+  <div
+    class="max-w-full overflow-x-auto pt-0.5"
+    style={{
+      scrollbarGutter: 'stable',
+    }}
+  >
+    <svg
+      class="github-calendar-svg opacity-0"
+      style="display: none;"
+    >
+    </svg>
+  </div>
+  <footer class="github-calendar-footer opacity-0" style="display: none;">
+  </footer>
+</article>
+
+<style>
+  .github-calendar-svg {
+    transition: opacity 0.6s ease-in;
+  }
+
+  .github-calendar-svg.fade-in {
+    opacity: 1 !important;
+  }
+
+  .github-calendar-footer {
+    transition: opacity 0.6s ease-in;
+  }
+
+  .github-calendar-footer.fade-in {
+    opacity: 1 !important;
+  }
+</style>
+
+<script>
+  // 使用原生 JavaScript 实现日期函数，避免依赖 date-fns
+  function parseISO(dateString: string): Date {
+    return new Date(dateString)
+  }
+
+  function formatISO(date: Date, options?: { representation?: 'date' }): string {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    if (options?.representation === 'date') {
+      return `${year}-${month}-${day}`
+    }
+    return `${year}-${month}-${day}T${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}.${String(date.getMilliseconds()).padStart(3, '0')}Z`
+  }
+
+  function isValid(date: Date): boolean {
+    return date instanceof Date && !isNaN(date.getTime())
+  }
+
+  function getDay(date: Date): number {
+    return date.getDay()
+  }
+
+  function getYear(date: Date): number {
+    return date.getFullYear()
+  }
+
+  function getMonth(date: Date): number {
+    return date.getMonth()
+  }
+
+  function differenceInCalendarDays(dateLeft: Date, dateRight: Date): number {
+    const utcLeft = Date.UTC(dateLeft.getFullYear(), dateLeft.getMonth(), dateLeft.getDate())
+    const utcRight = Date.UTC(dateRight.getFullYear(), dateRight.getMonth(), dateRight.getDate())
+    return Math.floor((utcLeft - utcRight) / (1000 * 60 * 60 * 24))
+  }
+
+  function eachDayOfInterval(interval: { start: Date; end: Date }): Date[] {
+    const days: Date[] = []
+    const current = new Date(interval.start)
+    current.setHours(0, 0, 0, 0)
+    const end = new Date(interval.end)
+    end.setHours(0, 0, 0, 0)
+
+    while (current <= end) {
+      days.push(new Date(current))
+      current.setDate(current.getDate() + 1)
+    }
+    return days
+  }
+
+  function nextDay(date: Date, day: number): Date {
+    const result = new Date(date)
+    const daysUntilNext = (day - date.getDay() + 7) % 7 || 7
+    result.setDate(date.getDate() + daysUntilNext)
+    return result
+  }
+
+  function subWeeks(date: Date, amount: number): Date {
+    const result = new Date(date)
+    result.setDate(result.getDate() - amount * 7)
+    return result
+  }
+
+  type WeekdayIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6
+  type GitHubActivityDay = {
+    date: string
+    count: number
+    level: 0 | 1 | 2 | 3 | 4
+  }
+  type GitHubActivityWeek = Array<GitHubActivityDay | undefined>
+  type GitHubActivityApiResponse = {
+    total: {
+      [year: number]: number
+      [year: string]: number
+    }
+    contributions: Array<GitHubActivityDay>
+    error?: string
+  }
+  type GitHubActivityMonthLabel = {
+    weekIndex: number
+    label: string
+  }
+
+  function range(n: number) {
+    return [...Array(n).keys()]
+  }
+
+  async function fetchData(
+    username: string,
+    year: number | 'last',
+  ): Promise<GitHubActivityApiResponse> {
+    function validateActivities(activities: Array<GitHubActivityDay>) {
+      if (activities.length === 0) {
+        throw new Error('Activity data must not be empty.')
+      }
+      for (const { date, count } of activities) {
+        if (!isValid(parseISO(date))) {
+          throw new Error(`Activity date '${date}' is not a valid ISO 8601 date string.`)
+        }
+        if (count < 0) {
+          throw new RangeError(`Activity count must not be negative, found ${count}.`)
+        }
+      }
+    }
+    const apiUrl = 'https://github-contributions-api.jogruber.de/v4/'
+    const response = await fetch(`${apiUrl}${username}?y=${String(year)}`)
+    const data = (await response.json()) as GitHubActivityApiResponse
+    if (!response.ok) {
+      const message = data.error || 'Unknown error'
+      throw Error(`Fetching GitHub contribution data for "${username}" failed: ${message}`)
+    }
+
+    validateActivities(data.contributions)
+
+    return data
+  }
+
+  function calcColorScale([start, end]: [string, string], steps: number): Array<string> {
+    return range(steps).map((i) => {
+      switch (i) {
+        case 0:
+          return start
+        case steps - 1:
+          return end
+        default: {
+          const pos = (i / (steps - 1)) * 100
+          return `color-mix(in oklab, ${end} ${parseFloat(pos.toFixed(2))}%, ${start})`
+        }
+      }
+    })
+  }
+
+  function fillHoles(activities: Array<GitHubActivityDay>): Array<GitHubActivityDay> {
+    const calendar = new Map<string, GitHubActivityDay>(activities.map((a) => [a.date, a]))
+    const firstActivity = activities[0] as GitHubActivityDay
+    const lastActivity = activities[activities.length - 1] as GitHubActivityDay
+
+    return eachDayOfInterval({
+      start: parseISO(firstActivity.date),
+      end: parseISO(lastActivity.date),
+    }).map((day) => {
+      const date = formatISO(day, { representation: 'date' })
+      if (calendar.has(date)) {
+        return calendar.get(date) as GitHubActivityDay
+      }
+      return {
+        date,
+        count: 0,
+        level: 0,
+      }
+    })
+  }
+
+  function groupByWeeks(
+    activities: Array<GitHubActivityDay>,
+    weekStart: WeekdayIndex = 0,
+  ): Array<GitHubActivityWeek> {
+    const normalizedActivities = fillHoles(activities)
+    const firstActivity = normalizedActivities[0] as GitHubActivityDay
+    const firstDate = parseISO(firstActivity.date)
+    const firstCalendarDate =
+      getDay(firstDate) === weekStart
+        ? firstDate
+        : subWeeks(nextDay(firstDate, weekStart), 1)
+    const paddedActivities = [
+      ...(Array(differenceInCalendarDays(firstDate, firstCalendarDate)).fill(
+        undefined,
+      ) as Array<GitHubActivityDay>),
+      ...normalizedActivities,
+    ]
+    const numberOfWeeks = Math.ceil(paddedActivities.length / 7)
+
+    return [...Array(numberOfWeeks).keys()].map((weekIndex) =>
+      paddedActivities.slice(weekIndex * 7, weekIndex * 7 + 7),
+    )
+  }
+
+  function getMonthLabels(
+    weeks: Array<GitHubActivityWeek>,
+    monthNames: Array<string>,
+  ): Array<GitHubActivityMonthLabel> {
+    return weeks
+      .reduce<Array<GitHubActivityMonthLabel>>((labels, week, weekIndex) => {
+        const firstActivity = week.find((activity) => activity !== undefined)
+        if (!firstActivity) {
+          throw new Error(`Unexpected error: Week ${weekIndex + 1} is empty.`)
+        }
+        const month = monthNames[getMonth(parseISO(firstActivity.date))]
+        if (!month) {
+          const monthName = new Date(firstActivity.date).toLocaleString('en-US', {
+            month: 'short',
+          })
+          throw new Error(`Unexpected error: undefined month label for ${monthName}.`)
+        }
+        const prevLabel = labels[labels.length - 1]
+        if (weekIndex === 0 || !prevLabel || prevLabel.label !== month) {
+          return [...labels, { weekIndex, label: month }]
+        }
+        return labels
+      }, [])
+      .filter(({ weekIndex }, index, labels) => {
+        const minWeeks = 3
+        if (index === 0) {
+          return labels[1] && labels[1].weekIndex - weekIndex >= minWeeks
+        }
+        if (index === labels.length - 1) {
+          return weeks.slice(weekIndex).length >= minWeeks
+        }
+        return true
+      })
+  }
+
+  function renderCalendar(
+    container: HTMLElement,
+    data: GitHubActivityApiResponse,
+    year: number | 'last',
+  ) {
+    const themeFromColorscheme: [string, string] = [
+      getComputedStyle(document.documentElement).getPropertyValue('--theme-background').trim() || '#ffffff',
+      getComputedStyle(document.documentElement).getPropertyValue('--theme-accent').trim() || '#3b82f6',
+    ]
+
+    const totalCount = year === 'last' ? data.total.lastYear : data.total[year]
+    const maxLevel = 4
+    const blockMargin = 4
+    const labelMargin = 8
+    const blockRadius = 2
+    const blockSize = 12
+    const fontSize = 14
+    const hideColorLegend = false
+    const hideMonthLabels = false
+    const hideTotalCount = false
+    const weekStart = 0
+
+    const colorScale = calcColorScale(themeFromColorscheme, maxLevel + 1)
+    const activities = data.contributions
+
+    const firstActivity = activities[0]
+    const activityYear = getYear(parseISO(firstActivity.date))
+    const weeks = groupByWeeks(activities, weekStart)
+    const labels = {
+      months: [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ],
+      totalCount: `{{count}} contributions in ${year === 'last' ? 'the last year' : '{{year}}'}`,
+      legend: {
+        less: 'Less',
+        more: 'More',
+      },
+    }
+    const labelHeight = hideMonthLabels ? 0 : fontSize + labelMargin
+    const width = weeks.length * (blockSize + blockMargin) - blockMargin
+    const height = labelHeight + (blockSize + blockMargin) * 7 - blockMargin
+
+    const svgEl = container.querySelector('.github-calendar-svg') as SVGElement
+    const footerEl = container.querySelector('.github-calendar-footer') as HTMLElement
+
+    // 准备真实内容，初始为透明
+    if (svgEl) {
+      svgEl.setAttribute('width', String(width))
+      svgEl.setAttribute('height', String(height))
+      svgEl.setAttribute('viewBox', `0 0 ${width} ${height}`)
+      svgEl.style.display = 'block'
+
+      const svgNS = 'http://www.w3.org/2000/svg'
+
+      if (!hideMonthLabels) {
+        const monthGroup = document.createElementNS(svgNS, 'g')
+        getMonthLabels(weeks, labels.months).forEach(({ label, weekIndex }) => {
+          const text = document.createElementNS(svgNS, 'text')
+          text.setAttribute('x', String((blockSize + blockMargin) * weekIndex))
+          text.setAttribute('y', '0')
+          text.setAttribute('dominant-baseline', 'hanging')
+          text.setAttribute('fill', 'currentColor')
+          text.textContent = label
+          monthGroup.appendChild(text)
+        })
+        svgEl.appendChild(monthGroup)
+      }
+
+      weeks.forEach((week, weekIndex) => {
+        const weekGroup = document.createElementNS(svgNS, 'g')
+        weekGroup.setAttribute('transform', `translate(${(blockSize + blockMargin) * weekIndex}, 0)`)
+        week.forEach((activity, dayIndex) => {
+          if (!activity) return
+          const rect = document.createElementNS(svgNS, 'rect')
+          rect.setAttribute('class', 'stroke-foreground/10')
+          rect.setAttribute('x', '0')
+          rect.setAttribute('y', String(labelHeight + (blockSize + blockMargin) * dayIndex))
+          rect.setAttribute('width', String(blockSize))
+          rect.setAttribute('height', String(blockSize))
+          rect.setAttribute('rx', String(blockRadius))
+          rect.setAttribute('ry', String(blockRadius))
+          rect.setAttribute('fill', colorScale[activity.level])
+          rect.setAttribute('data-date', activity.date)
+          rect.setAttribute('data-level', String(activity.level))
+          weekGroup.appendChild(rect)
+        })
+        svgEl.appendChild(weekGroup)
+      })
+    }
+
+    if (footerEl && !(hideTotalCount && hideColorLegend)) {
+      footerEl.style.display = 'flex'
+      footerEl.className = 'flex flex-col sm:flex-row sm:justify-between gap-x-1 gap-y-2'
+
+      if (!hideTotalCount) {
+        const totalDiv = document.createElement('div')
+        totalDiv.textContent = labels.totalCount
+          ? labels.totalCount
+              .replace('{{count}}', String(totalCount))
+              .replace('{{year}}', String(activityYear))
+          : `${totalCount} activities in ${activityYear}`
+        footerEl.appendChild(totalDiv)
+      }
+
+      if (!hideColorLegend) {
+        const legendDiv = document.createElement('div')
+        legendDiv.className = 'flex items-center gap-[3px]'
+        
+        const lessSpan = document.createElement('span')
+        lessSpan.className = 'mr-1.5'
+        lessSpan.textContent = labels.legend.less
+        legendDiv.appendChild(lessSpan)
+
+        range(maxLevel + 1).forEach((level) => {
+          const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+          svg.setAttribute('width', String(blockSize))
+          svg.setAttribute('height', String(blockSize))
+          const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+          rect.setAttribute('class', 'stroke-foreground/10')
+          rect.setAttribute('width', String(blockSize))
+          rect.setAttribute('height', String(blockSize))
+          rect.setAttribute('fill', colorScale[level])
+          rect.setAttribute('rx', String(blockRadius))
+          rect.setAttribute('ry', String(blockRadius))
+          svg.appendChild(rect)
+          legendDiv.appendChild(svg)
+        })
+
+        const moreSpan = document.createElement('span')
+        moreSpan.className = 'ml-1.5'
+        moreSpan.textContent = labels.legend.more
+        legendDiv.appendChild(moreSpan)
+
+        footerEl.appendChild(legendDiv)
+      }
+    }
+
+    // 平滑淡入真实内容
+    requestAnimationFrame(() => {
+      // 淡入真实内容
+      if (svgEl) {
+        svgEl.classList.add('fade-in')
+      }
+      if (footerEl && !(hideTotalCount && hideColorLegend)) {
+        footerEl.classList.add('fade-in')
+      }
+    })
+  }
+
+  // 查找所有 GitHub 日历组件
+  const containers = document.querySelectorAll('[data-username]')
+  
+  containers.forEach((container) => {
+    const username = container.getAttribute('data-username')
+    const yearAttr = container.getAttribute('data-year')
+    const year = yearAttr === 'last' ? 'last' : Number.parseInt(yearAttr || 'last', 10)
+
+    if (!username) return
+
+    // 使用 Intersection Observer 实现懒加载
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            observer.disconnect()
+            fetchData(username, year)
+              .then((data) => {
+                renderCalendar(container as HTMLElement, data, year)
+              })
+              .catch((error) => {
+                // 显示错误信息
+                const errorDiv = document.createElement('div')
+                errorDiv.className = 'flex items-center justify-center py-8 text-destructive text-sm'
+                errorDiv.textContent = '加载失败，请稍后重试'
+                container.querySelector('.max-w-full')?.appendChild(errorDiv)
+                
+                console.error('Failed to load GitHub activity:', error)
+              })
+          }
+        })
+      },
+      { rootMargin: '50px' }
+    )
+
+    observer.observe(container)
+  })
+</script>
