@@ -153,7 +153,7 @@ const config: SiteConfig = {
   socialLinks: {
     github: 'https://github.com/TranceDream',
     email: 'mailto:xgxxge@gmail.com',
-    twitter: 'https://x.com/TranceDream',
+    twitter: 'https://x.com/kaqsice',
     rss: true, // Set to true to include an RSS feed link in the footer
   },
   // Configuration for Giscus comments.
