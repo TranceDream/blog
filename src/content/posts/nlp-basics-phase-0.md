@@ -1,7 +1,7 @@
 ---
 title: '前端小猫也能看懂的 NLP 入门第0章 - 前置知识'
 published: 2026-01-13
-draft: true
+draft: false
 description: '前端小猫如何入门 NLP ？请看这里，本文章不教模型，不提算法，从基础知识点切入，让你快速上手自然语言处理~'
 series: 'NLP Basics'
 tags: ['NLP']
