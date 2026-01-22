@@ -6,23 +6,88 @@ import { html } from 'satori-html'
 import { dateString, getSortedPosts, resolveThemeColorStyles } from '~/utils'
 import path from 'path'
 import fs from 'fs'
+import { fileURLToPath } from 'url'
 import type { ReactNode } from 'react'
 
-// Load the font file as binary data
-const fontPath = path.resolve('./src/MapleMono.ttf')
-const fontData = fs.readFileSync(fontPath) // Reads the file as a Buffer
+// Get __dirname for path resolution
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-const avatarPath = path.resolve(siteConfig.socialCardAvatarImage)
-let avatarData: Buffer | undefined
-let avatarBase64: string | undefined
-if (
-  fs.existsSync(avatarPath) &&
-  (path.extname(avatarPath).toLowerCase() === '.jpg' ||
-    path.extname(avatarPath).toLowerCase() === '.jpeg')
-) {
-  avatarData = fs.readFileSync(avatarPath)
-  avatarBase64 = `data:image/jpeg;base64,${avatarData.toString('base64')}`
+// Helper function to load font file
+function loadFont(): Buffer | null {
+  try {
+    const fontPath = path.resolve(__dirname, '../../MapleMono.ttf')
+
+    if (fs.existsSync(fontPath)) {
+      return fs.readFileSync(fontPath)
+    }
+    
+    // Fallback: try alternative paths
+    const altPaths = [
+      path.resolve(process.cwd(), 'src/MapleMono.ttf'),
+      path.resolve(process.cwd(), './src/MapleMono.ttf'),
+    ]
+    
+    for (const altPath of altPaths) {
+      if (fs.existsSync(altPath)) {
+        return fs.readFileSync(altPath)
+      }
+    }
+    
+    console.warn('Font file not found, will use system fonts')
+    return null
+  } catch (error) {
+    console.warn('Failed to load font file:', error)
+    return null
+  }
 }
+
+// Helper function to load avatar image
+function loadAvatar(): string | undefined {
+  try {
+    const avatarPath = path.isAbsolute(siteConfig.socialCardAvatarImage)
+      ? siteConfig.socialCardAvatarImage
+      : path.resolve(__dirname, '../../', siteConfig.socialCardAvatarImage)
+    
+    if (!fs.existsSync(avatarPath)) {
+      return undefined
+    }
+    
+    const ext = path.extname(avatarPath).toLowerCase()
+    const supportedFormats = ['.jpg', '.jpeg', '.png', '.webp']
+    
+    if (!supportedFormats.includes(ext)) {
+      console.warn(`Avatar image format ${ext} is not supported. Supported formats: ${supportedFormats.join(', ')}`)
+      return undefined
+    }
+    
+    const avatarData = fs.readFileSync(avatarPath)
+    
+    // Determine MIME type based on file extension
+    let mimeType: string
+    switch (ext) {
+      case '.jpg':
+      case '.jpeg':
+        mimeType = 'image/jpeg'
+        break
+      case '.png':
+        mimeType = 'image/png'
+        break
+      case '.webp':
+        mimeType = 'image/webp'
+        break
+      default:
+        mimeType = 'image/jpeg' // fallback
+    }
+    
+    return `data:${mimeType};base64,${avatarData.toString('base64')}`
+  } catch (error) {
+    console.warn('Failed to load avatar image:', error)
+    return undefined
+  }
+}
+
+const avatarBase64 = loadAvatar()
 
 const defaultTheme =
   siteConfig.themes.default === 'auto'
@@ -41,18 +106,21 @@ if (!bg || !fg || !accent) {
   throw new Error(`Theme ${defaultTheme} does not have required colors`)
 }
 
-const ogOptions: SatoriOptions = {
-  // debug: true,
-  fonts: [
+// Helper function to create font options
+function createFontOptions(): SatoriOptions['fonts'] {
+  const fontData = loadFont()
+  if (!fontData) {
+    return [] // Use system fonts as fallback
+  }
+  
+  return [
     {
       data: fontData,
       name: 'Maple Mono',
       style: 'normal',
       weight: 400,
     },
-  ],
-  height: 630,
-  width: 1200,
+  ]
 }
 
 const markup = (title: string, pubDate: string | undefined, author: string) =>
@@ -77,14 +145,52 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>
 
 export async function GET(context: APIContext) {
   const { pubDate, title, author } = context.props as Props
-  const svg = await satori(markup(title, pubDate, author) as ReactNode, ogOptions)
-  const png = new Resvg(svg).render().asPng()
-  return new Response(png, {
-    headers: {
-      'Cache-Control': 'public, max-age=31536000, immutable',
-      'Content-Type': 'image/png',
-    },
-  })
+  
+  const ogOptions: SatoriOptions = {
+    fonts: createFontOptions(),
+    height: 630,
+    width: 1200,
+  }
+  
+  try {
+    const svg = await satori(markup(title, pubDate, author) as ReactNode, ogOptions)
+    const png = new Resvg(svg).render().asPng()
+    return new Response(new Uint8Array(png), {
+      headers: {
+        'Cache-Control': 'public, max-age=31536000, immutable',
+        'Content-Type': 'image/png',
+      },
+    })
+  } catch (error) {
+    console.error('Failed to generate social card:', error)
+    // If font parsing fails (e.g., variable font issue), try without custom font
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    if (
+      errorMessage.includes('fvar') ||
+      errorMessage.includes('opentype') ||
+      errorMessage.includes('Cannot read properties')
+    ) {
+      console.warn('Font parsing error detected, retrying without custom font')
+      const fallbackOptions: SatoriOptions = {
+        ...ogOptions,
+        fonts: [], // Use system fonts as fallback
+      }
+      try {
+        const svg = await satori(markup(title, pubDate, author) as ReactNode, fallbackOptions)
+        const png = new Resvg(svg).render().asPng()
+        return new Response(new Uint8Array(png), {
+          headers: {
+            'Cache-Control': 'public, max-age=31536000, immutable',
+            'Content-Type': 'image/png',
+          },
+        })
+      } catch (fallbackError) {
+        console.error('Fallback also failed:', fallbackError)
+        throw fallbackError
+      }
+    }
+    throw error
+  }
 }
 
 export async function getStaticPaths() {
