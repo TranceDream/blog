@@ -13,33 +13,70 @@ import type { ReactNode } from 'react'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Helper function to load font file
-function loadFont(): Buffer | null {
-  try {
-    const fontPath = path.resolve(__dirname, '../../MapleMono.ttf')
-
-    if (fs.existsSync(fontPath)) {
-      return fs.readFileSync(fontPath)
-    }
-    
-    // Fallback: try alternative paths
-    const altPaths = [
-      path.resolve(process.cwd(), 'src/MapleMono.ttf'),
-      path.resolve(process.cwd(), './src/MapleMono.ttf'),
-    ]
-    
-    for (const altPath of altPaths) {
-      if (fs.existsSync(altPath)) {
-        return fs.readFileSync(altPath)
+// Helper function to load a reliable font for social cards
+// Uses a simple, static font that works everywhere
+async function loadFont(): Promise<Buffer> {
+  // Try multiple font sources in order of preference
+  const fontSources = [
+    // 1. Try local Maple Mono font (if available and not variable font)
+    () => {
+      try {
+        const fontPath = path.resolve(__dirname, '../../MapleMono-CN.ttf')
+        if (fs.existsSync(fontPath)) {
+          return fs.readFileSync(fontPath)
+        }
+      } catch (e) {
+        // Ignore file errors
       }
+      return null
+    },
+    // 2. Try alternative paths for Maple Mono
+    () => {
+      try {
+        const altPaths = [
+          path.resolve(process.cwd(), 'src/MapleMono-CN.ttf'),
+          path.resolve(process.cwd(), './src/MapleMono-CN.ttf'),
+        ]
+        for (const altPath of altPaths) {
+          if (fs.existsSync(altPath)) {
+            return fs.readFileSync(altPath)
+          }
+        }
+      } catch (e) {
+        // Ignore file errors
+      }
+      return null
+    },
+    // 1. Try to use a simple font from Google Fonts (Roboto is very reliable)
+    async () => {
+      try {
+        const response = await fetch('https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxP.ttf')
+        if (response.ok) {
+          const arrayBuffer = await response.arrayBuffer()
+          return Buffer.from(arrayBuffer)
+        }
+      } catch (e) {
+        // Ignore fetch errors
+      }
+      return null
+    },
+  ]
+
+  // Try each source in order
+  for (const source of fontSources) {
+    try {
+      const fontData = await source()
+      if (fontData) {
+        return fontData
+      }
+    } catch (error) {
+      // Continue to next source
+      continue
     }
-    
-    console.warn('Font file not found, will use system fonts')
-    return null
-  } catch (error) {
-    console.warn('Failed to load font file:', error)
-    return null
   }
+
+  // If all sources fail, throw error
+  throw new Error('Could not load any font for social card generation. Satori requires at least one font file.')
 }
 
 // Helper function to load avatar image
@@ -107,20 +144,26 @@ if (!bg || !fg || !accent) {
 }
 
 // Helper function to create font options
-function createFontOptions(): SatoriOptions['fonts'] {
-  const fontData = loadFont()
-  if (!fontData) {
-    return [] // Use system fonts as fallback
+// Uses a reliable font source that works in all environments
+async function createFontOptions(): Promise<SatoriOptions['fonts']> {
+  try {
+    const fontData = await loadFont()
+    // Try to determine font name from data, but use a safe default
+    // Roboto is a safe choice if we loaded from Google Fonts
+    const fontName = 'Roboto' // Default to Roboto which is reliable
+    
+    return [
+      {
+        data: fontData,
+        name: fontName,
+        style: 'normal',
+        weight: 400,
+      },
+    ]
+  } catch (error) {
+    console.error('Failed to load font:', error)
+    throw new Error('Font loading failed. Satori requires at least one font file to render text.')
   }
-  
-  return [
-    {
-      data: fontData,
-      name: 'Maple Mono',
-      style: 'normal',
-      weight: 400,
-    },
-  ]
 }
 
 const markup = (title: string, pubDate: string | undefined, author: string) =>
@@ -146,15 +189,20 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>
 export async function GET(context: APIContext) {
   const { pubDate, title, author } = context.props as Props
   
-  const ogOptions: SatoriOptions = {
-    fonts: createFontOptions(),
-    height: 630,
-    width: 1200,
-  }
-  
   try {
+    // Load font - this will try multiple sources and use the first one that works
+    const fonts = await createFontOptions()
+    
+    const ogOptions: SatoriOptions = {
+      fonts,
+      height: 630,
+      width: 1200,
+    }
+    
+    // Generate the social card
     const svg = await satori(markup(title, pubDate, author) as ReactNode, ogOptions)
     const png = new Resvg(svg).render().asPng()
+    
     return new Response(new Uint8Array(png), {
       headers: {
         'Cache-Control': 'public, max-age=31536000, immutable',
@@ -163,32 +211,6 @@ export async function GET(context: APIContext) {
     })
   } catch (error) {
     console.error('Failed to generate social card:', error)
-    // If font parsing fails (e.g., variable font issue), try without custom font
-    const errorMessage = error instanceof Error ? error.message : String(error)
-    if (
-      errorMessage.includes('fvar') ||
-      errorMessage.includes('opentype') ||
-      errorMessage.includes('Cannot read properties')
-    ) {
-      console.warn('Font parsing error detected, retrying without custom font')
-      const fallbackOptions: SatoriOptions = {
-        ...ogOptions,
-        fonts: [], // Use system fonts as fallback
-      }
-      try {
-        const svg = await satori(markup(title, pubDate, author) as ReactNode, fallbackOptions)
-        const png = new Resvg(svg).render().asPng()
-        return new Response(new Uint8Array(png), {
-          headers: {
-            'Cache-Control': 'public, max-age=31536000, immutable',
-            'Content-Type': 'image/png',
-          },
-        })
-      } catch (fallbackError) {
-        console.error('Fallback also failed:', fallbackError)
-        throw fallbackError
-      }
-    }
     throw error
   }
 }
