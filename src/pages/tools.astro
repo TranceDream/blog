@@ -1,0 +1,52 @@
+---
+import Layout from '~/layouts/Layout.astro'
+import PageHeader from '~/components/PageHeader.astro'
+import IconChevronsRight from '~/icons/chevrons-right.svg'
+
+const pageTitle = 'Tools'
+
+// 工具标题映射
+const toolTitles: Record<string, string> = {
+  json: 'JSON 百宝箱',
+}
+
+// 获取 tools 目录下的所有页面
+const toolPages = await import.meta.glob('./tools/**/*.astro', { eager: false })
+
+// 构建工具列表
+const tools = Object.entries(toolPages).map(([path]) => {
+  const filePath = path.replace('./tools/', '').replace('.astro', '')
+  const url = `/tools/${filePath}`
+  const fileName = filePath.split('/').pop() || filePath
+  const title = toolTitles[fileName] || fileName.charAt(0).toUpperCase() + fileName.slice(1)
+  
+  return {
+    url,
+    title,
+    fileName,
+  }
+})
+
+// 按文件名排序
+tools.sort((a, b) => a.fileName.localeCompare(b.fileName))
+---
+
+<Layout title={pageTitle} description="Tools page">
+  <div class="mt-2 sm:mt-0">
+    <PageHeader />
+    {tools.map((tool) => (
+      <article class="w-full py-5 my-1 md:my-4 border-accent/10">
+        <h1 class="mb-3 text-2xl text-heading1 font-semibold">
+          <a href={tool.url}># {tool.title}</a>
+        </h1>
+        <div>
+          <a class="button flex items-center !pl-3.5" href={tool.url}>
+            Open
+            <IconChevronsRight class="size-5 ml-2" />
+          </a>
+        </div>
+      </article>
+    ))}
+  </div>
+</Layout>
+

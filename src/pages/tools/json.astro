@@ -1,0 +1,291 @@
+---
+import Layout from '~/layouts/Layout.astro'
+import PageHeader from '~/components/PageHeader.astro'
+
+const pageTitle = 'JSON 百宝箱'
+---
+
+<Layout title={pageTitle} description="JSON formatting and validation tools">
+  <div class="mt-2 sm:mt-0">
+    <div class="prose max-w-full">
+      <h1 class="text-2xl font-bold">JSON 百宝箱</h1>
+      <div class="flex flex-col gap-4">
+        <label for="json-input" class="block">
+          <span class="font-semibold">在下面输入：</span>
+        </label>
+        <textarea
+          id="json-input"
+          class="w-full min-h-[300px] font-mono text-sm p-4 rounded-xl resize-y"
+          placeholder='请输入 JSON 文本，例如：{"name":"test","value":123}'
+        ></textarea>
+        
+        <div class="flex flex-wrap gap-3">
+          <button
+            id="format-btn"
+            class="font-bold text-center text-accent py-1 px-4.5 border-4 border-accent rounded-xl cursor-pointer hover:bg-accent/15 transition-colors"
+          >
+            格式化
+          </button>
+          <button
+            id="minify-btn"
+            class="font-bold text-center text-accent py-1 px-4.5 border-4 border-accent rounded-xl cursor-pointer hover:bg-accent/15 transition-colors"
+          >
+            压缩
+          </button>
+          <button
+            id="escape-btn"
+            class="font-bold text-center text-accent py-1 px-4.5 border-4 border-accent rounded-xl cursor-pointer hover:bg-accent/15 transition-colors"
+          >
+            转义
+          </button>
+          <button
+            id="escape-all-btn"
+            class="font-bold text-center text-accent py-1 px-4.5 border-4 border-accent rounded-xl cursor-pointer hover:bg-accent/15 transition-colors"
+          >
+            转义(All)
+          </button>
+          <button
+            id="unescape-btn"
+            class="font-bold text-center text-accent py-1 px-4.5 border-4 border-accent rounded-xl cursor-pointer hover:bg-accent/15 transition-colors"
+          >
+            去转义
+          </button>
+          <button
+            id="copy-btn"
+            class="font-bold text-center text-accent py-1 px-4.5 border-4 border-accent rounded-xl cursor-pointer hover:bg-accent/15 transition-colors"
+          >
+            复制
+          </button>
+        </div>
+        
+        <div id="error-message" class="hidden text-red bg-red/10 p-3 rounded-xl border-2 border-red/30"></div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script is:inline>
+  const jsonInput = /** @type {HTMLTextAreaElement | null} */ (document.getElementById('json-input'))
+  const formatBtn = document.getElementById('format-btn')
+  const minifyBtn = document.getElementById('minify-btn')
+  const escapeBtn = document.getElementById('escape-btn')
+  const escapeAllBtn = document.getElementById('escape-all-btn')
+  const unescapeBtn = document.getElementById('unescape-btn')
+  const copyBtn = document.getElementById('copy-btn')
+  const errorMessage = document.getElementById('error-message')
+
+  if (!jsonInput || !formatBtn || !minifyBtn || !escapeBtn || !escapeAllBtn || !unescapeBtn || !copyBtn || !errorMessage) {
+    console.error('Failed to find required elements')
+  }
+
+  function showError(message) {
+    if (!errorMessage) return
+    errorMessage.textContent = message
+    errorMessage.classList.remove('hidden')
+    setTimeout(() => {
+      errorMessage.classList.add('hidden')
+    }, 5000)
+  }
+
+  function hideError() {
+    if (!errorMessage) return
+    errorMessage.classList.add('hidden')
+  }
+
+  function updateTextarea(value) {
+    if (!jsonInput) return
+    jsonInput.value = value
+    hideError()
+  }
+
+  // 格式化
+  if (formatBtn) {
+    formatBtn.addEventListener('click', () => {
+      try {
+        if (!jsonInput) return
+        const input = jsonInput.value.trim()
+        if (!input) {
+          showError('请输入 JSON 文本')
+          return
+        }
+        const parsed = JSON.parse(input)
+        const formatted = JSON.stringify(parsed, null, 2)
+        updateTextarea(formatted)
+      } catch (error) {
+        showError(`格式化失败：${error instanceof Error ? error.message : '无效的 JSON'}`)
+      }
+    })
+  }
+
+  // 压缩
+  if (minifyBtn) {
+    minifyBtn.addEventListener('click', () => {
+      try {
+        if (!jsonInput) return
+        const input = jsonInput.value.trim()
+        if (!input) {
+          showError('请输入 JSON 文本')
+          return
+        }
+        const parsed = JSON.parse(input)
+        const minified = JSON.stringify(parsed)
+        updateTextarea(minified)
+      } catch (error) {
+        showError(`压缩失败：${error instanceof Error ? error.message : '无效的 JSON'}`)
+      }
+    })
+  }
+
+  // 转义
+  if (escapeBtn) {
+    escapeBtn.addEventListener('click', () => {
+      try {
+        if (!jsonInput) return
+        const input = jsonInput.value
+        if (!input) {
+          showError('请输入文本')
+          return
+        }
+        // 将文本进行字符串转义（只转义引号和反斜杠，不处理换行符等）
+        // 注意：必须先转义反斜杠，避免重复转义
+        const escaped = input
+          .replace(/\\/g, '\\\\')  // 反斜杠（最先处理）
+          .replace(/"/g, '\\"')    // 双引号
+          .replace(/'/g, "\\'")    // 单引号
+        updateTextarea(escaped)
+      } catch (error) {
+        showError(`转义失败：${error instanceof Error ? error.message : '转义操作失败'}`)
+      }
+    })
+  }
+
+  // 转义(All)
+  if (escapeAllBtn) {
+    escapeAllBtn.addEventListener('click', () => {
+      try {
+        if (!jsonInput) return
+        const input = jsonInput.value
+        if (!input) {
+          showError('请输入文本')
+          return
+        }
+        // 将文本进行字符串转义（包含所有特殊字符，不添加外层引号）
+        // 注意：必须先转义反斜杠，避免重复转义
+        const escaped = input
+          .replace(/\\/g, '\\\\')  // 反斜杠（最先处理）
+          .replace(/"/g, '\\"')    // 双引号
+          .replace(/'/g, "\\'")    // 单引号
+          .replace(/\n/g, '\\n')   // 换行符
+          .replace(/\r/g, '\\r')   // 回车符
+          .replace(/\t/g, '\\t')   // 制表符
+          .replace(/\f/g, '\\f')   // 换页符
+          .replace(/\v/g, '\\v')   // 垂直制表符
+        updateTextarea(escaped)
+      } catch (error) {
+        showError(`转义失败：${error instanceof Error ? error.message : '转义操作失败'}`)
+      }
+    })
+  }
+
+  // 去转义
+  if (unescapeBtn) {
+    unescapeBtn.addEventListener('click', () => {
+      try {
+        if (!jsonInput) return
+        const input = jsonInput.value.trim()
+        if (!input) {
+          showError('请输入转义的字符串')
+          return
+        }
+        
+        let unescaped
+        // 先尝试 JSON.parse（处理带引号的 JSON 字符串）
+        try {
+          const parsed = JSON.parse(input)
+          if (typeof parsed === 'string') {
+            unescaped = parsed
+          } else {
+            throw new Error('解析结果不是字符串')
+          }
+        } catch (e) {
+          // 如果 JSON.parse 失败，尝试手动去转义（处理不带引号的转义字符串）
+          // 注意：必须先处理其他字符，最后处理反斜杠
+          unescaped = input
+            .replace(/\\v/g, '\v')   // 垂直制表符
+            .replace(/\\f/g, '\f')   // 换页符
+            .replace(/\\t/g, '\t')   // 制表符
+            .replace(/\\r/g, '\r')   // 回车符
+            .replace(/\\n/g, '\n')   // 换行符
+            .replace(/\\'/g, "'")    // 单引号
+            .replace(/\\"/g, '"')    // 双引号
+            .replace(/\\\\/g, '\\')  // 反斜杠（最后处理）
+        }
+        
+        updateTextarea(unescaped)
+      } catch (error) {
+        showError(`去转义失败：${error instanceof Error ? error.message : '无效的转义字符串'}`)
+      }
+    })
+  }
+
+  // 复制
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      try {
+        if (!jsonInput) return
+        const input = jsonInput.value.trim()
+        if (!input) {
+          showError('没有可复制的内容')
+          return
+        }
+        
+        // 尝试使用现代 Clipboard API
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(input)
+        } else {
+          // 降级方案：使用传统的 execCommand 方法
+          const textArea = document.createElement('textarea')
+          textArea.value = input
+          textArea.style.position = 'fixed'
+          textArea.style.left = '-999999px'
+          textArea.style.top = '-999999px'
+          document.body.appendChild(textArea)
+          textArea.focus()
+          textArea.select()
+          
+          const successful = document.execCommand('copy')
+          document.body.removeChild(textArea)
+          
+          if (!successful) {
+            throw new Error('execCommand 复制失败')
+          }
+        }
+        
+        // 临时改变按钮文本提示复制成功
+        const originalText = copyBtn.textContent
+        copyBtn.textContent = '已复制！'
+        setTimeout(() => {
+          copyBtn.textContent = originalText
+        }, 2000)
+        hideError()
+      } catch (error) {
+        showError(`复制失败：${error instanceof Error ? error.message : '无法访问剪贴板'}`)
+      }
+    })
+  }
+</script>
+
+<style>
+  #json-input {
+    font-family: var(--default-mono-font-family);
+    background: color-mix(in oklab, var(--theme-foreground) 5%, transparent);
+    border: 1px solid color-mix(in oklab, var(--theme-foreground) 20%, transparent);
+  }
+
+  #json-input:focus {
+    outline: 1px solid var(--theme-accent);
+    outline-offset: 2px;
+    border-color: var(--theme-accent);
+  }
+</style>
+
