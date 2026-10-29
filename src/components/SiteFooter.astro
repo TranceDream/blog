@@ -1,0 +1,35 @@
+---
+import { SITE } from '../config/site';
+import SocialLinks from './SocialLinks.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer shell" data-pagefind-ignore>
+  <SocialLinks />
+  <div class="credits">
+    <span>{SITE.author} © {year}</span>
+    <span>
+      Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>
+      &amp; inspired by <a href="https://github.com/stelcodes/multiterm-astro" target="_blank" rel="noopener noreferrer">MultiTerm</a>
+    </span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    width: min(calc(100% - 3rem), var(--measure));
+    margin-top: auto;
+    padding-block: 2.75rem 3rem;
+    color: color-mix(in srgb, var(--text) 80%, var(--bg));
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+  .credits { display: flex; flex-wrap: wrap; gap: 0.35rem 1.5rem; align-items: center; justify-content: center; text-align: center; }
+  a { text-decoration: underline; text-underline-offset: 0.18em; }
+  a:hover { color: var(--accent); }
+  @media (max-width: 36rem) {
+    .site-footer { width: min(calc(100% - 1.5rem), var(--measure)); }
+    .credits { flex-direction: column; gap: 0.25rem; }
+  }
+</style>

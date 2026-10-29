@@ -1,73 +1,51 @@
-import type { PhrasingContent, Root } from 'mdast'
-import { toString as mdastToString } from 'mdast-util-to-string'
-import type { Plugin } from 'unified'
-import { visit } from 'unist-util-visit'
-import type { AdmonitionType } from '~/types'
-import { h as _h, type Properties } from 'hastscript'
-import type { Paragraph as P } from 'mdast'
+// Adapted from MultiTerm (MIT): https://github.com/stelcodes/multiterm-astro
+import type { Paragraph, PhrasingContent, Root } from 'mdast';
+import { toString } from 'mdast-util-to-string';
+import type { Plugin } from 'unified';
+import { visit } from 'unist-util-visit';
+import { h as createHast, type Properties } from 'hastscript';
 
-/** From Astro Starlight: Function that generates an mdast HTML tree ready for conversion to HTML by rehype. */
-function h(el: string, attrs: Properties = {}, children: any[] = []): P {
-  const { properties, tagName } = _h(el, attrs)
+type AdmonitionType = 'tip' | 'note' | 'important' | 'caution' | 'warning';
+const admonitionTypes = new Set<AdmonitionType>(['tip', 'note', 'important', 'caution', 'warning']);
+
+function h(tag: string, properties: Properties = {}, children: unknown[] = []): Paragraph {
+  const element = createHast(tag, properties);
   return {
-    children,
-    data: { hName: tagName, hProperties: properties },
     type: 'paragraph',
-  }
+    children: children as Paragraph['children'],
+    data: { hName: element.tagName, hProperties: element.properties },
+  };
 }
 
-// Supported admonition types
-const Admonitions = new Set<AdmonitionType>([
-  'tip',
-  'note',
-  'important',
-  'caution',
-  'warning',
-])
-
-/** Checks if a string is a supported admonition type. */
-function isAdmonition(s: string): s is AdmonitionType {
-  return Admonitions.has(s as AdmonitionType)
-}
-
-export const remarkAdmonitions: Plugin<[], Root> = () => (tree) => {
+const remarkAdmonitions: Plugin<[], Root> = () => (tree) => {
   visit(tree, (node, index, parent) => {
-    if (!parent || index === undefined || node.type !== 'containerDirective') return
+    if (!parent || index === undefined || node.type !== 'containerDirective') return;
+    if (!admonitionTypes.has(node.name as AdmonitionType)) return;
 
-    const admonitionType = node.name
-    if (!isAdmonition(admonitionType)) return
-
-    let title: string = admonitionType
-    let titleNode: PhrasingContent[] = [{ type: 'text', value: title }]
-
-    // Check if there's a custom title
-    const firstChild = node.children[0]
+    const type = node.name as AdmonitionType;
+    let title: string = type;
+    let titleChildren: PhrasingContent[] = [{ type: 'text', value: type }];
+    const firstChild = node.children[0];
     if (
       firstChild?.type === 'paragraph' &&
       firstChild.data &&
       'directiveLabel' in firstChild.data &&
-      firstChild.children.length > 0
+      firstChild.children.length
     ) {
-      titleNode = firstChild.children
-      title = mdastToString(firstChild.children)
-      // The first paragraph contains a custom title, we can safely remove it.
-      node.children.splice(0, 1)
+      titleChildren = firstChild.children;
+      title = toString(firstChild);
+      node.children.splice(0, 1);
     }
 
-    // Do not change prefix to AD, ADM, or similar, adblocks will block the content inside.
-    const admonition = h(
-      'aside',
-      {
-        'aria-label': title,
-        class: 'admonition',
-        'data-admonition-type': admonitionType,
-      },
-      [
-        h('p', { class: 'admonition-title', 'aria-hidden': 'true' }, [...titleNode]),
-        h('div', { class: 'admonition-content' }, node.children),
-      ],
-    )
+    parent.children[index] = h('aside', {
+      'aria-label': title,
+      class: 'admonition',
+      'data-admonition-type': type,
+    }, [
+      h('p', { class: 'admonition-title', 'aria-hidden': 'true' }, titleChildren),
+      h('div', { class: 'admonition-content' }, node.children),
+    ]);
+  });
+};
 
-    parent.children[index] = admonition
-  })
-}
+export default remarkAdmonitions;

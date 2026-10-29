@@ -1,0 +1,29 @@
+@import "../../styles/scrollbars.css";
+@import '@fontsource-variable/jetbrains-mono';
+:root {
+  color-scheme: dark;
+  --bg: #1e1e2e;
+  --text: #cdd6f4;
+  --accent: #89b4fa;
+  --warning: #f38ba8;
+  --surface: color-mix(in srgb, var(--text) 5%, var(--bg));
+  --surface-raised: color-mix(in srgb, var(--text) 9%, var(--bg));
+  --muted: color-mix(in srgb, var(--text) 72%, var(--bg));
+  --faint: color-mix(in srgb, var(--text) 52%, var(--bg));
+  --line: color-mix(in srgb, var(--text) 14%, transparent);
+  --line-strong: color-mix(in srgb, var(--text) 26%, transparent);
+  --measure: 48rem;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--bg); color: var(--text); font-family: var(--font-mono); }
+body { margin: 0; padding: 1.5rem; font-size: 1rem; line-height: 1.75; }
+html[data-embedded] body { padding: 0; }
+a { color: var(--accent); }
+button, input, select, textarea { font: inherit; }
+button, select { padding: .4rem .75rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface); color: var(--accent); cursor: pointer; }
+button:hover { background: var(--surface-raised); }
+:is(a, button, input, select, textarea, summary):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+:disabled { opacity: .45; cursor: not-allowed; }
+[hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }

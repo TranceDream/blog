@@ -1,35 +1,21 @@
-import rss from '@astrojs/rss'
-import siteConfig from '~/site.config'
-import type { AstroGlobal } from 'astro'
-import { getSortedPosts } from '~/utils'
-import sanitizeHtml from 'sanitize-html'
-import MarkdownIt from 'markdown-it'
-const parser = new MarkdownIt()
+import rss from '@astrojs/rss';
+import { SITE } from '../config/site';
+import { getPublishedPosts, postHref, postTitle } from '../lib/posts';
 
-// https://docs.astro.build/en/recipes/rss/
-export async function GET(_context: AstroGlobal) {
-  if (!siteConfig.site) {
-    console.warn(
-      'Site URL is required for RSS feed generation. Skipping RSS feed generation.',
-    )
-    return
-  }
-  const posts = await getSortedPosts()
+export async function GET() {
+  const posts = await getPublishedPosts();
   return rss({
-    stylesheet: '/rss.xsl',
-    title: siteConfig.title,
-    description: siteConfig.description,
-    site: siteConfig.site,
+    title: SITE.title,
+    description: SITE.description,
+    site: SITE.url,
+    customData: `<language>${SITE.locale}</language>`,
+    // Summary feed includes Notes; their links point to the Archive anchor.
     items: posts.map((post) => ({
-      title: post.data.title,
-      pubDate: post.data.published,
+      title: postTitle(post),
       description: post.data.description,
-      author: post.data.author || siteConfig.author,
-      link: `/posts/${post.id}`,
-      content: sanitizeHtml(parser.render(post.body || ''), {
-        allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
-      }),
+      pubDate: post.data.publishedAt,
+      link: postHref(post, posts),
+      categories: post.data.tags,
     })),
-    trailingSlash: false,
-  })
+  });
 }

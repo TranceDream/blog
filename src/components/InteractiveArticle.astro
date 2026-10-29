@@ -1,0 +1,235 @@
+---
+interface Props {
+  label?: string;
+}
+
+const { label = '文章交互展示' } = Astro.props;
+const hasDisplay = Astro.slots.has('display');
+---
+
+<div class:list={['interactive-article', { 'without-display': !hasDisplay }]} data-interactive-article>
+  <div class="interactive-copy" data-interactive-copy>
+    <div class="prose"><slot /></div>
+  </div>
+
+  {hasDisplay && (
+    <aside class="interactive-display" aria-label={label} data-pagefind-ignore>
+      <div class="stage-viewport">
+        <slot name="display" />
+      </div>
+      <div class="stage-tabs" data-stage-tabs aria-label="展示步骤" hidden></div>
+    </aside>
+  )}
+</div>
+
+<script>
+  import { bindArticleStages } from '../lib/articleStages';
+
+  document.querySelectorAll<HTMLElement>('[data-interactive-article]').forEach((root) => {
+    const display = root.querySelector<HTMLElement>('.interactive-display');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (display) {
+      const applyPresence = (bounds: DOMRectReadOnly) => {
+        const viewportHeight = window.innerHeight;
+        const enterStart = viewportHeight * 0.72;
+        const enterEnd = viewportHeight * 0.22;
+        const exitStart = Math.min(bounds.height, viewportHeight * 0.9);
+        const exitEnd = exitStart - Math.min(bounds.height * 0.55, viewportHeight * 0.35);
+        const clamp = (value: number) => Math.max(0, Math.min(1, value));
+        // Entry and exit must agree at top=0, including the shorter mobile stage.
+        const presence = reduceMotion.matches ? 1 : Math.min(
+          clamp((enterStart - bounds.top) / (enterStart - enterEnd)),
+          clamp((bounds.bottom - exitEnd) / (exitStart - exitEnd)),
+        );
+
+        display.style.setProperty('--stage-presence', presence.toFixed(3));
+        display.style.setProperty('--stage-content', clamp((presence - 0.3) / 0.7).toFixed(3));
+      };
+
+      applyPresence(display.getBoundingClientRect());
+      let frame = 0;
+      const schedule = () => {
+        if (frame) return;
+        frame = requestAnimationFrame(() => {
+          frame = 0;
+          applyPresence(display.getBoundingClientRect());
+        });
+      };
+      window.addEventListener('scroll', schedule, { passive: true });
+      window.addEventListener('resize', schedule);
+      reduceMotion.addEventListener('change', schedule);
+      new ResizeObserver(schedule).observe(display);
+    }
+
+    const panels = [...root.querySelectorAll<HTMLElement>('[data-stage-panel]')];
+    const headings = [...root.querySelectorAll<HTMLElement>('[data-interactive-copy] > .prose > h2')];
+    const tablist = root.querySelector<HTMLElement>('[data-stage-tabs]');
+    if (!panels.length || !tablist) return;
+
+    if (panels.length !== headings.length) {
+      console.error(`InteractiveArticle 需要相同数量的 H2 与展示面板：${headings.length} / ${panels.length}`);
+    }
+
+    panels.forEach((panel, index) => {
+      const label = panel.dataset.label || headings[index]?.textContent?.trim() || `步骤 ${index + 1}`;
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.dataset.stageStep = '';
+      button.textContent = label;
+      tablist.append(button);
+    });
+
+    tablist.hidden = panels.length < 2;
+    bindArticleStages(root);
+  });
+</script>
+
+<style>
+  .interactive-article {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+    align-items: start;
+    width: 100%;
+  }
+  .interactive-article.without-display {
+    grid-template-columns: minmax(0, var(--measure));
+    justify-content: center;
+    width: min(calc(100% - 3rem), var(--measure));
+    margin-inline: auto;
+  }
+  .interactive-copy {
+    width: 100%;
+    min-width: 0;
+    padding-inline: max(1.5rem, calc((100vw - var(--page)) / 2)) clamp(1.5rem, 3vw, 3rem);
+  }
+  .interactive-article.without-display .interactive-copy { width: 100%; padding-inline: 0; }
+  .interactive-display {
+    --stage-bg: #17191f;
+    --stage-text: #eceef3;
+    --stage-muted: #9aa1ad;
+    --stage-accent: color-mix(in srgb, var(--accent) 68%, white);
+    --stage-presence: 1;
+    --stage-content: 1;
+    position: sticky;
+    top: 0;
+    isolation: isolate;
+    min-width: 0;
+    width: 100%;
+    height: 100svh;
+    overflow: hidden;
+    background: transparent;
+    color: var(--stage-text);
+    color-scheme: dark;
+  }
+  .interactive-display::before {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    background: var(--stage-bg);
+    opacity: var(--stage-presence);
+    pointer-events: none;
+    transition: opacity 90ms linear;
+  }
+  .stage-tabs { display: none; }
+  .stage-tabs:global([hidden]) { display: none; }
+  .stage-tabs :global(button) {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0.65rem 0.2rem;
+    border: 0;
+    background: transparent;
+    color: var(--stage-muted);
+    cursor: pointer;
+  }
+  .stage-tabs :global(button[aria-selected="true"]) { color: var(--stage-accent); }
+  .stage-viewport {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    height: 100%;
+    overflow: hidden;
+    opacity: var(--stage-content);
+    transition: opacity 90ms linear;
+  }
+  .stage-tabs { position: relative; z-index: 1; opacity: var(--stage-content); transition: opacity 90ms linear; }
+  .interactive-article :global([data-stage-panel]) {
+    grid-area: 1 / 1;
+    align-content: safe center;
+    justify-self: center;
+    width: min(100%, 30rem);
+    min-width: 0;
+    min-height: 100%;
+    padding: clamp(2rem, 5vw, 4rem);
+    overflow: auto;
+    color: var(--stage-text);
+    line-height: 1.75;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 160ms ease-out, visibility 0s linear 160ms;
+  }
+  .interactive-article :global([data-stage-panel][data-stage-active="true"]),
+  .interactive-article:not([data-stage-ready="true"]) :global([data-stage-panel]:first-child) {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s;
+  }
+  .interactive-article:not([data-stage-ready="true"]) :global([data-stage-panel]:not(:first-child)) { display: none; }
+  .interactive-article :global([data-stage-panel] > :first-child) { margin-top: 0; }
+  .interactive-article :global([data-stage-panel] > :last-child) { margin-bottom: 0; }
+  .interactive-article :global([data-stage-panel] :where(p, ul, ol, figure, form, details)) { margin-block: 1.25rem; }
+  .interactive-article :global([data-stage-panel] :where(ul, ol)) { padding-left: 1.5rem; }
+  .interactive-article :global([data-stage-panel] :where(strong, code)) { color: var(--stage-accent); }
+  .interactive-article :global([data-stage-panel] small) { color: var(--stage-muted); }
+  .interactive-article :global([data-stage-panel] fieldset) { display: grid; gap: 1rem; margin: 0; padding: 0; border: 0; }
+  .interactive-article :global([data-stage-panel] label) { display: flex; gap: 0.75rem; align-items: center; }
+  .interactive-article :global([data-stage-panel] .expressive-code) { margin: 0; }
+  .interactive-article :global([data-stage-panel] .expressive-code figure),
+  .interactive-article :global([data-stage-panel] .expressive-code figure > pre) {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  .interactive-article :global([data-stage-panel] .expressive-code figcaption) { display: none; }
+
+  @media (max-width: 60rem) {
+    .interactive-article {
+      display: flex;
+      flex-direction: column;
+      width: min(calc(100% - 3rem), var(--measure));
+      margin-inline: auto;
+    }
+    .interactive-copy { width: 100%; padding-inline: 0; }
+    .interactive-display {
+      position: sticky;
+      z-index: 2;
+      top: 0;
+      order: -1;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      width: 100vw;
+      height: 52svh;
+      margin-inline: calc(50% - 50vw);
+    }
+    .stage-tabs {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      padding-inline: 1rem;
+      scrollbar-width: thin;
+    }
+  }
+  @media (max-width: 48rem) {
+    .interactive-article { width: min(calc(100% - 1.5rem), var(--measure)); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .interactive-display::before,
+    .stage-viewport,
+    .stage-tabs { opacity: 1; transition: none; }
+    .interactive-article :global([data-stage-panel]) { transition: none; }
+  }
+</style>

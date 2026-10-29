@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageIntro from '../../../components/PageIntro.astro';
+import { formatDate } from '../../../lib/posts';
+
+const labs = (await getCollection('labs')).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+---
+
+<BaseLayout title="Labs" description="一些实用工具和可以动手体验的小实验。">
+  <PageIntro title="Labs" description="一些实用工具和可以动手体验的小实验。" />
+  <section class="post-stream shell" aria-label="Labs 工具与成品列表">
+    {labs.map((lab) => (
+      <article class="post-item">
+          <h2><a href={`/labs/${lab.id}/`}># {lab.data.title}</a></h2>
+          <div class="meta"><time datetime={lab.data.publishedAt.toISOString()}>{formatDate(lab.data.publishedAt)}</time><span>{lab.data.status === 'finished' ? 'Finished' : 'Experiment'}</span></div>
+          <p>{lab.data.description}</p>
+          {lab.data.tags.length > 0 && <ul class="tags" aria-label="标签">{lab.data.tags.map((tag) => <li>#{tag}</li>)}</ul>}
+          <a class="open" href={`/labs/${lab.id}/`} aria-label={`打开 ${lab.data.title}`}>Open <span aria-hidden="true">»</span></a>
+      </article>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .post-item { margin-block: .25rem; padding: 1.7rem .35rem; }
+  h2 { margin: 0; color: var(--heading-1); font-size: 1.5rem; font-weight: 650; letter-spacing: -.04em; }
+  h2 a { text-decoration: underline; text-decoration-color: transparent; text-underline-offset: .2em; }
+  h2 a:hover { text-decoration-color: currentColor; }
+  .symbol { color: var(--accent); white-space: nowrap; }
+  .meta { display: flex; flex-wrap: wrap; gap: .45rem .75rem; margin-top: .9rem; color: var(--muted); font-size: .9rem; }
+  .meta > :not(:last-child)::after { margin-left: .75rem; color: var(--faint); content: '·'; }
+  p { margin: 1rem 0; color: var(--text); line-height: 1.75; }
+  .tags { display: flex; flex-wrap: wrap; gap: .75rem; margin: 1.1rem 0 1.5rem; padding: 0; list-style: none; }
+  .tags li { padding: .25rem .75rem; border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent); border-radius: 999px; color: var(--accent); font-size: .78rem; }
+  .open { display: inline-flex; gap: .5rem; align-items: center; padding: .35rem .85rem; border: 3px double color-mix(in srgb, var(--accent) 35%, transparent); border-radius: .65rem; color: var(--accent); font-size: .82rem; }
+  .open:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+  @media (min-width: 48rem) { .post-item { margin-block: 1rem; } }
+  @media (max-width: 36rem) { .post-item { padding-inline: 0; } }
+</style>

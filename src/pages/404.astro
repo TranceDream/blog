@@ -1,7 +1,22 @@
 ---
-import Layout from '~/layouts/Layout.astro'
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
 ---
 
-<Layout>
-  <h1 class="inline-block m-auto p-4 text-accent text-4xl">404</h1>
-</Layout>
+<BaseLayout title="404" noindex>
+  <PageIntro title="404" />
+  <section class="not-found shell">
+    <h2># Page not found</h2>
+    <p>这里没有你要找的页面，或许它还没有被写出来。</p>
+    <a href="/">Home <span aria-hidden="true">»</span></a>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found { width: min(calc(100% - 3rem), var(--measure)); min-height: 65vh; padding-bottom: 8rem; }
+  h2 { margin: 0 0 1rem; color: var(--heading-1); font-size: 1.8rem; letter-spacing: -0.045em; }
+  p { color: var(--muted); }
+  a { display: inline-flex; gap: 0.5rem; align-items: center; margin-top: 1.5rem; padding: 0.35rem 0.85rem; border: 3px double color-mix(in srgb, var(--accent) 35%, transparent); border-radius: 0.65rem; color: var(--accent); font-size: 0.82rem; }
+  a:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+  @media (max-width: 48rem) { .not-found { width: min(calc(100% - 1.5rem), var(--measure)); } }
+</style>

@@ -1,105 +1,28 @@
 ---
-import type { SocialLinks } from '~/types'
-import IconGithub from '~/icons/github.svg'
-import IconMastodon from '~/icons/mastodon.svg'
-import IconTwitter from '~/icons/twitter.svg'
-import IconLinkedin from '~/icons/linkedin.svg'
-import IconBluesky from '~/icons/bluesky.svg'
-import IconEmail from '~/icons/email.svg'
-import IconRss from '~/icons/rss.svg'
+import { SITE, type SocialLink } from '../config/site';
 
-interface Props {
-  socialLinks: SocialLinks
-}
-
-const { socialLinks } = Astro.props
+const paths: Record<SocialLink['icon'], string> = {
+  github: 'M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4 M9 18c-4.51 2-5-2-7-2',
+  twitter: 'M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z',
+  email: 'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M2 7l9 6a2 2 0 0 0 2 0l9-6',
+  rss: 'M4 11a9 9 0 0 1 9 9 M4 4a16 16 0 0 1 16 16 M6 19a1 1 0 1 1-2 0 1 1 0 0 1 2 0',
+  link: 'M10 13a5 5 0 0 0 7 .5l3-3a5 5 0 0 0-7-7l-2 2 M14 11a5 5 0 0 0-7-.5l-3 3a5 5 0 0 0 7 7l2-2',
+};
+const links = SITE.socials.filter(({ href }) => href.trim());
 ---
 
-<div class="flex w-full max-w-md items-center justify-between">
-  {
-    socialLinks.github && (
-      <a
-        href={socialLinks.github}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="social-link"
-      >
-        <span class="sr-only">GitHub</span>
-        <IconGithub class="size-7" />
+{links.length > 0 && (
+  <nav class="social-links" aria-label="社交与订阅">
+    {links.map(({ label, href, icon }) => (
+      <a href={href} aria-label={label} title={label} target={/^https?:\/\//.test(href) ? '_blank' : undefined} rel={/^https?:\/\//.test(href) ? 'me noopener noreferrer' : undefined}>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={paths[icon]} /></svg>
       </a>
-    )
-  }
-  {
-    socialLinks.mastodon && (
-      <a
-        href={socialLinks.mastodon}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="social-link"
-      >
-        <span class="sr-only">Mastodon</span>
-        <IconMastodon class="size-7" />
-      </a>
-    )
-  }
-  {
-    socialLinks.twitter && (
-      <a
-        href={socialLinks.twitter}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="social-link"
-      >
-        <span class="sr-only">Twitter</span>
-        <IconTwitter class="size-7" />
-      </a>
-    )
-  }
-  {
-    socialLinks.linkedin && (
-      <a
-        href={socialLinks.linkedin}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="social-link"
-      >
-        <span class="sr-only">LinkedIn</span>
-        <IconLinkedin class="size-7" />
-      </a>
-    )
-  }
-  {
-    socialLinks.bluesky && (
-      <a
-        href={socialLinks.bluesky}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="social-link"
-      >
-        <span class="sr-only">Bluesky</span>
-        <IconBluesky class="size-7" />
-      </a>
-    )
-  }
-  {
-    socialLinks.email && (
-      <a
-        href={`mailto:${socialLinks.email}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="social-link"
-      >
-        <span class="sr-only">Email</span>
-        <IconEmail class="size-7" />
-      </a>
-    )
-  }
-  {
-    socialLinks.rss && (
-      <a href="/rss.xml" class="social-link">
-        <span class="sr-only">RSS</span>
-        <IconRss class="size-7" />
-      </a>
-    )
-  }
-</div>
+    ))}
+  </nav>
+)}
+
+<style>
+  .social-links { display: flex; flex-wrap: wrap; justify-content: space-around; gap: 0.75rem; width: min(100%, 28rem); margin: 0 auto 1.5rem; }
+  a { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; color: var(--muted); border-radius: 0.35rem; }
+  a:hover { color: var(--accent); }
+</style>

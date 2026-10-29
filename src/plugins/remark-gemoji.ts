@@ -1,44 +1,34 @@
-import type { Root, Text } from 'mdast'
-import type { Plugin } from 'unified'
-import { nameToEmoji, emojiToName } from 'gemoji'
-import emojiRegex from 'emoji-regex'
-import { findAndReplace } from 'mdast-util-find-and-replace'
+// Adapted from MultiTerm (MIT): https://github.com/stelcodes/multiterm-astro
+import type { Root, Text } from 'mdast';
+import { findAndReplace } from 'mdast-util-find-and-replace';
+import emojiRegex from 'emoji-regex';
+import { emojiToName, nameToEmoji } from 'gemoji';
+import type { Plugin } from 'unified';
 
-function emojiSpan(emojiLiteral: string, emojiDescription: string): Text {
+function emojiSpan(emoji: string, description: string): Text {
   return {
     type: 'text',
-    value: emojiLiteral,
+    value: emoji,
     data: {
       hName: 'span',
-      hProperties: { role: 'img', ariaLabel: emojiDescription.replace(/_/g, ' ') },
-      hChildren: [{ type: 'text', value: emojiLiteral }],
+      hProperties: { role: 'img', ariaLabel: description.replaceAll('_', ' ') },
+      hChildren: [{ type: 'text', value: emoji }],
     },
-  }
+  };
 }
 
-/**
- * Plugin to replace emoji shortcodes with their corresponding emoji characters.
- * It uses the `gemoji` package to map shortcode names to emoji characters.
- */
-const plugin: Plugin<[], Root> = () => (tree) => {
+const remarkGemoji: Plugin<[], Root> = () => (tree) => {
   findAndReplace(tree, [
     [
       /:(\+1|[-\w]+):/g,
-      (_: string, emojiShortcode: string) => {
-        return Object.hasOwn(nameToEmoji, emojiShortcode)
-          ? emojiSpan(nameToEmoji[emojiShortcode], emojiShortcode)
-          : false
-      },
+      (_match: string, shortcode: string) =>
+        Object.hasOwn(nameToEmoji, shortcode) ? emojiSpan(nameToEmoji[shortcode], shortcode) : false,
     ],
     [
       emojiRegex(),
-      (emojiLiteral: string) => {
-        return Object.hasOwn(emojiToName, emojiLiteral)
-          ? emojiSpan(emojiLiteral, emojiToName[emojiLiteral])
-          : false
-      },
+      (emoji: string) => Object.hasOwn(emojiToName, emoji) ? emojiSpan(emoji, emojiToName[emoji]) : false,
     ],
-  ])
-}
+  ]);
+};
 
-export default plugin
+export default remarkGemoji;

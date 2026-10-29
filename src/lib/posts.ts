@@ -1,0 +1,70 @@
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { normalizeTags, termSlug } from './terms';
+import { SITE } from '../config/site';
+export { termSlug } from './terms';
+
+export type PostEntry = CollectionEntry<'posts'>;
+
+export function archiveHref(page: number) {
+  return page === 1 ? '/archive/' : `/archive/page/${page}/`;
+}
+
+export function archivePageCount(total: number) {
+  return Math.max(1, Math.ceil(total / SITE.archivePageSize));
+}
+
+export function postHref(post: PostEntry, archivePosts?: PostEntry[]) {
+  if (post.data.type === 'note') {
+    const index = archivePosts?.findIndex((entry) => entry.id === post.id) ?? -1;
+    const page = index < 0 ? 1 : Math.floor(index / SITE.archivePageSize) + 1;
+    return `${archiveHref(page)}#${noteAnchor(post)}`;
+  }
+  return `/archive/${post.id}/`;
+}
+
+export function postTitle(post: PostEntry) {
+  return post.data.title ?? post.data.description;
+}
+
+export function noteAnchor(post: PostEntry) {
+  return `note-${termSlug(post.id)}`;
+}
+
+export async function getPublishedPosts() {
+  return sortPosts(await getCollection('posts', ({ data }) => !data.draft));
+}
+
+export function groupPostsByTag(posts: PostEntry[]) {
+  const groups = new Map<string, PostEntry[]>();
+  for (const post of posts) {
+    for (const tag of normalizeTags(post.data.tags)) {
+      const entries = groups.get(tag) ?? [];
+      entries.push(post);
+      groups.set(tag, entries);
+    }
+  }
+  return [...groups.entries()].sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0], 'zh-CN'));
+}
+
+export function tagHref(tag: string) {
+  return `/tags/${encodeURIComponent(termSlug(tag))}/`;
+}
+
+export function seriesHref(series: string) {
+  return `/series/${encodeURIComponent(termSlug(series))}/`;
+}
+
+export function sortPosts(posts: PostEntry[]) {
+  return [...posts].sort(
+    (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf() || a.id.localeCompare(b.id),
+  );
+}
+
+export function formatDate(date: Date, withTime = false) {
+  return new Intl.DateTimeFormat('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    ...(withTime ? { hour: '2-digit', minute: '2-digit', hour12: false } : {}),
+  }).format(date);
+}

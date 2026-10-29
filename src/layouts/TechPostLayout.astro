@@ -1,0 +1,43 @@
+---
+import type { MarkdownHeading } from 'astro';
+import type { PostEntry } from '../lib/posts';
+import BaseLayout from './BaseLayout.astro';
+import ArticleHeader from '../components/ArticleHeader.astro';
+import PostNavigation from '../components/PostNavigation.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import { postTitle } from '../lib/posts';
+
+interface Props {
+  post: PostEntry;
+  headings?: MarkdownHeading[];
+  minutesRead?: string;
+  newer?: PostEntry;
+  older?: PostEntry;
+}
+
+const { post, headings = [], minutesRead, newer, older } = Astro.props;
+const title = postTitle(post);
+const showToc = post.data.toc && headings.some(({ depth }) => depth === 2 || depth === 3);
+---
+
+<BaseLayout title={title} description={post.data.description} image={post.data.coverImage?.src.src ?? `/social-cards/${post.id}.png`}>
+  <article data-pagefind-body>
+    <ArticleHeader post={post} minutesRead={minutesRead} interactive />
+
+    <div class="tech-composed">
+      {showToc && <div class="composed-toc"><TableOfContents headings={headings} variant="inline" /></div>}
+      <slot />
+    </div>
+
+    <PostNavigation newer={newer} older={older} />
+  </article>
+</BaseLayout>
+
+<style>
+  .tech-composed { overflow-x: clip; padding-block: 2.5rem; }
+  .composed-toc { width: min(calc(100% - 3rem), var(--measure)); margin: 0 auto 2.5rem; }
+  .composed-toc :global(.toc) { width: min(100%, 26rem); margin-inline: 0; }
+  @media (max-width: 48rem) {
+    .composed-toc { width: min(calc(100% - 1.5rem), var(--measure)); }
+  }
+</style>

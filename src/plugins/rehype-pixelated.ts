@@ -1,19 +1,16 @@
-import { visit } from 'unist-util-visit'
-import type { Plugin } from 'unified'
-import type { Root } from 'hast'
+// Adapted from MultiTerm (MIT): https://github.com/stelcodes/multiterm-astro
+import type { Root } from 'hast';
+import type { Plugin } from 'unified';
+import { visit } from 'unist-util-visit';
 
-const plugin: Plugin<[], Root> = () => {
-  return function transformer(tree) {
-    visit(tree, 'element', (el) => {
-      if (el.tagName === 'img') {
-        const alt = el.properties?.alt
-        if (alt && typeof alt === 'string' && alt.endsWith('#pixelated')) {
-          el.properties['data-pixelated'] = true
-          el.properties.alt = alt.substring(0, alt.length - '#pixelated'.length).trim()
-        }
-      }
-    })
-  }
-}
+const rehypePixelated: Plugin<[], Root> = () => (tree) => {
+  visit(tree, 'element', (element) => {
+    if (element.tagName !== 'img') return;
+    const alt = element.properties?.alt;
+    if (typeof alt !== 'string' || !alt.endsWith('#pixelated')) return;
+    element.properties['data-pixelated'] = true;
+    element.properties.alt = alt.slice(0, -'#pixelated'.length).trim();
+  });
+};
 
-export default plugin
+export default rehypePixelated;

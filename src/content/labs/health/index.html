@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>健康计算器</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<section class="health shell" id="health-tool" aria-label="健康计算器">
+
+    <section aria-labelledby="energy-heading">
+      <h2 id="energy-heading">能量换算</h2>
+      <form id="energy-form" autocomplete="off" novalidate>
+        <div class="fields">
+          <label>能量<input id="energy-amount" type="number" min="0" max="1000000000" step="any" inputmode="decimal" placeholder="例如 418.4" required /></label>
+          <label>单位<select id="energy-unit"><option value="kJ">kJ · 千焦</option><option value="kcal">kcal · 千卡 / 大卡</option><option value="cal">cal · 小卡</option><option value="J">J · 焦耳</option></select></label>
+        </div>
+        <label class="check"><input id="portion-enabled" type="checkbox" /> 按食用份量换算</label>
+        <div class="fields portion" id="portion-fields" hidden>
+          <label>标注份量（g）<input id="basis" type="number" min="0.001" max="1000000" step="any" value="100" inputmode="decimal" /></label>
+          <label>食用份量（g）<input id="portion" type="number" min="0" max="1000000" step="any" placeholder="例如 30" inputmode="decimal" /></label>
+        </div>
+        <div class="actions"><button class="primary" type="submit">换算 →</button><button type="reset">重置</button></div>
+        <p class="feedback" id="energy-status" role="status" aria-live="polite"></p>
+        <div class="result" id="energy-result" hidden aria-label="能量换算结果">
+          <div class="main-result"><output id="energy-kcal">—</output><span>kcal · 千卡</span></div>
+          <dl class="conversions"><div><dt>kJ</dt><dd id="energy-kj">—</dd></div><div><dt>cal</dt><dd id="energy-cal">—</dd></div><div><dt>J</dt><dd id="energy-j">—</dd></div></dl>
+          <p class="result-caption" id="portion-caption"></p>
+        </div>
+      </form>
+      <p class="hint">食品热量里常说的「卡路里」通常指 kcal，不是 cal。</p>
+    </section>
+
+    <section aria-labelledby="body-heading">
+      <h2 id="body-heading">BMI / 代谢</h2>
+      <form id="body-form" autocomplete="off" novalidate>
+        <div class="fields">
+          <label>身高（cm）<input id="bmi-height" type="number" min="100" max="250" step="any" inputmode="decimal" placeholder="例如 175" required /></label>
+          <label>年龄（周岁）<input id="bmi-age" type="number" min="18" max="120" step="1" inputmode="numeric" placeholder="18 岁及以上" required /></label>
+          <label>体重<input id="bmi-weight" type="number" min="0" step="any" inputmode="decimal" placeholder="例如 70" required /></label>
+          <label>体重单位<select id="bmi-unit"><option value="kg">kg · 千克</option><option value="jin">斤 · 市斤</option><option value="lb">lb · 磅</option></select></label>
+          <label class="full">分界标准<select id="bmi-standard"><option value="cn">中国成人 · 18.5 / 24 / 28</option><option value="who">WHO 成人 · 18.5 / 25 / 30</option></select></label>
+        </div>
+        <div class="fields portion">
+          <label>公式性别参数<select id="sex"><option value="">仅计算 BMI</option><option value="male">男性 · +5</option><option value="female">女性 · −161</option></select></label>
+          <label>活动系数<input id="activity" type="number" min="1.4" max="2.5" step="any" value="1.6" inputmode="decimal" required disabled /></label>
+        </div>
+        <div class="presets" aria-label="活动系数预设"><span>快速填入</span><button type="button" data-factor="1.4" disabled>久坐 1.4</button><button type="button" data-factor="1.6" disabled>轻活动 1.6</button><button type="button" data-factor="2" disabled>较活跃 2.0</button></div>
+        <label class="check"><input id="bmi-eligible" type="checkbox" required /> 不处于孕期或哺乳期</label>
+        <div class="actions"><button class="primary" type="submit">计算 →</button><button type="reset">重置</button></div>
+        <p class="feedback" id="body-status" role="status" aria-live="polite"></p>
+        <div id="body-result" hidden>
+        <div class="result" aria-label="BMI 结果">
+          <div class="main-result"><output id="bmi-value">—</output><span>kg/m² · BMI</span></div>
+          <p id="bmi-category" class="category"></p>
+          <ol class="bmi-scale" aria-label="BMI 分界参考"><li>偏低<span id="bmi-band-0"></span></li><li>正常<span id="bmi-band-1"></span></li><li>超重<span id="bmi-band-2"></span></li><li>肥胖<span id="bmi-band-3"></span></li></ol>
+          <p class="result-caption">分类按未舍入值判断。BMI 不是体脂率，也不能单独判断健康。</p>
+        </div>
+        <div class="result" id="metabolism-result" hidden aria-label="代谢估算结果">
+          <div class="metabolic-results"><div><p>静息代谢 · BMR 近似</p><div class="main-result"><output id="resting-value">—</output><span>kcal / 天</span></div></div><div><p>每日消耗 · TDEE</p><div class="main-result"><output id="total-value">—</output><span>kcal / 天</span></div></div></div>
+          <p class="result-caption" id="metabolism-caption"></p>
+        </div>
+        </div>
+      </form>
+      <p class="hint">仅供成人参考，不作诊断或摄入处方。活动系数已包含日常活动。</p>
+    </section>
+
+    <details class="notes"><summary>公式与说明</summary>
+      <ul>
+        <li>能量采用热化学卡：1 kcal = 1,000 cal = 4.184 kJ = 4,184 J。份量换算 = 标注能量 × 食用克数 ÷ 标注克数；不适用于需换算密度的毫升标签。<a href="https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b8" target="_blank" rel="noreferrer">NIST ↗</a></li>
+        <li>BMI = kg ÷ m²。中国成人分界为 18.5 / 24 / 28，WHO 为 18.5 / 25 / 30。显示值保留两位小数，边界以未舍入值为准。<a href="https://www.nhc.gov.cn/jkj/s10045/200907/943149b60565497bb3e25783a0e3de68.shtml" target="_blank" rel="noreferrer">国家卫健委 ↗</a> · <a href="https://www.who.int/data/gho/data/themes/topics/indicator-groups/indicator-group-details/GHO/bmi-among-adults" target="_blank" rel="noreferrer">WHO ↗</a></li>
+        <li>Mifflin–St Jeor：静息能量 = 10 × kg + 6.25 × cm − 5 × 年龄 + 性别常数（男 +5 / 女 −161）。它估算的是 REE/RMR，不是直接测得的 BMR；原研究年龄为 19–78 岁，超出时参考性更有限。<a href="https://pubmed.ncbi.nlm.nih.gov/2305711/" target="_blank" rel="noreferrer">原始论文 ↗</a></li>
+        <li>TDEE ≈ 静息能量 × 活动系数。1.4–2.5 参考活动水平范围，预设仅用于粗选，不按每周运动次数精确映射；本工具不是 NIH 的动态体重模型。<a href="https://www.niddk.nih.gov/bwp" target="_blank" rel="noreferrer">NIDDK ↗</a></li>
+        <li>BMI / 代谢仅供非孕哺期成年人参考；未成年人、疾病或特殊营养需求请咨询专业人士。公式不涵盖全部身体差异，性别参数沿用原研究，并不代表性别认同。</li>
+        <li>体重支持 kg / 磅 / 市斤（1 斤 = 0.5 kg）；身高 100–250 cm、体重 20–500 kg、年龄 18–120 的输入范围仅用于排错，不是健康标准。所有输入只在当前页面内存中处理。</li>
+      </ul>
+    </details>
+    <noscript>请启用 JavaScript 使用计算器。数据不会上传。</noscript>
+  </section>
+<script type="module" src="./client.js"></script>
+</body>
+</html>

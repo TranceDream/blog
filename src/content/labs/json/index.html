@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JSON 工具箱</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<section class="workbench" id="json-tool" aria-label="JSON 工作台">
+
+    <div class="toolbar" aria-label="转换工具">
+      <button type="button" data-action="format" class="primary">格式化</button>
+<button type="button" data-action="minify">压缩</button>
+<button type="button" data-action="sort">键名排序</button>
+<button type="button" data-action="escape">转义为字符串</button>
+<button type="button" data-action="unescape">还原字符串</button>
+<button type="button" data-action="unicode">Unicode 转义</button>
+<button type="button" data-action="csv">导出 CSV</button>
+<button type="button" data-action="types">生成 TypeScript</button>
+<button type="button" data-action="schema">生成 Schema</button>
+      <label>缩进 <select id="indent"><option value="2">2 空格</option><option value="4">4 空格</option><option value="tab">Tab</option></select></label>
+    </div>
+    <div class="editors">
+      <section class="pane">
+        <div class="pane-head"><label for="source">输入 / JSON</label><div><button data-action="sample">示例</button><button data-action="import">导入</button><button data-action="clear">清空</button></div></div>
+        <textarea id="source" spellcheck="false" autocomplete="off" aria-describedby="json-status" placeholder="粘贴 JSON，或拖入 .json 文件…&#10;&#10;{&quot;hello&quot;: &quot;world&quot;}"></textarea>
+        <div class="pane-foot"><span id="input-stats">0 字符</span><span>⌘ / Ctrl + Enter 格式化</span></div>
+      </section>
+      <section class="pane">
+        <div class="pane-head"><label for="output" id="output-label">输出 / JSON</label><div><button data-action="apply">用作输入</button><button data-action="copy">复制</button><button data-action="download">下载</button></div></div>
+        <textarea id="output" readonly spellcheck="false" placeholder="处理结果会显示在这里，不覆盖原始输入。"></textarea>
+        <div class="pane-foot"><span id="output-stats">0 字符</span><span>只读结果</span></div>
+      </section>
+    </div>
+    <p id="json-status" role="status" aria-live="polite">等待输入。支持严格 JSON；不会执行其中的任何代码。</p>
+    <div class="inspectors">
+      <section class="inspector">
+        <h2>结构 / Tree</h2>
+        <div class="inline-tools"><button data-action="tree">查看结构</button><button data-action="expand">展开全部</button><button data-action="collapse">折叠全部</button></div>
+        <p class="help">点击节点路径填入查询框。树最多展示 2,000 个节点。</p>
+        <div id="tree" aria-label="JSON 树形结构"><p class="empty">输入 JSON 后，点击「查看结构」。</p></div>
+      </section>
+      <section class="inspector">
+        <h2>查询 / JSON Pointer</h2>
+        <label class="help" for="pointer">例如 /users/0/name；留空为根节点。~1 表示 /，~0 表示 ~。</label>
+        <div class="query"><input id="pointer" placeholder="/users/0/name" spellcheck="false" /><button data-action="query">查询 →</button></div>
+        <h2 class="compare-title">比较 / Diff</h2>
+        <label class="help" for="comparison">与输入区作结构对比，忽略对象键顺序，保留数组顺序。</label>
+        <textarea id="comparison" spellcheck="false" placeholder="粘贴另一份 JSON…"></textarea>
+        <button data-action="diff">比较差异 →</button>
+      </section>
+    </div>
+    <details class="notes"><summary>使用说明与边界</summary>
+      <ul>
+        <li>输入上限为 100 万字符、30,000 个节点、80 层嵌套。仅支持严格 JSON，不自动修复、不支持 JSON5。</li>
+        <li>使用 JavaScript 数值语义：拒绝不安全的大整数和溢出；高精度小数请使用字符串。重复键遵循 JSON.parse，后者覆盖前者。</li>
+        <li>键名排序递归处理对象，数组不重排；整数形式的键仍遵循 JavaScript 的数字键顺序。</li>
+        <li>CSV 接受对象数组，嵌套值保存为 JSON 字符串，并为可能触发电子表格公式的单元格加单引号。</li>
+        <li>TypeScript 和 Schema 根据当前样本推断，不能替代完整业务契约；Schema 不代表已执行数据校验。</li>
+        <li>不上传、不自动保存、不读取剪贴板；刷新或离开页面将丢失输入，请自行下载结果。</li>
+      </ul>
+    </details>
+    <input id="file" type="file" accept=".json,.txt,application/json,text/plain" hidden />
+    <noscript>此工具需要启用 JavaScript；数据仍只在本地处理。</noscript>
+  </section>
+<script type="module" src="./client.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageIntro from '../../../components/PageIntro.astro';
+export async function getStaticPaths() {
+  return (await getCollection('labs')).map(lab => ({ params: { slug: lab.id }, props: { lab } }));
+}
+const { lab } = Astro.props;
+const { Content } = await render(lab);
+const artifactUrl = `/lab-artifacts/${lab.id}/index.html`;
+---
+<BaseLayout title={lab.data.title} description={lab.data.description}>
+  <PageIntro title={lab.data.title} description={lab.data.description} />
+  <article class="lab shell" data-pagefind-body>
+    <div class="topline"><a href="/labs/">← Labs</a><a href={artifactUrl} target="_blank" rel="noreferrer">独立打开 ↗</a></div>
+    <iframe src={artifactUrl} title={lab.data.title} data-lab-frame allow="clipboard-write" data-pagefind-ignore></iframe>
+    <div class="prose"><Content /></div>
+  </article>
+</BaseLayout>
+<style>
+  .lab { padding-bottom: 3rem; }
+  .topline { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; color: var(--accent); }
+  .topline a { text-underline-offset: .2em; }
+  .topline a:hover { text-decoration: underline; }
+  iframe { display: block; width: 100%; height: 52rem; border: 0; background: transparent; }
+  .prose:empty { display: none; }
+</style>

@@ -1,0 +1,16 @@
+---
+import ArchivePage from '../../../components/ArchivePage.astro';
+import { archivePageCount, getPublishedPosts } from '../../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return Array.from({ length: archivePageCount(posts.length) - 1 }, (_, index) => ({
+    params: { page: String(index + 2) },
+    props: { posts, currentPage: index + 2 },
+  }));
+}
+
+const { posts, currentPage } = Astro.props;
+---
+
+<ArchivePage posts={posts} currentPage={currentPage} />

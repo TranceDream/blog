@@ -1,0 +1,75 @@
+---
+import { Image } from 'astro:assets';
+import type { PostEntry } from '../lib/posts';
+import { formatDate, postTitle, seriesHref, tagHref } from '../lib/posts';
+
+interface Props {
+  post: PostEntry;
+  minutesRead?: string;
+  interactive?: boolean;
+}
+
+const { post, minutesRead, interactive = false } = Astro.props;
+const title = postTitle(post);
+const readingTime = minutesRead;
+---
+
+<header class:list={['article-head shell', { interactive }]}>
+  <a class="back" href="/archive/">← Archive</a>
+  <h1 data-pagefind-meta="title"># {title}</h1>
+
+  {interactive ? (
+    <p class="meta meta-interactive">
+      <span class="kind">Interactive article</span>
+      <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
+      {post.data.author && <span>{post.data.author}</span>}
+      <span>{readingTime}</span>
+    </p>
+  ) : (
+    <p class="meta meta-standard">
+      <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
+      {post.data.updatedAt && <><span>·</span><span>updated {formatDate(post.data.updatedAt)}</span></>}
+      {post.data.author && <><span>·</span><span>{post.data.author}</span></>}
+      <span>·</span><span>{readingTime}</span>
+    </p>
+  )}
+
+  <p class="description">{post.data.description}</p>
+  {post.data.series && <a class="series" href={seriesHref(post.data.series)}>Series · {post.data.series} →</a>}
+  <ul class="tags" aria-label="标签">
+    {post.data.tags.map((tag) => <li><a href={tagHref(tag)}>#{tag}</a></li>)}
+  </ul>
+  {post.data.coverImage && (
+    <Image
+      src={post.data.coverImage.src}
+      alt={post.data.coverImage.alt}
+      class="cover"
+      layout="constrained"
+      priority
+    />
+  )}
+</header>
+
+<style>
+  .article-head {
+    width: min(calc(100% - 3rem), var(--measure));
+    padding-block: 2.5rem 0;
+  }
+  .back { display: inline-block; margin-bottom: 1.35rem; color: var(--accent); font-size: 0.9rem; line-height: 1.5; text-decoration: underline; text-underline-offset: 0.18em; }
+  h1 { margin: 0 0 0.85rem; color: var(--heading-1); font-size: clamp(1.8rem, 5vw, 2.65rem); font-weight: 650; letter-spacing: -0.055em; line-height: 1.25; }
+  .interactive h1 { margin-bottom: 0; }
+  .meta { display: flex; flex-wrap: wrap; color: var(--faint); }
+  .meta-standard { gap: 0.35rem 0.65rem; margin: 0; font-size: 0.68rem; }
+  .meta-interactive { gap: 0.65rem 1rem; margin: 0.85rem 0 0; font-size: 0.67rem; }
+  .kind { color: var(--accent-2); }
+  .description { margin: 1.25rem 0 0; color: var(--text); line-height: 1.8; }
+  .series { display: inline-block; margin-top: 1rem; color: var(--accent-2); font-size: 0.65rem; letter-spacing: 0.05em; text-decoration: underline; text-underline-offset: 0.2em; }
+  .tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1.25rem 0 0; padding: 0; list-style: none; }
+  .tags a { display: block; padding: 0.12rem 0.5rem; border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent); border-radius: 999px; color: var(--accent); font-size: 0.64rem; }
+  .tags a:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+  .cover { display: block; width: 100%; margin: 1.75rem 0 0; border: 8px solid color-mix(in srgb, var(--text) 10%, transparent); border-radius: 0.75rem; }
+
+  @media (max-width: 48rem) {
+    .article-head { width: min(calc(100% - 1.5rem), var(--measure)); }
+  }
+</style>

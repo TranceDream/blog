@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import PostItem from '../../components/PostItem.astro';
+import { getPublishedPosts, groupPostsByTag } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  return groupPostsByTag(await getPublishedPosts())
+    .map(([tag, posts]) => ({ params: { tag }, props: { tag, posts } }));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout title={`#${tag}`} description={`标签 ${tag} 下的全部内容。`}>
+  <PageIntro title={`#${tag}`} description="按标签筛选的时间流。" count={`${posts.length} ${posts.length === 1 ? 'entry' : 'entries'}`} />
+  <section class="post-stream shell">
+    {posts.map((post) => <PostItem post={post} />)}
+  </section>
+</BaseLayout>

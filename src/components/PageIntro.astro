@@ -1,0 +1,34 @@
+---
+import PageMarker from './PageMarker.astro';
+
+interface Props {
+  as?: 'h1' | 'p';
+  title: string;
+  description?: string;
+  count?: string;
+}
+
+const { as: markerTag = 'h1', title, description, count }: Props = Astro.props;
+---
+
+<header class="page-intro shell">
+  <PageMarker as={markerTag} label={title} />
+  {description && <p class="description">{description}</p>}
+  {count && <small>{count}</small>}
+</header>
+
+<style>
+  .page-intro {
+    --intro-gap: 1.5rem;
+    width: min(calc(100% - 3rem), var(--measure));
+    padding-block: 2.2rem var(--intro-gap);
+  }
+  .description {
+    max-width: 48rem;
+    margin: var(--intro-gap) 0.4rem 0;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  small { display: block; margin: 0.8rem 0.4rem 0; color: var(--faint); font-size: 0.62rem; letter-spacing: 0.1em; }
+  @media (max-width: 48rem) { .page-intro { width: min(calc(100% - 1.5rem), var(--measure)); } }
+</style>

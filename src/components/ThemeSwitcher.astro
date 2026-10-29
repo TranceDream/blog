@@ -1,0 +1,183 @@
+---
+import IconPalette from '../icons/palette.svg';
+import IconCircleX from '../icons/circle-x.svg';
+import { THEMES, THEME_STORAGE_KEY, themeLabel } from '../config/themes';
+import { getThemePalettes } from '../lib/themes';
+
+const palettes = await getThemePalettes();
+---
+
+<select-theme data-storage-key={THEME_STORAGE_KEY}>
+  <button
+    class="header-action"
+    type="button"
+    aria-label="选择主题"
+    aria-haspopup="dialog"
+    aria-controls="theme-dialog"
+    data-open-theme
+    title="选择主题"
+  >
+    <IconPalette aria-hidden="true" />
+  </button>
+
+  <dialog class="site-dialog" id="theme-dialog" aria-labelledby="theme-title">
+    <div class="dialog-frame theme-panel">
+      <div class="dialog-header">
+        <h2 id="theme-title">选择配色</h2>
+        <button class="dialog-close" type="button" aria-label="关闭主题选择" data-close-theme>
+          <IconCircleX aria-hidden="true" />
+        </button>
+      </div>
+
+      <label class="theme-filter">
+        <span class="sr-only">筛选主题</span>
+        <input type="search" placeholder={`筛选 ${THEMES.length} 套主题…`} data-theme-filter />
+      </label>
+
+      <ul class="theme-options" aria-label="可用主题">
+        {THEMES.map((theme) => {
+          const palette = palettes[theme];
+          return (
+            <li data-theme-row={theme}>
+              <button
+                type="button"
+                data-theme-value={theme}
+                data-theme-background={palette.background}
+                style={`--preview-bg:${palette.background};--preview-fg:${palette.foreground};--preview-accent:${palette.accent}`}
+              >
+                <span class="swatches" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="theme-name">{themeLabel(theme)}</span>
+                <span class="theme-check" aria-hidden="true">✓</span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      <p class="theme-hint">选择会保存在当前设备。</p>
+    </div>
+  </dialog>
+</select-theme>
+
+<script>
+  import { openDialog, closeDialog, syncDialogScrollLock } from '../lib/dialog';
+  class SelectTheme extends HTMLElement {
+    dialog: HTMLDialogElement | null;
+    openButton: HTMLButtonElement | null;
+    closeButton: HTMLButtonElement | null;
+    filterInput: HTMLInputElement | null;
+    themeButtons: NodeListOf<HTMLButtonElement>;
+    themeRows: NodeListOf<HTMLElement>;
+
+    constructor() {
+      super();
+      this.dialog = this.querySelector('dialog');
+      this.openButton = this.querySelector('[data-open-theme]');
+      this.closeButton = this.querySelector('[data-close-theme]');
+      this.filterInput = this.querySelector('[data-theme-filter]');
+      this.themeButtons = this.querySelectorAll('[data-theme-value]');
+      this.themeRows = this.querySelectorAll('[data-theme-row]');
+
+      this.openButton?.addEventListener('click', () => this.open());
+      this.closeButton?.addEventListener('click', () => this.close());
+      this.dialog?.addEventListener('click', (event) => {
+        if (event.target === this.dialog) this.close();
+      });
+      this.dialog?.addEventListener('close', () => {
+        syncDialogScrollLock();
+      });
+      this.filterInput?.addEventListener('input', () => this.filter());
+      this.themeButtons.forEach((button) => {
+        button.addEventListener('click', () => this.select(button));
+      });
+    }
+
+    open() {
+      this.highlightCurrent();
+      openDialog(this.dialog);
+      this.filterInput?.focus();
+    }
+
+    close() {
+      closeDialog(this.dialog);
+      this.openButton?.focus();
+    }
+
+    select(button: HTMLButtonElement) {
+      const theme = button.dataset.themeValue;
+      if (!theme) return;
+      document.documentElement.dataset.theme = theme;
+      try { localStorage.setItem(this.dataset.storageKey ?? 'tranced-theme', theme); } catch {}
+      const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+      if (themeColor && button.dataset.themeBackground) {
+        themeColor.content = button.dataset.themeBackground;
+      }
+      this.close();
+    }
+
+    highlightCurrent() {
+      const current = document.documentElement.dataset.theme;
+      this.themeButtons.forEach((button) => {
+        const selected = button.dataset.themeValue === current;
+        button.classList.toggle('current-theme', selected);
+        if (selected) button.setAttribute('aria-current', 'true');
+        else button.removeAttribute('aria-current');
+      });
+    }
+
+    filter() {
+      const query = this.filterInput?.value.trim().toLowerCase() ?? '';
+      this.themeRows.forEach((row) => {
+        row.hidden = Boolean(query) && !(row.dataset.themeRow ?? '').includes(query);
+      });
+    }
+  }
+
+  if (!customElements.get('select-theme')) customElements.define('select-theme', SelectTheme);
+</script>
+
+<style>
+  select-theme { display: flex; }
+  dialog {
+    width: min(calc(100% - 2rem), 36rem);
+    max-height: min(80vh, 46rem);
+  }
+  .theme-panel { display: flex; flex-direction: column; max-height: calc(min(80vh, 46rem) - 8px); padding: 1.1rem; }
+  .dialog-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+  .dialog-header h2 { margin: 0; color: var(--heading-1); font-size: 1.25rem; }
+  .dialog-close { display: grid; width: 2rem; height: 2rem; padding: 0.2rem; border: 0; background: transparent; color: var(--accent); cursor: pointer; }
+  .dialog-close :global(svg) { width: 100%; height: 100%; }
+  .theme-filter { display: block; margin: 1rem 0 0.75rem; }
+  .theme-filter input {
+    width: 100%;
+    padding: 0.65rem 0.8rem;
+    border: 2px solid color-mix(in srgb, var(--accent) 24%, transparent);
+    border-radius: 0.55rem;
+    background: var(--surface);
+    color: var(--text);
+  }
+  .theme-options { overflow-y: auto; display: grid; gap: 0.35rem; margin: 0; padding: 0.15rem 0.25rem 0.15rem 0; list-style: none; }
+  .theme-options button {
+    display: grid;
+    grid-template-columns: 3.2rem minmax(0, 1fr) auto;
+    gap: 0.85rem;
+    align-items: center;
+    width: 100%;
+    padding: 0.55rem 0.65rem;
+    border: 1px solid transparent;
+    border-radius: 0.55rem;
+    background: transparent;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+  }
+  .theme-options button:hover,
+  .theme-options button.current-theme { border-color: color-mix(in srgb, var(--accent) 28%, transparent); background: color-mix(in srgb, var(--accent) 7%, transparent); }
+  .swatches { overflow: hidden; display: grid; grid-template-columns: repeat(3, 1fr); height: 1.55rem; border: 1px solid color-mix(in srgb, var(--preview-fg) 20%, transparent); border-radius: 0.3rem; }
+  .swatches i:nth-child(1) { background: var(--preview-bg); }
+  .swatches i:nth-child(2) { background: var(--preview-fg); }
+  .swatches i:nth-child(3) { background: var(--preview-accent); }
+  .theme-name { overflow: hidden; font-size: 0.76rem; text-overflow: ellipsis; white-space: nowrap; }
+  .theme-check { visibility: hidden; color: var(--accent); }
+  .current-theme .theme-check { visibility: visible; }
+  .theme-hint { margin: 0.8rem 0 0; color: var(--faint); font-size: 0.62rem; }
+</style>

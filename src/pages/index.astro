@@ -1,74 +1,55 @@
 ---
-import Layout from '~/layouts/Layout.astro'
-import { getSortedPosts } from '~/utils'
-import { getCollection, render } from 'astro:content'
-import PostPreview from '~/components/PostPreview.astro'
-import Pagination from '~/components/Pagination.astro'
-import BlockHeader from '~/components/BlockHeader.astro'
-import HomeBanner from '~/components/HomeBanner.astro'
-import siteConfig from '~/site.config'
-import TagsSection from '~/components/TagsSection.astro'
-import SeriesSection from '~/components/SeriesSection.astro'
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BlockHeader from '../components/BlockHeader.astro';
+import PageIntro from '../components/PageIntro.astro';
+import PostItem from '../components/PostItem.astro';
+import { getPublishedPosts } from '../lib/posts';
+import Profile from '../components/Profile.astro';
 
-const home = await getCollection('home')
-let HomeContent
-let homeAvatarImage
-if (home.length > 0) {
-  const homeEntry = home[0]
-  const { Content } = await render(homeEntry)
-  HomeContent = Content
-  homeAvatarImage = homeEntry.data.avatarImage
-}
-const sortedPosts = await getSortedPosts()
-const postsHaveTags = sortedPosts.some(
-  (post) => post.data.tags && post.data.tags.length > 0,
-)
-
-const postsHaveSeries = sortedPosts.some((post) => post.data.series)
+const posts = await getPublishedPosts();
+const latest = posts.slice(0, 4);
 ---
 
-<Layout>
-  {
-    HomeContent && (
-      <HomeBanner avatarImage={homeAvatarImage}>
-        <HomeContent />
-      </HomeBanner>
-    )
-  }
-  {
-    postsHaveSeries && (
-      <section>
-        <BlockHeader>Series</BlockHeader>
-        <SeriesSection posts={sortedPosts} />
-      </section>
-    )
-  }
-  {
-    postsHaveTags && (
-      <section>
-        <BlockHeader>Tags</BlockHeader>
-        <TagsSection posts={sortedPosts} />
-      </section>
-    )
-  }
-  {
-    sortedPosts.length > 0 && (
-      <section>
-        <BlockHeader>Latest Posts</BlockHeader>
-        {sortedPosts
-          .reverse()
-          .slice(0, Math.floor(siteConfig.pageSize / 2))
-          .map((post) => (
-            <PostPreview post={post} />
-          ))}
-        <Pagination nextLink="/posts" nextText="Archive" />
-      </section>
-    )
-  }
-</Layout>
+<BaseLayout>
+  <PageIntro as="p" title="Home" />
+  <div class="home shell">
+    <Profile />
 
-<style is:global>
-  a.heading-anchor {
-    display: none !important;
+    <section aria-label="Latest Posts">
+      <BlockHeader>Latest Posts</BlockHeader>
+      {latest.map((post) => <PostItem post={post} />)}
+      <div class="archive-action">
+        <a class="archive-link" href="/archive/">Archive
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 17 5-5-5-5" /><path d="m13 17 5-5-5-5" /></svg>
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .home {
+    width: min(calc(100% - 3rem), var(--measure));
+    padding-bottom: 4rem;
   }
+  .home :global(.block-header) { margin-top: 1.75rem; }
+  .home :global(.block-header h2) { margin: 0; padding: 0 0 0.625rem 0.25rem; font-size: 1.6rem; font-weight: 600; letter-spacing: normal; }
+  .archive-action { display: flex; justify-content: center; margin-block: 1.25rem; }
+  .archive-link {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.375rem 0.75rem 0.375rem 0.875rem;
+    border: 3px double color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: 0.75rem;
+    color: var(--accent);
+    font-size: 1rem;
+    text-decoration: none;
+  }
+  .archive-link:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+  .archive-link svg { flex-shrink: 0; }
+  .archive-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 0.25rem; }
+  @media (max-width: 48rem) { .home { width: min(calc(100% - 1.5rem), var(--measure)); } }
+  @media (max-width: 40rem) { .archive-link { width: 100%; } .home :global(.block-header) { margin-top: 1rem; } }
 </style>

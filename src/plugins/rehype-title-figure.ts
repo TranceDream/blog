@@ -1,34 +1,26 @@
-import type * as hast from 'hast'
-import type { RehypePlugin } from '@astrojs/markdown-remark'
-import { h } from 'hastscript'
+// Adapted from MultiTerm (MIT): https://github.com/stelcodes/multiterm-astro
+import type { Element, Root, RootContent } from 'hast';
+import type { RehypePlugin } from '@astrojs/markdown-remark';
+import { h } from 'hastscript';
 
-export const rehypeTitleFigure: RehypePlugin = (_options?) => {
-  function buildFigure(el: hast.Element) {
-    const title = `${el.properties?.title || ''}`
-    if (!title) return el
-    const figure = h('figure', [h('img', { ...el.properties }), h('figcaption', title)])
-    return figure
-  }
-  function isElement(content: hast.RootContent): content is hast.Element {
-    return content.type === 'element'
-  }
-  function transformTree(node: hast.Root | hast.Element) {
-    if (node.children) {
-      node.children = node.children.map((child) => {
-        if (isElement(child)) {
-          if (child.tagName === 'img') {
-            return buildFigure(child)
-          } else {
-            transformTree(child) // Recursively process child nodes
-          }
-        }
-        return child
-      })
-    }
-  }
-  return function (tree: hast.Root) {
-    transformTree(tree) // Start the recursive transformation
-  }
+function isElement(node: RootContent): node is Element {
+  return node.type === 'element';
 }
 
-export default rehypeTitleFigure
+function transform(node: Root | Element) {
+  node.children = node.children.map((child) => {
+    if (!isElement(child)) return child;
+    if (child.tagName === 'img' && child.properties?.title) {
+      const title = String(child.properties.title);
+      const properties = { ...child.properties };
+      delete properties.title;
+      return h('figure', [h('img', properties), h('figcaption', title)]);
+    }
+    transform(child);
+    return child;
+  });
+}
+
+const rehypeTitleFigure: RehypePlugin = () => (tree: Root) => transform(tree);
+
+export default rehypeTitleFigure;

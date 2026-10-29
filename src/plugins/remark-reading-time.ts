@@ -1,17 +1,19 @@
-import type { RemarkPlugin } from '@astrojs/markdown-remark'
-import getReadingTime from 'reading-time'
-import { toString } from 'mdast-util-to-string'
+// Adapted from MultiTerm and Astro's reading-time recipe (MIT).
+import type { RemarkPlugin } from '@astrojs/markdown-remark';
+import { visit } from 'unist-util-visit';
+import getReadingTime from 'reading-time';
 
-const remarkReadingTime: RemarkPlugin = (_options?) => {
-  return function (tree, { data }) {
-    if (data.astro?.frontmatter) {
-      const textOnPage = toString(tree)
-      const readingTime = getReadingTime(textOnPage)
-      // readingTime.text will give us minutes read as a friendly string,
-      // i.e. "3 min read"
-      data.astro.frontmatter.minutesRead = readingTime.text
+const remarkReadingTime: RemarkPlugin = () => (tree, { data }) => {
+  if (!data.astro?.frontmatter) return;
+  // Count readable text and code examples, never MDX imports or expressions.
+  const parts: string[] = [];
+  visit(tree, (node) => {
+    if (node.type === 'text' || node.type === 'code' || node.type === 'inlineCode') {
+      parts.push(node.value);
     }
-  }
-}
+  });
+  const minutes = Math.max(1, Math.ceil(getReadingTime(parts.join(' ')).minutes));
+  data.astro.frontmatter.minutesRead = `${minutes} min read`;
+};
 
-export default remarkReadingTime
+export default remarkReadingTime;
