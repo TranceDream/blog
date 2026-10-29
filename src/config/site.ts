@@ -10,6 +10,7 @@ export const SITE = {
   description: 'TranceDream’s Blog',
   author: 'TranceDream',
   locale: 'zh-CN',
+  timeZone: 'Asia/Shanghai',
   archivePageSize: 10,
   profile: {
     // public/ 下的本地图片路径；设为 '' 可隐藏头像。

@@ -5,7 +5,7 @@ import satori from 'satori';
 import sharp from 'sharp';
 import { SITE } from '../../config/site';
 import { DEFAULT_THEME } from '../../config/themes';
-import { getPublishedPosts } from '../../lib/posts';
+import { formatDate, getPublishedPosts } from '../../lib/posts';
 import { getThemePalettes } from '../../lib/themes';
 
 interface Card { title: string; author: string; date?: string }
@@ -25,9 +25,7 @@ export const getStaticPaths: GetStaticPaths = async () => [
     props: {
       title: post.data.title!,
       author: post.data.author || SITE.author,
-      date: new Intl.DateTimeFormat('zh-CN', {
-        timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit',
-      }).format(post.data.publishedAt),
+      date: formatDate(post.data.publishedAt),
     },
   })),
 ];

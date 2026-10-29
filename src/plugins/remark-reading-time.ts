@@ -2,6 +2,7 @@
 import type { RemarkPlugin } from '@astrojs/markdown-remark';
 import { visit } from 'unist-util-visit';
 import getReadingTime from 'reading-time';
+import { excerpt } from '../lib/excerpt';
 
 const remarkReadingTime: RemarkPlugin = () => (tree, { data }) => {
   if (!data.astro?.frontmatter) return;
@@ -13,6 +14,7 @@ const remarkReadingTime: RemarkPlugin = () => (tree, { data }) => {
     }
   });
   const minutes = Math.max(1, Math.ceil(getReadingTime(parts.join(' ')).minutes));
+  data.astro.frontmatter.excerpt = excerpt(parts.join(' '));
   data.astro.frontmatter.minutesRead = `${minutes} min read`;
 };
 

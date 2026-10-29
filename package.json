@@ -11,7 +11,8 @@
     "build": "astro build",
     "postbuild": "pagefind --site dist",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "node --experimental-strip-types --test scripts/*.test.mjs src/content/labs/*/core.test.js"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.2.4",
@@ -52,5 +53,6 @@
     "pagefind": "^1.5.2",
     "typescript": "^6.0.3",
     "unified": "^11.0.5"
-  }
+  },
+  "packageManager": "pnpm@11.25.0"
 }

@@ -23,7 +23,8 @@ export function postHref(post: PostEntry, archivePosts?: PostEntry[]) {
 }
 
 export function postTitle(post: PostEntry) {
-  return post.data.title ?? post.data.description;
+  return post.data.title?.trim() || post.data.description.trim()
+    || `Note · ${formatDate(post.data.publishedAt, true)}`;
 }
 
 export function noteAnchor(post: PostEntry) {
@@ -61,7 +62,8 @@ export function sortPosts(posts: PostEntry[]) {
 }
 
 export function formatDate(date: Date, withTime = false) {
-  return new Intl.DateTimeFormat('zh-CN', {
+  return new Intl.DateTimeFormat(SITE.locale, {
+    timeZone: SITE.timeZone,
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',

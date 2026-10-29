@@ -6,7 +6,7 @@
 - `/sitemap-index.xml`：构建时自动生成站点地图。
 - `/robots.txt`：允许抓取并声明站点地图；404 页面设置为不收录。
 - 分享图片优先使用文章头图；没有头图时，Life/Tech 使用构建生成的 `/social-cards/<id>.png`，其他页面使用 `/social-cards/__default.png`。模板位于 `src/pages/social-cards/[...slug].png.ts`，头像、作者和配色读取站点配置与默认主题。中文字体仅在构建时使用，许可见 `licenses/MapleMono-OFL.txt`。
-- 计划使用 Cloudflare Pages，仍为纯静态输出：构建命令 `npm run build`，产物目录 `dist/`。尚未配置或执行部署，DNS、自定义域名绑定和重定向留待上线时处理。
+- 计划使用 Cloudflare Pages，仍为纯静态输出：构建命令 `pnpm build`，产物目录 `dist/`。尚未配置或执行部署，DNS、自定义域名绑定和重定向留待上线时处理。
 
 一个静态优先的 Astro 个人博客。视觉语言来自 MultiTerm：编辑器主题色、Markdown 标题符号、平面文章流和克制的边框；内容宽度则按文章用途变化。
 
@@ -72,7 +72,7 @@ src/
 - Header 右侧按 MultiTerm 的顺序放置搜索与主题入口，均为融入标题色带的图标按钮。
 - 首页显示 Archive 的最新条目；Archive 按发布时间混排长文和短日志，并共用同一个列表组件。
 - 主题注册表位于 `src/config/themes.ts`，包含 MultiTerm 当前的 60 套 Shiki 主题；页面语义色、代码高亮和选择器中的三色色块来自同一份配置。
-- `⌘/Ctrl + K` 打开搜索。开发服务器使用内容集合的本地搜索，`npm run build` 后由 Pagefind 为最终 HTML 建立全文索引。
+- `⌘/Ctrl + K` 打开搜索。开发服务器使用内容集合的本地搜索，`pnpm build` 后由 Pagefind 为最终 HTML 建立全文索引。
 - Markdown/MDX 支持标题锚点、h2/h3 目录、Expressive Code、表格、任务列表、脚注、图片标题、像素图、五类提示块、数学公式、emoji、角色对话与 GitHub 卡片。
 - 组合式 Tech 文章把正文与展示内容写在同一个 `.mdx` 文件中；页面无需注册专属展示组件。
 - Markdown 正文图片与文章头图会自动接入全站媒体查看器，同一篇文章内可前后切换；显式写成 `<video data-media-viewer>` 的视频也会获得查看器入口。可用 `data-media-viewer="off"` 排除单个媒体。
@@ -81,11 +81,17 @@ src/
 ## 开发
 
 ```sh
-npm install
-npm run astro -- dev --background
-npm run build
+pnpm install --frozen-lockfile
+pnpm astro dev --background
+pnpm build
 ```
 
-后台开发服务器可用 `npm run astro -- dev status`、`npm run astro -- dev logs` 和 `npm run astro -- dev stop` 管理。
+后台开发服务器可用 `pnpm astro dev status`、`pnpm astro dev logs` 和 `pnpm astro dev stop` 管理。
 
 主题选择保存在浏览器本地；旧版的 Mocha、Kanagawa 和 Latte 偏好会自动迁移到对应的新主题 ID。构建命令只生成本地 `dist/` 与 Pagefind 索引，不包含发布步骤。
+
+## 固定构建环境
+
+仅使用 pnpm，版本由 `package.json` 的 `packageManager` 固定。CI 使用 `pnpm install --frozen-lockfile`、`pnpm check`、`pnpm test` 和 `pnpm build`，再将 `dist/` 上传至 Cloudflare Pages。CI 需先安装声明版本的 pnpm 与满足 `engines.node` 的 Node.js；配置时优先选择支持中的 Node.js LTS。日期显示由 `SITE.timeZone` 固定，不依赖 CI 系统时区。此处仅说明流程，尚未新增自动部署工作流。
+
+Notes 的 RSS 摘要从 Markdown 正文提取纯文本，保留原文顺序，最多 200 个可见字符；超出时添加省略号，不改写正文或 frontmatter。

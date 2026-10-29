@@ -183,9 +183,9 @@ H2 03  ─────→  display 03
 写完后先执行静态检查和本地构建：
 
 ```sh
-npm run check
+pnpm check
 git diff --check
-npm run build
+pnpm build
 ```
 
 然后在后台开发服务器中检查文章。发布前至少确认：
@@ -217,6 +217,6 @@ npm run build
 
 做到这里，一篇交互式文章就完成了。日常写作仍然是 Markdown；只有真正需要被看见、操作或运行的部分，才进入展示插槽。
 
-`npm run build` 只生成本地文件与搜索索引，不包含任何部署步骤。
+`pnpm build` 只生成本地文件与搜索索引，不包含任何部署步骤。
 
 </InteractiveArticle>
