@@ -1,10 +1,10 @@
 import rss from '@astrojs/rss';
 import { render } from 'astro:content';
 import { SITE } from '../config/site';
-import { getPublishedPosts, postHref, postTitle } from '../lib/posts';
+import { getVisiblePosts, postHref, postTitle } from '../lib/posts';
 
 export async function GET() {
-  const posts = await getPublishedPosts();
+  const posts = await getVisiblePosts();
   const items = await Promise.all(posts.map(async (post) => {
     const metadata = post.data.type === 'note'
       ? (await render(post)).remarkPluginFrontmatter

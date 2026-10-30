@@ -1,9 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageIntro from '../../components/PageIntro.astro';
-import { getPublishedPosts, groupPostsByTag, tagHref } from '../../lib/posts';
+import { getVisiblePosts, groupPostsByTag, tagHref } from '../../lib/posts';
 
-const tags = groupPostsByTag(await getPublishedPosts());
+const tags = groupPostsByTag(await getVisiblePosts());
 ---
 
 <BaseLayout title="Tags" description="按标签浏览全部内容。">

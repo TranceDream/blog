@@ -31,8 +31,8 @@ export function noteAnchor(post: PostEntry) {
   return `note-${termSlug(post.id)}`;
 }
 
-export async function getPublishedPosts() {
-  return sortPosts(await getCollection('posts', ({ data }) => !data.draft));
+export async function getVisiblePosts() {
+  return sortPosts(await getCollection('posts', ({ data }) => import.meta.env.DEV || !data.draft));
 }
 
 export function groupPostsByTag(posts: PostEntry[]) {

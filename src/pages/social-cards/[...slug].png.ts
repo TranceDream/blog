@@ -5,7 +5,7 @@ import satori from 'satori';
 import sharp from 'sharp';
 import { SITE } from '../../config/site';
 import { DEFAULT_THEME } from '../../config/themes';
-import { formatDate, getPublishedPosts } from '../../lib/posts';
+import { formatDate, getVisiblePosts } from '../../lib/posts';
 import { getThemePalettes } from '../../lib/themes';
 
 interface Card { title: string; author: string; date?: string }
@@ -20,7 +20,7 @@ const avatar = SITE.profile.avatar
 
 export const getStaticPaths: GetStaticPaths = async () => [
   { params: { slug: '__default' }, props: { title: SITE.title, author: SITE.author } },
-  ...(await getPublishedPosts()).filter(post => post.data.type !== 'note').map(post => ({
+  ...(await getVisiblePosts()).filter(post => post.data.type !== 'note').map(post => ({
     params: { slug: post.id },
     props: {
       title: post.data.title!,

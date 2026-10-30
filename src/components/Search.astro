@@ -4,11 +4,11 @@ import { getCollection } from 'astro:content';
 import IconSearch from '../icons/search.svg';
 import IconCircleX from '../icons/circle-x.svg';
 import { SITE } from '../config/site';
-import { formatDate, getPublishedPosts, postHref, postTitle } from '../lib/posts';
+import { formatDate, getVisiblePosts, postHref, postTitle } from '../lib/posts';
 
 const devRecords = import.meta.env.DEV
   ? [
-      ...(await getPublishedPosts()).map((post, _index, posts) => ({
+      ...(await getVisiblePosts()).map((post, _index, posts) => ({
         title: postTitle(post),
         description: post.data.description,
         href: postHref(post, posts),

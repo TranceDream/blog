@@ -17,7 +17,6 @@ const hasDisplay = Astro.slots.has('display');
       <div class="stage-viewport">
         <slot name="display" />
       </div>
-      <div class="stage-tabs" data-stage-tabs aria-label="展示步骤" hidden></div>
     </aside>
   )}
 </div>
@@ -63,23 +62,12 @@ const hasDisplay = Astro.slots.has('display');
 
     const panels = [...root.querySelectorAll<HTMLElement>('[data-stage-panel]')];
     const headings = [...root.querySelectorAll<HTMLElement>('[data-interactive-copy] > .prose > h2')];
-    const tablist = root.querySelector<HTMLElement>('[data-stage-tabs]');
-    if (!panels.length || !tablist) return;
+    if (!panels.length) return;
 
     if (panels.length !== headings.length) {
       console.error(`InteractiveArticle 需要相同数量的 H2 与展示面板：${headings.length} / ${panels.length}`);
     }
 
-    panels.forEach((panel, index) => {
-      const label = panel.dataset.label || headings[index]?.textContent?.trim() || `步骤 ${index + 1}`;
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.dataset.stageStep = '';
-      button.textContent = label;
-      tablist.append(button);
-    });
-
-    tablist.hidden = panels.length < 2;
     bindArticleStages(root);
   });
 </script>
@@ -132,18 +120,6 @@ const hasDisplay = Astro.slots.has('display');
     pointer-events: none;
     transition: opacity 90ms linear;
   }
-  .stage-tabs { display: none; }
-  .stage-tabs:global([hidden]) { display: none; }
-  .stage-tabs :global(button) {
-    flex: 0 0 auto;
-    margin: 0;
-    padding: 0.65rem 0.2rem;
-    border: 0;
-    background: transparent;
-    color: var(--stage-muted);
-    cursor: pointer;
-  }
-  .stage-tabs :global(button[aria-selected="true"]) { color: var(--stage-accent); }
   .stage-viewport {
     position: relative;
     z-index: 1;
@@ -153,7 +129,6 @@ const hasDisplay = Astro.slots.has('display');
     opacity: var(--stage-content);
     transition: opacity 90ms linear;
   }
-  .stage-tabs { position: relative; z-index: 1; opacity: var(--stage-content); transition: opacity 90ms linear; }
   .interactive-article :global([data-stage-panel]) {
     grid-area: 1 / 1;
     align-content: safe center;
@@ -210,26 +185,19 @@ const hasDisplay = Astro.slots.has('display');
       top: 0;
       order: -1;
       display: grid;
-      grid-template-rows: minmax(0, 1fr) auto;
+      grid-template-rows: minmax(0, 1fr);
       width: 100vw;
       height: 52svh;
       margin-inline: calc(50% - 50vw);
     }
-    .stage-tabs {
-      display: flex;
-      gap: 1rem;
-      overflow-x: auto;
-      padding-inline: 1rem;
-      scrollbar-width: thin;
-    }
+
   }
   @media (max-width: 48rem) {
     .interactive-article { width: min(calc(100% - 1.5rem), var(--measure)); }
   }
   @media (prefers-reduced-motion: reduce) {
     .interactive-display::before,
-    .stage-viewport,
-    .stage-tabs { opacity: 1; transition: none; }
+    .stage-viewport { opacity: 1; transition: none; }
     .interactive-article :global([data-stage-panel]) { transition: none; }
   }
 </style>

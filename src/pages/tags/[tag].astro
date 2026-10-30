@@ -2,10 +2,10 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageIntro from '../../components/PageIntro.astro';
 import PostItem from '../../components/PostItem.astro';
-import { getPublishedPosts, groupPostsByTag } from '../../lib/posts';
+import { getVisiblePosts, groupPostsByTag } from '../../lib/posts';
 
 export async function getStaticPaths() {
-  return groupPostsByTag(await getPublishedPosts())
+  return groupPostsByTag(await getVisiblePosts())
     .map(([tag, posts]) => ({ params: { tag }, props: { tag, posts } }));
 }
 

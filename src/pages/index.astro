@@ -3,10 +3,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import BlockHeader from '../components/BlockHeader.astro';
 import PageIntro from '../components/PageIntro.astro';
 import PostItem from '../components/PostItem.astro';
-import { getPublishedPosts } from '../lib/posts';
+import { getVisiblePosts } from '../lib/posts';
 import Profile from '../components/Profile.astro';
 
-const posts = await getPublishedPosts();
+const posts = await getVisiblePosts();
 const latest = posts.slice(0, 4);
 ---
 

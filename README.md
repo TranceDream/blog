@@ -2,7 +2,7 @@
 
 正式站点地址为 `https://trancedre.am`，集中配置在 `src/config/site.ts`；Astro 的 `site`、canonical、分享地址、RSS 和 robots.txt 使用这一配置。
 
-- `/rss.xml`：已发布文章和 Notes 的摘要订阅；草稿不进入订阅。
+- `/rss.xml`：已发布文章和 Notes 的摘要订阅；生产构建不包含草稿，本地开发包含草稿。
 - `/sitemap-index.xml`：构建时自动生成站点地图。
 - `/robots.txt`：允许抓取并声明站点地图；404 页面设置为不收录。
 - 分享图片优先使用文章头图；没有头图时，Life/Tech 使用构建生成的 `/social-cards/<id>.png`，其他页面使用 `/social-cards/__default.png`。模板位于 `src/pages/social-cards/[...slug].png.ts`，头像、作者和配色读取站点配置与默认主题。中文字体仅在构建时使用，许可见 `licenses/MapleMono-OFL.txt`。
@@ -12,7 +12,7 @@
 
 简要代码地图与改进建议见 [`ARCHITECTURE.md`](./ARCHITECTURE.md)。
 
-交互文章编写教程与完整 MDX 示例保留在 [`docs/how-to-write-interactive-articles.mdx`](./docs/how-to-write-interactive-articles.mdx)，不参与站点构建。需要预览时可复制到 `src/content/posts/` 并将 `draft` 改为 `false`。
+交互文章编写教程与完整 MDX 示例保留在 [`docs/how-to-write-interactive-articles.mdx`](./docs/how-to-write-interactive-articles.mdx)，不参与站点构建。需要预览时可复制到 `src/content/posts/` ，保留 `draft: true` 即可在开发服务器中查看。
 
 现有测试文章、Notes、Labs 示例及演示素材已备份到项目外并清理。当前内容以 `src/content/` 为准。MultiTerm 许可保留在 [`licenses/MultiTerm.txt`](./licenses/MultiTerm.txt)。
 
@@ -23,6 +23,8 @@
 `socials` 控制页脚图标、顺序和地址，支持 `github`、`twitter`、`email`、`rss` 和通用 `link` 图标；每项填写 `label`、`href`、`icon`。邮箱填写一次 `mailto:`，删除条目或留空地址即可隐藏。
 
 ## 写作内容
+
+`draft: true` 在 `pnpm dev` 中正常显示；`pnpm build` 会从列表、详情、标签、系列、搜索、RSS、站点地图及分享图中排除草稿。`pnpm preview` 查看的是构建产物，因此也不包含草稿。准备发布时再改为 `draft: false`。
 
 所有文章与短日志都放在 `src/content/posts/`，由 `src/content.config.ts` 统一校验。`type` 只决定内部渲染方式，不再对应公开分区：
 

@@ -2,10 +2,10 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageIntro from '../../components/PageIntro.astro';
 import PostItem from '../../components/PostItem.astro';
-import { getPublishedPosts, sortPosts, termSlug } from '../../lib/posts';
+import { getVisiblePosts, sortPosts, termSlug } from '../../lib/posts';
 
 export async function getStaticPaths() {
-  const posts = (await getPublishedPosts()).filter(({ data }) => Boolean(data.series));
+  const posts = (await getVisiblePosts()).filter(({ data }) => Boolean(data.series));
   const groups = new Map<string, { series: string; posts: typeof posts }>();
   for (const post of posts) {
     if (!post.data.series) continue;
