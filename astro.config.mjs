@@ -19,6 +19,7 @@ import remarkAdmonitions from './src/plugins/remark-admonitions';
 import remarkCharacterDialogue from './src/plugins/remark-character-dialogue';
 import remarkGemoji from './src/plugins/remark-gemoji';
 import remarkGithubCard from './src/plugins/remark-github-card';
+import remarkInteractiveCheck from './src/plugins/remark-interactive-check';
 import remarkReadingTime from './src/plugins/remark-reading-time';
 import remarkUnknownDirectives from './src/plugins/remark-unknown-directives';
 import labsFeature from './src/features/labs/integration';
@@ -32,6 +33,7 @@ export default defineConfig({
     processor: unified({
       remarkPlugins: [
         remarkReadingTime,
+        remarkInteractiveCheck,
         remarkDirective,
         remarkGithubCard,
         remarkAdmonitions,

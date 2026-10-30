@@ -97,3 +97,5 @@ pnpm build
 仅使用 pnpm，版本由 `package.json` 的 `packageManager` 固定。CI 使用 `pnpm install --frozen-lockfile`、`pnpm check`、`pnpm test` 和 `pnpm build`，再将 `dist/` 上传至 Cloudflare Pages。CI 需先安装声明版本的 pnpm 与满足 `engines.node` 的 Node.js；配置时优先选择支持中的 Node.js LTS。日期显示由 `SITE.timeZone` 固定，不依赖 CI 系统时区。此处仅说明流程，尚未新增自动部署工作流。
 
 Notes 的 RSS 摘要从 Markdown 正文提取纯文本，保留原文顺序，最多 200 个可见字符；超出时添加省略号，不改写正文或 frontmatter。
+
+开发服务器会为草稿显示 `Draft` 标识。交互文章编译时会检查组合容器、H2 与展示面板数量、面板插槽等结构问题，并输出带文件路径的 warning；这些提醒不阻止预览或构建。

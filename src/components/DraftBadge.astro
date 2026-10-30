@@ -1,0 +1,7 @@
+---
+interface Props { draft: boolean }
+---
+{import.meta.env.DEV && Astro.props.draft && <span class="draft-badge" data-pagefind-ignore title="仅本地开发可见，生产构建不会发布">Draft</span>}
+<style>
+  .draft-badge { color: var(--accent); font-size: inherit; }
+</style>

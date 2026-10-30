@@ -1,4 +1,5 @@
 ---
+import DraftBadge from './DraftBadge.astro';
 import { Image } from 'astro:assets';
 import type { PostEntry } from '../lib/posts';
 import { formatDate, postTitle, seriesHref, tagHref } from '../lib/posts';
@@ -18,21 +19,14 @@ const readingTime = minutesRead;
   <a class="back" href="/archive/">← Archive</a>
   <h1 data-pagefind-meta="title"># {title}</h1>
 
-  {interactive ? (
-    <p class="meta meta-interactive">
-      <span class="kind">Interactive article</span>
-      <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
-      {post.data.author && <span>{post.data.author}</span>}
-      <span>{readingTime}</span>
-    </p>
-  ) : (
-    <p class="meta meta-standard">
-      <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
-      {post.data.updatedAt && <><span>·</span><span>updated {formatDate(post.data.updatedAt)}</span></>}
-      {post.data.author && <><span>·</span><span>{post.data.author}</span></>}
-      <span>·</span><span>{readingTime}</span>
-    </p>
-  )}
+  <p class:list={['meta', interactive ? 'meta-interactive' : 'meta-standard']}>
+    <DraftBadge draft={post.data.draft} />
+    {interactive && <span class="kind">Interactive article</span>}
+    <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
+    {post.data.updatedAt && <span>updated <time datetime={post.data.updatedAt.toISOString()}>{formatDate(post.data.updatedAt)}</time></span>}
+    {post.data.author && <span>{post.data.author}</span>}
+    {readingTime && <span>{readingTime}</span>}
+  </p>
 
   <p class="description">{post.data.description}</p>
   {post.data.series && <a class="series" href={seriesHref(post.data.series)}>Series · {post.data.series} →</a>}
@@ -61,6 +55,7 @@ const readingTime = minutesRead;
   .meta { display: flex; flex-wrap: wrap; color: var(--faint); }
   .meta-standard { gap: 0.35rem 0.65rem; margin: 0; font-size: 0.68rem; }
   .meta-interactive { gap: 0.65rem 1rem; margin: 0.85rem 0 0; font-size: 0.67rem; }
+  .meta-standard > :not(:last-child)::after { content: "·"; margin-left: 0.65rem; }
   .kind { color: var(--accent-2); }
   .description { margin: 1.25rem 0 0; color: var(--text); line-height: 1.8; }
   .series { display: inline-block; margin-top: 1rem; color: var(--accent-2); font-size: 0.65rem; letter-spacing: 0.05em; text-decoration: underline; text-underline-offset: 0.2em; }

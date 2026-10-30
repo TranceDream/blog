@@ -1,4 +1,5 @@
 ---
+import DraftBadge from './DraftBadge.astro';
 import { render } from 'astro:content';
 import type { PostEntry } from '../lib/posts';
 import { formatDate, noteAnchor, postHref, tagHref } from '../lib/posts';
@@ -23,6 +24,7 @@ const minutesRead = remarkPluginFrontmatter.minutesRead;
   {isNote ? (
     <>
       <div class="meta note-meta">
+        <DraftBadge draft={post.data.draft} />
         <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt, true)}</time>
       </div>
       <h2 id={noteId} class:list={['note-title', { 'sr-only': !post.data.title }]}>
@@ -50,6 +52,7 @@ const minutesRead = remarkPluginFrontmatter.minutesRead;
     <>
       <h2><a href={postHref(post)}># {post.data.title}</a></h2>
       <div class="meta">
+        <DraftBadge draft={post.data.draft} />
         <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
         {minutesRead && <span>{minutesRead}</span>}
       </div>
