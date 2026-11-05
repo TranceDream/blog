@@ -10,7 +10,7 @@
 <section class="health shell" id="health-tool" aria-label="健康计算器">
 
     <section aria-labelledby="energy-heading">
-      <h2 id="energy-heading">能量换算</h2>
+      <h2 class="section-title" id="energy-heading">能量换算</h2>
       <form id="energy-form" autocomplete="off" novalidate>
         <div class="fields">
           <label>能量<input id="energy-amount" type="number" min="0" max="1000000000" step="any" inputmode="decimal" placeholder="例如 418.4" required /></label>
@@ -21,7 +21,7 @@
           <label>标注份量（g）<input id="basis" type="number" min="0.001" max="1000000" step="any" value="100" inputmode="decimal" /></label>
           <label>食用份量（g）<input id="portion" type="number" min="0" max="1000000" step="any" placeholder="例如 30" inputmode="decimal" /></label>
         </div>
-        <div class="actions"><button class="primary" type="submit">换算 →</button><button type="reset">重置</button></div>
+        <div class="actions"><button class="primary action-button" type="submit">换算 →</button><button type="reset">重置</button></div>
         <p class="feedback" id="energy-status" role="status" aria-live="polite"></p>
         <div class="result" id="energy-result" hidden aria-label="能量换算结果">
           <div class="main-result"><output id="energy-kcal">—</output><span>kcal · 千卡</span></div>
@@ -33,7 +33,7 @@
     </section>
 
     <section aria-labelledby="body-heading">
-      <h2 id="body-heading">BMI / 代谢</h2>
+      <h2 class="section-title" id="body-heading">BMI / 代谢</h2>
       <form id="body-form" autocomplete="off" novalidate>
         <div class="fields">
           <label>身高（cm）<input id="bmi-height" type="number" min="100" max="250" step="any" inputmode="decimal" placeholder="例如 175" required /></label>
@@ -48,7 +48,7 @@
         </div>
         <div class="presets" aria-label="活动系数预设"><span>快速填入</span><button type="button" data-factor="1.4" disabled>久坐 1.4</button><button type="button" data-factor="1.6" disabled>轻活动 1.6</button><button type="button" data-factor="2" disabled>较活跃 2.0</button></div>
         <label class="check"><input id="bmi-eligible" type="checkbox" required /> 不处于孕期或哺乳期</label>
-        <div class="actions"><button class="primary" type="submit">计算 →</button><button type="reset">重置</button></div>
+        <div class="actions"><button class="primary action-button" type="submit">计算 →</button><button type="reset">重置</button></div>
         <p class="feedback" id="body-status" role="status" aria-live="polite"></p>
         <div id="body-result" hidden>
         <div class="result" aria-label="BMI 结果">

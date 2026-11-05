@@ -8,6 +8,7 @@ const links = [
   { href: '/', label: 'Home' },
   { href: '/archive/', label: 'Archive' },
   ...(SITE.features.labs ? [{ href: '/labs/', label: 'Labs' }] : []),
+  { href: '/about/', label: 'About' },
 ];
 ---
 
@@ -48,7 +49,7 @@ const links = [
     border-radius: 0.75rem;
     background: var(--accent);
     color: var(--bg);
-    font-size: 1rem;
+    font-size: var(--text-base);
     font-weight: 700;
     line-height: 1.5rem;
     letter-spacing: -0.02em;
@@ -70,7 +71,7 @@ const links = [
   nav { display: flex; gap: 1.25rem; align-items: center; margin: 1rem 0 0 0.125rem; }
   nav a {
     color: var(--accent);
-    font-size: 1rem;
+    font-size: var(--text-base);
     text-decoration: underline;
     text-underline-offset: 0.18em;
   }

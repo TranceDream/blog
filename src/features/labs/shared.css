@@ -1,4 +1,5 @@
 @import "../../styles/scrollbars.css";
+@import "../../styles/ui.css";
 @import '@fontsource-variable/jetbrains-mono';
 :root {
   color-scheme: dark;
@@ -13,16 +14,15 @@
   --line: color-mix(in srgb, var(--text) 14%, transparent);
   --line-strong: color-mix(in srgb, var(--text) 26%, transparent);
   --measure: 48rem;
-  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { background: var(--bg); color: var(--text); font-family: var(--font-mono); }
-body { margin: 0; padding: 1.5rem; font-size: 1rem; line-height: 1.75; }
+body { display: flow-root; margin: 0; padding: 1.5rem; font-size: var(--text-base); line-height: var(--leading-body); }
 html[data-embedded] body { padding: 0; }
 a { color: var(--accent); }
 button, input, select, textarea { font: inherit; }
-button, select { padding: .4rem .75rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: var(--surface); color: var(--accent); cursor: pointer; }
-button:hover { background: var(--surface-raised); }
+button:not(.action-button), select { padding: .4rem .75rem; border: 1px solid var(--line-strong); border-radius: var(--radius-control); background: var(--surface); color: var(--accent); font-size: var(--text-base); line-height: var(--leading-ui); cursor: pointer; }
+button:not(.action-button):hover { background: var(--surface-raised); }
 :is(a, button, input, select, textarea, summary):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 :disabled { opacity: .45; cursor: not-allowed; }
 [hidden] { display: none !important; }

@@ -65,6 +65,8 @@ src/
 └── styles/           # 全局主题变量与文章排版
 ```
 
+共用视觉规则集中在 `src/styles/ui.css`（博客与 Labs 共用）：正文/控件 16px、辅助信息/标签 14px、章节标题 24px、详情标题 28px。新增页面优先使用 `PageIntro`、`Tags` 和 `.action-button` / `.section-title` 等共用样式；页面自己的 CSS 只负责布局与特殊交互，避免复制字号、按钮和标签规则。
+
 项目刻意不预装 React、Tailwind 或 shadcn/ui。真实交互需求出现后，再把单个 React Island 放进 `components/`；静态文章与页面不会因此被整体水合。
 
 项目默认只在本地运行和构建，不包含任何托管平台绑定或自动部署流程。
@@ -99,3 +101,7 @@ pnpm build
 Notes 的 RSS 摘要从 Markdown 正文提取纯文本，保留原文顺序，最多 200 个可见字符；超出时添加省略号，不改写正文或 frontmatter。
 
 开发服务器会为草稿显示 `Draft` 标识。交互文章编译时会检查组合容器、H2 与展示面板数量、面板插槽等结构问题，并输出带文件路径的 warning；这些提醒不阻止预览或构建。
+
+## About 与友链
+
+`/about/` 沿用站点头像、作者与问候语；详细介绍、兴趣及友链集中维护在 `src/config/about.ts`。友链填写 `name`、`href` 和可选 `description`，不需要修改页面。

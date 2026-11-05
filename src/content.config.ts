@@ -35,8 +35,6 @@ const labs = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    publishedAt: z.coerce.date(),
-    status: z.enum(['finished', 'experiment']).default('finished'),
     tags: z.array(z.string()).default([]),
   }),
 });

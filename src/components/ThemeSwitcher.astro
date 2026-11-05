@@ -23,7 +23,7 @@ const palettes = await getThemePalettes();
   <dialog class="site-dialog" id="theme-dialog" aria-labelledby="theme-title">
     <div class="dialog-frame theme-panel">
       <div class="dialog-header">
-        <h2 id="theme-title">选择配色</h2>
+        <h2 id="theme-title" class="dialog-title">选择配色</h2>
         <button class="dialog-close" type="button" aria-label="关闭主题选择" data-close-theme>
           <IconCircleX aria-hidden="true" />
         </button>
@@ -31,7 +31,7 @@ const palettes = await getThemePalettes();
 
       <label class="theme-filter">
         <span class="sr-only">筛选主题</span>
-        <input type="search" placeholder={`筛选 ${THEMES.length} 套主题…`} data-theme-filter />
+        <input class="dialog-input" type="search" placeholder={`筛选 ${THEMES.length} 套主题…`} data-theme-filter />
       </label>
 
       <ul class="theme-options" aria-label="可用主题">
@@ -143,18 +143,9 @@ const palettes = await getThemePalettes();
   }
   .theme-panel { display: flex; flex-direction: column; max-height: calc(min(80vh, 46rem) - 8px); padding: 1.1rem; }
   .dialog-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
-  .dialog-header h2 { margin: 0; color: var(--heading-1); font-size: 1.25rem; }
   .dialog-close { display: grid; width: 2rem; height: 2rem; padding: 0.2rem; border: 0; background: transparent; color: var(--accent); cursor: pointer; }
   .dialog-close :global(svg) { width: 100%; height: 100%; }
   .theme-filter { display: block; margin: 1rem 0 0.75rem; }
-  .theme-filter input {
-    width: 100%;
-    padding: 0.65rem 0.8rem;
-    border: 2px solid color-mix(in srgb, var(--accent) 24%, transparent);
-    border-radius: 0.55rem;
-    background: var(--surface);
-    color: var(--text);
-  }
   .theme-options { overflow-y: auto; display: grid; gap: 0.35rem; margin: 0; padding: 0.15rem 0.25rem 0.15rem 0; list-style: none; }
   .theme-options button {
     display: grid;
@@ -164,7 +155,7 @@ const palettes = await getThemePalettes();
     width: 100%;
     padding: 0.55rem 0.65rem;
     border: 1px solid transparent;
-    border-radius: 0.55rem;
+    border-radius: var(--radius-control);
     background: transparent;
     color: var(--text);
     text-align: left;
@@ -176,8 +167,8 @@ const palettes = await getThemePalettes();
   .swatches i:nth-child(1) { background: var(--preview-bg); }
   .swatches i:nth-child(2) { background: var(--preview-fg); }
   .swatches i:nth-child(3) { background: var(--preview-accent); }
-  .theme-name { overflow: hidden; font-size: 0.76rem; text-overflow: ellipsis; white-space: nowrap; }
+  .theme-name { overflow: hidden; font-size: var(--text-base); text-overflow: ellipsis; white-space: nowrap; }
   .theme-check { visibility: hidden; color: var(--accent); }
   .current-theme .theme-check { visibility: visible; }
-  .theme-hint { margin: 0.8rem 0 0; color: var(--faint); font-size: 0.62rem; }
+  .theme-hint { margin: 0.8rem 0 0; color: var(--muted); font-size: var(--text-sm); line-height: var(--leading-ui); }
 </style>

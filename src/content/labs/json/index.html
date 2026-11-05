@@ -10,7 +10,7 @@
 <section class="workbench" id="json-tool" aria-label="JSON 工作台">
 
     <div class="toolbar" aria-label="转换工具">
-      <button type="button" data-action="format" class="primary">格式化</button>
+      <button type="button" data-action="format" class="primary action-button">格式化</button>
 <button type="button" data-action="minify">压缩</button>
 <button type="button" data-action="sort">键名排序</button>
 <button type="button" data-action="escape">转义为字符串</button>
@@ -36,16 +36,16 @@
     <p id="json-status" role="status" aria-live="polite">等待输入。支持严格 JSON；不会执行其中的任何代码。</p>
     <div class="inspectors">
       <section class="inspector">
-        <h2>结构 / Tree</h2>
+        <h2 class="section-title">结构 / Tree</h2>
         <div class="inline-tools"><button data-action="tree">查看结构</button><button data-action="expand">展开全部</button><button data-action="collapse">折叠全部</button></div>
         <p class="help">点击节点路径填入查询框。树最多展示 2,000 个节点。</p>
         <div id="tree" aria-label="JSON 树形结构"><p class="empty">输入 JSON 后，点击「查看结构」。</p></div>
       </section>
       <section class="inspector">
-        <h2>查询 / JSON Pointer</h2>
+        <h2 class="section-title">查询 / JSON Pointer</h2>
         <label class="help" for="pointer">例如 /users/0/name；留空为根节点。~1 表示 /，~0 表示 ~。</label>
         <div class="query"><input id="pointer" placeholder="/users/0/name" spellcheck="false" /><button data-action="query">查询 →</button></div>
-        <h2 class="compare-title">比较 / Diff</h2>
+        <h2 class="compare-title section-title">比较 / Diff</h2>
         <label class="help" for="comparison">与输入区作结构对比，忽略对象键顺序，保留数组顺序。</label>
         <textarea id="comparison" spellcheck="false" placeholder="粘贴另一份 JSON…"></textarea>
         <button data-action="diff">比较差异 →</button>

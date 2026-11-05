@@ -1,8 +1,9 @@
 ---
+import Tags from './Tags.astro';
 import DraftBadge from './DraftBadge.astro';
 import { Image } from 'astro:assets';
 import type { PostEntry } from '../lib/posts';
-import { formatDate, postTitle, seriesHref, tagHref } from '../lib/posts';
+import { formatDate, postTitle, seriesHref } from '../lib/posts';
 
 interface Props {
   post: PostEntry;
@@ -16,23 +17,22 @@ const readingTime = minutesRead;
 ---
 
 <header class:list={['article-head shell', { interactive }]}>
-  <a class="back" href="/archive/">← Archive</a>
-  <h1 data-pagefind-meta="title"># {title}</h1>
+  <h1 class="detail-title" data-pagefind-meta="title"># {title}</h1>
 
-  <p class:list={['meta', interactive ? 'meta-interactive' : 'meta-standard']}>
-    <DraftBadge draft={post.data.draft} />
-    {interactive && <span class="kind">Interactive article</span>}
-    <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
-    {post.data.updatedAt && <span>updated <time datetime={post.data.updatedAt.toISOString()}>{formatDate(post.data.updatedAt)}</time></span>}
-    {post.data.author && <span>{post.data.author}</span>}
-    {readingTime && <span>{readingTime}</span>}
-  </p>
-
-  <p class="description">{post.data.description}</p>
-  {post.data.series && <a class="series" href={seriesHref(post.data.series)}>Series · {post.data.series} →</a>}
-  <ul class="tags" aria-label="标签">
-    {post.data.tags.map((tag) => <li><a href={tagHref(tag)}>#{tag}</a></li>)}
-  </ul>
+  <div class="post-info">
+    <div class="info-row">
+      {post.data.series && <a class="series tag-chip" href={seriesHref(post.data.series)}>{post.data.series}</a>}
+      <div class="meta">
+        <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt).replaceAll('/', '-')}</time>
+        {post.data.author && <span>{post.data.author}</span>}
+        {readingTime && <span>{readingTime}</span>}
+        {post.data.updatedAt && <span>updated <time datetime={post.data.updatedAt.toISOString()}>{formatDate(post.data.updatedAt).replaceAll('/', '-')}</time></span>}
+        <DraftBadge draft={post.data.draft} />
+      </div>
+    </div>
+    <Tags tags={post.data.tags} />
+  </div>
+  {post.data.description && <p class="description">{post.data.description}</p>}
   {post.data.coverImage && (
     <Image
       src={post.data.coverImage.src}
@@ -49,19 +49,14 @@ const readingTime = minutesRead;
     width: min(calc(100% - 3rem), var(--measure));
     padding-block: 2.5rem 0;
   }
-  .back { display: inline-block; margin-bottom: 1.35rem; color: var(--accent); font-size: 0.9rem; line-height: 1.5; text-decoration: underline; text-underline-offset: 0.18em; }
-  h1 { margin: 0 0 0.85rem; color: var(--heading-1); font-size: clamp(1.8rem, 5vw, 2.65rem); font-weight: 650; letter-spacing: -0.055em; line-height: 1.25; }
-  .interactive h1 { margin-bottom: 0; }
-  .meta { display: flex; flex-wrap: wrap; color: var(--faint); }
-  .meta-standard { gap: 0.35rem 0.65rem; margin: 0; font-size: 0.68rem; }
-  .meta-interactive { gap: 0.65rem 1rem; margin: 0.85rem 0 0; font-size: 0.67rem; }
-  .meta-standard > :not(:last-child)::after { content: "·"; margin-left: 0.65rem; }
-  .kind { color: var(--accent-2); }
-  .description { margin: 1.25rem 0 0; color: var(--text); line-height: 1.8; }
-  .series { display: inline-block; margin-top: 1rem; color: var(--accent-2); font-size: 0.65rem; letter-spacing: 0.05em; text-decoration: underline; text-underline-offset: 0.2em; }
-  .tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1.25rem 0 0; padding: 0; list-style: none; }
-  .tags a { display: block; padding: 0.12rem 0.5rem; border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent); border-radius: 999px; color: var(--accent); font-size: 0.64rem; }
-  .tags a:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+  .post-info { margin-block: 0.5rem; border-left: 2px solid color-mix(in srgb, var(--accent) 80%, transparent); padding: 0.5rem 0 0.5rem 1rem; color: color-mix(in srgb, var(--text) 80%, transparent); }
+  .info-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; }
+  .meta { padding-left: 2px; font-size: var(--text-base); line-height: var(--leading-ui); overflow-wrap: anywhere; }
+  .meta > :not(:first-child)::before { content: '·'; display: inline-block; margin-inline: 0.5rem; }
+  .series { margin-right: 0.5rem; }
+  .post-info :global(.tags) { margin: 1rem 0 0; }
+  .description { margin: 1.25rem 0 0; color: var(--text); line-height: var(--leading-body); }
+  @media (max-width: 39.999rem) { .info-row { flex-direction: column; align-items: flex-start; gap: 1rem; } }
   .cover { display: block; width: 100%; margin: 1.75rem 0 0; border: 8px solid color-mix(in srgb, var(--text) 10%, transparent); border-radius: 0.75rem; }
 
   @media (max-width: 48rem) {

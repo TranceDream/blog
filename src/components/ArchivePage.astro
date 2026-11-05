@@ -48,7 +48,7 @@ const noteLocations = Object.fromEntries(posts.filter((post) => post.data.type =
 </script>
 
 <style>
-  .pagination { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-block: 2rem; font-size: 1rem; }
+  .pagination { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-block: 2rem; font-size: var(--text-base); }
   .pagination a { color: var(--accent); padding-block: 0.5rem; text-underline-offset: 0.25em; }
   .pagination a:hover { text-decoration: underline; }
   .pagination a:focus-visible { outline: 2px solid var(--accent); outline-offset: 0.25rem; }

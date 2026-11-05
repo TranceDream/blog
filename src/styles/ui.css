@@ -1,0 +1,92 @@
+/* Shared by the blog and embedded Labs. Keep page-specific layout in its owner. */
+:root {
+  --font-mono: "JetBrains Mono Variable", "SFMono-Regular", "SF Mono", "Cascadia Code", "Noto Sans Mono CJK SC", ui-monospace, monospace;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-section: 1.5rem;
+  --text-title: 1.75rem;
+  --leading-body: 1.8;
+  --leading-ui: 1.5;
+  --leading-heading: 1.5;
+  --input-height: 3.25rem;
+  --radius-control: 0.5rem;
+  --radius-panel: 0.75rem;
+}
+
+.detail-title, .section-title, .post-title {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: normal;
+  line-height: var(--leading-heading);
+  overflow-wrap: anywhere;
+}
+.detail-title { margin: 0 0 1rem; color: var(--heading-1); font-size: var(--text-title); }
+.section-title { margin: 0 0 1rem; color: var(--heading-2); font-size: var(--text-section); }
+.post-title { margin: 0 0 0.75rem; color: var(--heading-1); font-size: var(--text-section); }
+.post-title a { color: inherit; text-decoration: none; text-underline-offset: 0.2em; }
+.post-title a:hover { color: var(--accent); text-decoration: underline; }
+
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem 0.375rem 0.875rem;
+  border: 3px double color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: var(--radius-panel);
+  background: transparent;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: var(--text-base);
+  font-weight: 400;
+  line-height: var(--leading-ui);
+  text-decoration: none;
+  cursor: pointer;
+}
+.action-button[hidden] { display: none; }
+.action-button svg { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
+.action-button:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.action-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 0.25rem; }
+@media (max-width: 40rem) { .action-button--responsive { width: 100%; } }
+
+.tags { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1rem 0 1.5rem; padding: 0; list-style: none; }
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 100%;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+  border-radius: 1rem;
+  color: var(--accent);
+  font-size: var(--text-sm);
+  line-height: 1.25rem;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+a.tag-chip:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.tag-chip .tag-count { color: var(--muted); font: inherit; }
+
+.post-item { margin-block: 0.25rem; padding: 1.25rem 0; }
+/* Astro can insert a script between the first two items. */
+.post-item ~ .post-item { margin-top: 2rem; }
+.post-item > .post-description { margin: 1rem 0; padding-left: 0.125rem; color: var(--text); line-height: var(--leading-body); }
+@media (min-width: 48rem) {
+  .post-item { margin-block: 1rem; }
+  .post-item ~ .post-item { margin-top: 3rem; }
+}
+
+/* Search and theme dialogs share their basic typography and field treatment. */
+.dialog-title { margin: 0; color: var(--heading-1); font-size: var(--text-lg); font-weight: 600; line-height: var(--leading-heading); }
+.dialog-input {
+  width: 100%;
+  height: var(--input-height);
+  padding: 0.65rem 0.85rem;
+  border: 2px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  line-height: var(--leading-ui);
+}

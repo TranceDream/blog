@@ -18,7 +18,7 @@ const { profile } = SITE;
   .profile { display: flex; align-items: center; justify-content: space-around; gap: 1.25rem; margin: 1.5rem 0 2.75rem; padding-inline: 0.5rem; }
   .avatar { flex: 0 0 auto; box-sizing: content-box; width: 9rem; height: 9rem; aspect-ratio: 1; object-fit: cover; border: 8px solid color-mix(in srgb, var(--accent) 15%, transparent); border-radius: 50%; }
   .bio { min-width: 0; margin: 1rem; overflow-wrap: anywhere; }
-  .bio p { margin: 0 0 1rem; line-height: 1.75; }
+  .bio p { margin: 0 0 1rem; line-height: var(--leading-body); }
   .bio p:last-child { margin-bottom: 0; }
   @media (max-width: 40rem) {
     .profile { flex-direction: column; gap: 0.5rem; padding-inline: 0; }

@@ -1,0 +1,11 @@
+---
+import { tagHref } from '../lib/posts';
+interface Props { tags: string[]; linked?: boolean }
+const { tags, linked = true } = Astro.props;
+---
+{tags.length > 0 && <ul class="tags" aria-label="标签">
+  {tags.map(tag => <li>{linked
+    ? <a class="tag-chip" href={tagHref(tag)}>#{tag}</a>
+    : <span class="tag-chip">#{tag}</span>}
+  </li>)}
+</ul>}

@@ -1,8 +1,10 @@
 ---
+import Tags from './Tags.astro';
+import ChevronsRight from '../icons/chevrons-right.svg';
 import DraftBadge from './DraftBadge.astro';
 import { render } from 'astro:content';
 import type { PostEntry } from '../lib/posts';
-import { formatDate, noteAnchor, postHref, tagHref } from '../lib/posts';
+import { formatDate, noteAnchor, postHref } from '../lib/posts';
 
 interface Props {
   post: PostEntry;
@@ -35,58 +37,47 @@ const minutesRead = remarkPluginFrontmatter.minutesRead;
           {NoteContent && <NoteContent />}
         </div>
         <div class="note-thumbnails" data-note-thumbnails data-pagefind-ignore aria-label="图片预览"></div>
+        <Tags tags={post.data.tags} />
         <button
-          class="note-toggle"
+          class="note-toggle action-button action-button--responsive"
           type="button"
           aria-controls={noteContentId}
           aria-expanded="false"
           data-note-toggle
           hidden
         >
-          <span aria-hidden="true" data-note-symbol>+</span>
-          <span data-note-label>展开全文</span>
+          <span data-note-label>Expand</span>
+          <ChevronsRight aria-hidden="true" />
         </button>
       </note-disclosure>
     </>
   ) : (
     <>
-      <h2><a href={postHref(post)}># {post.data.title}</a></h2>
+      <h2 class="post-title"><a href={postHref(post)}># {post.data.title}</a></h2>
       <div class="meta">
         <DraftBadge draft={post.data.draft} />
         <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
         {minutesRead && <span>{minutesRead}</span>}
       </div>
-      <p>{post.data.description}</p>
+      <p class="post-description">{post.data.description}</p>
     </>
   )}
-  <ul class="tags" aria-label="标签">
-    {post.data.tags.map((tag) => <li><a href={tagHref(tag)}>#{tag}</a></li>)}
-  </ul>
-  {!isNote && <a class="read" href={postHref(post)} aria-label={`阅读：${post.data.title}`}>Read
-    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 17 5-5-5-5" /><path d="m13 17 5-5-5-5" /></svg>
+  {!isNote && <Tags tags={post.data.tags} />}
+  {!isNote && <a class="read action-button action-button--responsive" href={postHref(post)} aria-label={`阅读：${post.data.title}`}>Read
+    <ChevronsRight aria-hidden="true" />
   </a>}
 </article>
 
 <style>
-  .post-item {
-    margin-block: 0.25rem;
-    padding: 1.25rem 0;
-  }
-  .meta { display: flex; flex-wrap: wrap; gap: 0.45rem 0.75rem; margin-top: 0.9rem; color: var(--muted); font-size: 0.9rem; }
+  .meta { display: flex; flex-wrap: wrap; gap: 0.45rem 0.75rem; margin-top: 0.9rem; color: var(--muted); padding-left: 0.125rem; font-size: var(--text-base); line-height: var(--leading-ui); }
   .meta > :not(:last-child)::after { margin-left: 0.75rem; color: var(--faint); content: "·"; }
-  h2 { margin: 0; color: var(--heading-1); font-size: 1.5rem; font-weight: 650; letter-spacing: -0.04em; }
-  h2 a { text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 0.2em; }
-  h2 a:hover { text-decoration-color: currentColor; }
-  .post-item:not(.note-item) h2 { margin-bottom: 0.75rem; font-weight: 600; line-height: 2rem; letter-spacing: normal; }
-  .post-item:not(.note-item) .meta { margin: 1rem 0 0.75rem; padding-left: 0.125rem; font-size: 1rem; line-height: 1.5rem; }
-  .post-item:not(.note-item) > p { padding-left: 0.125rem; }
-  .post-item:not(.note-item) .tags { margin: 0 0 1.5rem; }
+  .post-item:not(.note-item) .meta { margin: 1rem 0 0.75rem; }
   .note-item { scroll-margin-top: 1.5rem; }
   .note-meta { margin-top: 0; }
-  .note-title { margin-top: 0.8rem; color: var(--heading-2); font-size: 1.1rem; letter-spacing: 0; scroll-margin-top: 1.5rem; }
+  .note-title { margin-top: 0.8rem; color: var(--heading-2); font-size: var(--text-lg); font-weight: 600; line-height: var(--leading-heading); letter-spacing: normal; scroll-margin-top: 1.5rem; }
   .note-item:has(.note-title:target) { border-radius: 0.35rem; background: color-mix(in srgb, var(--accent) 8%, transparent); outline: 2px solid color-mix(in srgb, var(--accent) 28%, transparent); outline-offset: 0.4rem; }
   .note-disclosure { display: block; }
-  .note-content { --note-media-width: 24rem; margin-top: 0.75rem; font-size: 1rem; line-height: 1.8; }
+  .note-content { --note-media-width: 24rem; margin-top: 0.75rem; font-size: var(--text-base); line-height: var(--leading-body); }
   .note-content :global(p) { margin-block: 0.8rem; }
   .note-content :global(img),
   .note-content :global(figure) {
@@ -119,50 +110,7 @@ const minutesRead = remarkPluginFrontmatter.minutesRead;
     -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 2.4rem), transparent 100%);
     mask-image: linear-gradient(to bottom, #000 calc(100% - 2.4rem), transparent 100%);
   }
-  .note-toggle {
-    display: inline-flex;
-    gap: 0.45rem;
-    align-items: center;
-    margin-top: 0.35rem;
-    padding: 0.3rem 0;
-    border: 0;
-    background: transparent;
-    color: var(--accent);
-    font: inherit;
-    font-size: 0.9rem;
-    cursor: pointer;
-  }
-  .note-toggle[hidden] { display: none; }
-  .note-toggle:hover [data-note-label] { text-decoration: underline; text-underline-offset: 0.22em; }
-  .note-toggle:focus-visible { border-radius: 0.2rem; outline: 2px solid var(--accent); outline-offset: 0.25rem; }
-  [data-note-symbol] { width: 0.8em; font-family: var(--font-mono); text-align: center; }
-  .note-item .tags { margin-bottom: 0; }
-  p { margin: 1rem 0; color: var(--text); line-height: 1.75; }
-  .tags { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1.1rem 0 1.5rem; padding: 0; list-style: none; }
-  .tags a { display: block; padding: 0.25rem 0.75rem; border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent); border-radius: 1rem; color: var(--accent); font-size: 0.875rem; line-height: 1.25rem; }
-  .tags a:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
-  .read {
-    display: inline-flex;
-    gap: 0.5rem;
-    align-items: center;
-    justify-content: center;
-    padding: 0.375rem 0.75rem 0.375rem 0.875rem;
-    border: 3px double color-mix(in srgb, var(--accent) 30%, transparent);
-    border-radius: 0.75rem;
-    color: var(--accent);
-    font-size: 1rem;
-    line-height: 1.5rem;
-    text-decoration: none;
-  }
-  .read svg { flex-shrink: 0; }
-  .read:focus-visible { outline: 2px solid var(--accent); outline-offset: 0.25rem; }
-  .read:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
-  @media (min-width: 48rem) {
-    .post-item { margin-block: 1rem; }
-  }
-  @media (max-width: 40rem) {
-    .read { width: 100%; }
-  }
+  .note-disclosure[data-expanded="true"] .note-toggle :global(svg) { transform: rotate(180deg); }
 </style>
 
 <script>

@@ -1,49 +1,42 @@
 
-  .health { width: min(calc(100% - 3rem), var(--measure)); margin-bottom: 4rem; }
-  .topline { display: flex; justify-content: space-between; gap: 1rem; color: var(--muted); font-size: .8rem; margin-bottom: 1.5rem; }
-  .topline a { color: var(--accent); text-decoration: underline; text-underline-offset: .2em; }
   .health > section + section { margin-top: 3rem; }
-  h2 { margin: 0 0 1.25rem; color: var(--accent); font-size: 1.15rem; }
-  button { padding: .4rem .85rem; border: 1px solid var(--line-strong); border-radius: .5rem; background: transparent; color: var(--accent); cursor: pointer; font-size: .9rem; }
-  button:hover { background: var(--surface); }
+  h2 { margin: 0 0 1rem; }
   :disabled { opacity: .45; cursor: not-allowed; }
   .fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem 1.25rem; }
-  .fields label { display: grid; gap: .4rem; font-size: .85rem; color: var(--muted); }
+  .fields label { display: grid; gap: .4rem; font-size: var(--text-base); color: var(--muted); }
   .full { grid-column: 1 / -1; }
-  input:not([type="checkbox"]), select { width: 100%; min-width: 0; padding: .65rem .75rem; color: var(--text); background: var(--surface); border: 1px solid var(--line-strong); border-radius: .5rem; font-size: 1rem; }
+  input:not([type="checkbox"]), select { width: 100%; min-width: 0; padding: .65rem .75rem; color: var(--text); background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius-control); font-size: var(--text-base); }
   input::placeholder { color: var(--faint); opacity: 1; }
   :is(input, select, button, summary):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--warning); }
-  .check { display: flex; align-items: center; gap: .6rem; color: var(--muted); font-size: .85rem; margin-top: 1.25rem; }
+  .check { display: flex; align-items: center; gap: .6rem; color: var(--muted); font-size: var(--text-base); margin-top: 1.25rem; }
   .check input { accent-color: var(--accent); width: 1rem; height: 1rem; flex-shrink: 0; }
   .portion { margin-top: 1rem; }
   [hidden] { display: none !important; }
   .actions { display: flex; gap: .75rem; margin-top: 1.5rem; }
-  .primary { border: 3px double color-mix(in srgb, var(--accent) 40%, transparent); border-radius: .65rem; }
-  .feedback { font-size: .85rem; color: var(--muted); margin: .75rem 0; }
+  .feedback { font-size: var(--text-sm); color: var(--muted); margin: .75rem 0; }
   .feedback:empty { display: none; }
   .feedback[data-error="true"] { color: var(--warning); }
-  .result { background: var(--surface); border-radius: .65rem; padding: 1.5rem; margin-top: 1.5rem; }
+  .result { background: var(--surface); border-radius: var(--radius-panel); padding: 1.5rem; margin-top: 1.5rem; }
   .main-result { display: flex; gap: .6rem; align-items: baseline; flex-wrap: wrap; }
   output { color: var(--accent); font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 650; line-height: 1.2; overflow-wrap: anywhere; }
-  .main-result span { color: var(--muted); font-size: .8rem; }
+  .main-result span { color: var(--muted); font-size: var(--text-sm); }
   .conversions { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1rem; margin: 1.5rem 0 0; }
-  dt { color: var(--muted); font-size: .8rem; } dd { margin: .3rem 0 0; overflow-wrap: anywhere; font-size: .95rem; }
-  .result-caption, .hint { font-size: .8rem; color: var(--muted); margin: 1rem 0 0; }
+  dt { color: var(--muted); font-size: var(--text-sm); } dd { margin: .3rem 0 0; overflow-wrap: anywhere; font-size: var(--text-base); }
+  .result-caption, .hint { font-size: var(--text-sm); color: var(--muted); margin: 1rem 0 0; }
   .result-caption:empty { display: none; }
   .category { color: var(--text); margin: .75rem 0; }
   .bmi-scale { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: .3rem; list-style: none; padding: 0; margin: 1.25rem 0 0; }
-  .bmi-scale li { padding-top: .5rem; border-top: 3px solid var(--line-strong); color: var(--muted); font-size: .8rem; }
+  .bmi-scale li { padding-top: .5rem; border-top: 3px solid var(--line-strong); color: var(--muted); font-size: var(--text-base); }
   .bmi-scale li[data-current="true"] { border-color: var(--accent); color: var(--accent); font-weight: bold; }
-  .bmi-scale span { display: block; font-size: .7rem; font-weight: normal; }
+  .bmi-scale span { display: block; font-size: var(--text-sm); font-weight: normal; }
   .metabolic-results { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 1.5rem; }
-  .metabolic-results p { margin: 0 0 .8rem; color: var(--muted); font-size: .8rem; }
-  .presets { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin-top: 1rem; color: var(--faint); font-size: .75rem; }
-  .presets button { padding: .2rem .5rem; font-size: .75rem; }
-  .notes { margin-top: 2rem; color: var(--muted); font-size: .8rem; }
+  .metabolic-results p { margin: 0 0 .8rem; color: var(--muted); font-size: var(--text-sm); }
+  .presets { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin-top: 1rem; color: var(--faint); font-size: var(--text-sm); }
+  .presets button { padding: .2rem .5rem; font-size: var(--text-sm); }
+  .notes { margin-top: 2rem; color: var(--muted); font-size: var(--text-sm); }
   summary { cursor: pointer; color: var(--accent); }
   .notes ul { padding-left: 1.25rem; } .notes li { margin: .75rem 0; } .notes a { color: var(--accent); text-decoration: underline; }
-  @media (max-width: 48rem) { .health { width: calc(100% - 1.5rem); } }
   @media (max-width: 30rem) { .fields { gap: 1rem .75rem; } .result { padding: 1rem; } .metabolic-results { grid-template-columns: 1fr; } .conversions { grid-template-columns: 1fr; gap: .5rem; } .conversions div { display: flex; justify-content: space-between; gap: .5rem; } dd { margin: 0; } }
 
-.health, .workbench { width: 100%; margin: 0; }
+.health { width: 100%; margin: 0; }

@@ -2,7 +2,6 @@ class NoteDisclosure extends HTMLElement {
   private content: HTMLElement | null = null;
   private toggle: HTMLButtonElement | null = null;
   private label: HTMLElement | null = null;
-  private symbol: HTMLElement | null = null;
   private resizeObserver: ResizeObserver | null = null;
   private measureFrame: number | null = null;
 
@@ -10,7 +9,6 @@ class NoteDisclosure extends HTMLElement {
     this.content = this.querySelector('[data-note-content]');
     this.toggle = this.querySelector('[data-note-toggle]');
     this.label = this.querySelector('[data-note-label]');
-    this.symbol = this.querySelector('[data-note-symbol]');
 
     if (!this.content || !this.toggle) return;
 
@@ -97,8 +95,7 @@ class NoteDisclosure extends HTMLElement {
   private setExpanded(expanded: boolean) {
     this.dataset.expanded = String(expanded);
     this.toggle?.setAttribute('aria-expanded', String(expanded));
-    if (this.label) this.label.textContent = expanded ? '收起' : '展开全文';
-    if (this.symbol) this.symbol.textContent = expanded ? '−' : '+';
+    if (this.label) this.label.textContent = expanded ? 'Collapse' : 'Expand';
   }
 
   private handleToggle = () => {

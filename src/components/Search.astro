@@ -23,7 +23,7 @@ const devRecords = import.meta.env.DEV
             description: lab.data.description,
             href: `/labs/${lab.id}/`,
             type: 'Labs',
-            date: formatDate(lab.data.publishedAt),
+            date: '',
             tags: lab.data.tags,
             body: lab.body ?? '',
           }))
@@ -52,12 +52,12 @@ const devIndex = JSON.stringify(devRecords).replaceAll('<', '\\u003c');
       <button class="dialog-close" type="button" aria-label="关闭搜索" data-close-search>
         <IconCircleX aria-hidden="true" />
       </button>
-      <h2 class="search-title">搜索</h2>
+      <h2 class="search-title dialog-title">搜索</h2>
       {import.meta.env.DEV ? (
         <div class="dev-search">
           <label>
             <span class="sr-only">输入关键词</span>
-            <input type="search" placeholder="搜索标题、正文或标签…" autocomplete="off" data-dev-query />
+            <input class="dialog-input" type="search" placeholder="搜索标题、正文或标签…" autocomplete="off" data-dev-query />
           </label>
           <p class="search-status" aria-live="polite" data-search-status>输入关键词开始搜索。</p>
           <ol class="search-results" data-dev-results></ol>
@@ -178,7 +178,7 @@ const devIndex = JSON.stringify(devRecords).replaceAll('<', '\\u003c');
         const description = document.createElement('p');
         link.href = record.href;
         title.textContent = record.title;
-        meta.textContent = `${record.type} · ${record.date}`;
+        meta.textContent = [record.type, record.date].filter(Boolean).join(' · ');
         description.textContent = record.description ?? '';
         link.append(title, meta, description);
         item.append(link);
@@ -199,25 +199,27 @@ const devIndex = JSON.stringify(devRecords).replaceAll('<', '\\u003c');
   .search-panel { position: relative; overflow-y: auto; min-height: 12rem; padding: 1.35rem; }
   .search-panel .dialog-close { position: absolute; top: 0.8rem; right: 0.8rem; display: grid; width: 2rem; height: 2rem; padding: 0.2rem; border: 0; background: transparent; color: var(--accent); cursor: pointer; }
   .search-panel .dialog-close svg { width: 100%; height: 100%; }
-  .search-title { margin: 0 3rem 1rem 0; color: var(--heading-1); font-size: 1.25rem; }
-  .dev-search input,
+  .search-title { margin: 0 3rem 1rem 0; }
   .pagefind-ui__search-input {
     width: 100% !important;
-    min-height: 3rem !important;
-    padding: 0.65rem 0.85rem !important;
-    border: 2px solid color-mix(in srgb, var(--accent) 34%, transparent) !important;
-    border-radius: 0.6rem !important;
+    height: var(--input-height) !important;
+    padding: 0.65rem 4.5rem 0.65rem 0.85rem !important;
+    border: 2px solid color-mix(in srgb, var(--accent) 30%, transparent) !important;
+    border-radius: var(--radius-control) !important;
     background: var(--surface) !important;
     color: var(--text) !important;
     font: inherit !important;
+    line-height: var(--leading-ui) !important;
   }
-  .search-status { margin: 0.8rem 0; color: var(--faint); font-size: 0.68rem; }
+  .pagefind-ui__form::before { display: none !important; }
+  .pagefind-ui__search-clear { top: 2px !important; right: 2px !important; height: calc(var(--input-height) - 4px) !important; padding-inline: 0.75rem !important; background: transparent !important; font-size: var(--text-sm) !important; line-height: var(--leading-ui) !important; }
+  .search-status { margin: 0.8rem 0; color: var(--muted); font-size: var(--text-sm); line-height: var(--leading-ui); }
   .search-results { display: grid; gap: 0.35rem; margin: 0; padding: 0; list-style: none; }
-  .search-results a { display: grid; gap: 0.2rem; padding: 0.8rem; border-radius: 0.55rem; }
+  .search-results a { min-width: 0; overflow-wrap: anywhere; display: grid; gap: 0.2rem; padding: 0.8rem; border-radius: var(--radius-control); }
   .search-results a:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); }
-  .search-results strong { color: var(--accent); font-size: 0.86rem; }
-  .search-results span { color: var(--faint); font-size: 0.62rem; }
-  .search-results p { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.72rem; line-height: 1.55; }
+  .search-results strong, .pagefind-ui__result-title { color: var(--accent); font-size: var(--text-base) !important; font-weight: 600 !important; line-height: var(--leading-ui) !important; }
+  .search-results span { color: var(--muted); font-size: var(--text-sm); line-height: var(--leading-ui); }
+  .search-results p, .pagefind-ui__result-excerpt { margin: 0.25rem 0 0; color: var(--muted) !important; font-size: var(--text-sm) !important; line-height: var(--leading-body) !important; }
   :root {
     --pagefind-ui-font: inherit;
     --pagefind-ui-primary: var(--accent);
@@ -225,10 +227,10 @@ const devIndex = JSON.stringify(devRecords).replaceAll('<', '\\u003c');
     --pagefind-ui-background: var(--bg);
     --pagefind-ui-border: color-mix(in srgb, var(--accent) 35%, transparent);
     --pagefind-ui-border-width: 2px;
-    --pagefind-ui-border-radius: 0.6rem;
+    --pagefind-ui-border-radius: var(--radius-control);
   }
   .pagefind-ui__result { border-top-color: var(--line) !important; }
-  .pagefind-ui__result-link { color: var(--accent-2) !important; }
-  .pagefind-ui__result-excerpt { color: var(--muted) !important; }
+  .pagefind-ui__result-link { color: var(--accent) !important; }
+  .pagefind-ui__message { color: var(--muted); font-size: var(--text-sm) !important; font-weight: 400 !important; line-height: var(--leading-ui) !important; }
   .pagefind-ui__result-inner mark { padding: 0 0.2rem !important; border-radius: 0.25rem !important; background: var(--accent) !important; color: var(--bg) !important; }
 </style>

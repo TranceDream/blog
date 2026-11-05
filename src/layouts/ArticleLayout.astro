@@ -3,7 +3,7 @@ import type { MarkdownHeading } from 'astro';
 import type { PostEntry } from '../lib/posts';
 import BaseLayout from './BaseLayout.astro';
 import ArticleHeader from '../components/ArticleHeader.astro';
-import PostNavigation from '../components/PostNavigation.astro';
+import MorePosts from '../components/MorePosts.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import { postTitle } from '../lib/posts';
 
@@ -25,11 +25,11 @@ const showToc = post.data.toc && headings.some(({ depth }) => depth === 2 || dep
     <ArticleHeader post={post} minutesRead={minutesRead} />
 
     <div class="article-grid shell">
-      {showToc && <aside class="toc-slot"><TableOfContents headings={headings} variant="inline" /></aside>}
+      {showToc && <aside class="toc-slot"><TableOfContents headings={headings} variant="aside" /></aside>}
       <div class="prose article-copy"><slot /></div>
     </div>
 
-    <PostNavigation newer={newer} older={older} />
+    <MorePosts newer={newer} older={older} />
   </article>
 </BaseLayout>
 
@@ -37,6 +37,11 @@ const showToc = post.data.toc && headings.some(({ depth }) => depth === 2 || dep
   .article-grid { display: flex; flex-direction: column; width: min(calc(100% - 3rem), var(--measure)); padding-block: 2.5rem; }
   .article-copy, .toc-slot { width: 100%; min-width: 0; }
   .toc-slot { order: -1; }
+  @media (min-width: 80rem) {
+    .article-grid { display: grid; grid-template-columns: minmax(0, 1fr) 15rem; column-gap: 1rem; width: calc(var(--measure) + 16rem); margin-left: calc((100% - var(--measure)) / 2); margin-right: 0; align-items: start; }
+    .article-copy { grid-column: 1; grid-row: 1; }
+    .toc-slot { grid-column: 2; grid-row: 1; position: sticky; top: 2.5rem; }
+  }
   @media (max-width: 48rem) {
     .article-grid { width: min(calc(100% - 1.5rem), var(--measure)); }
   }
