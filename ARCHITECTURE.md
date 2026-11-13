@@ -43,6 +43,7 @@ Markdown / MDX → content.config.ts → pages/ → layouts/ → components/ →
 - 阅读时长由 `remark-reading-time` 从解析后的文字与代码示例估算，排除 MDX 导入和表达式；列表与详情读取同一结果。
 - 弹窗外观使用 `.site-dialog`，开关与滚动锁使用 `lib/dialog.ts`。
 - 交互展示背景按滚动位置更新，每帧最多计算一次；不依赖可见比例继续变化。
+- 交互展示面板由 `remark-interactive-panels` 留在正文原位，禁用脚本时按单栏文章穿插阅读；启用脚本时由 `InteractiveArticle` 的内联脚本在首次绘制前移入舞台。
 
 ## 常用修改入口
 

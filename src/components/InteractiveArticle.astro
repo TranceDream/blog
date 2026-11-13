@@ -1,25 +1,39 @@
 ---
 interface Props {
   label?: string;
+  /** 由 remark-interactive-panels 在正文含展示面板时注入。 */
+  hasDisplay?: boolean;
 }
 
-const { label = '文章交互展示' } = Astro.props;
-const hasDisplay = Astro.slots.has('display');
+const { label = '文章交互展示', hasDisplay = false } = Astro.props;
 ---
 
 <div class:list={['interactive-article', { 'without-display': !hasDisplay }]} data-interactive-article>
+  {hasDisplay && <script is:inline>document.currentScript.parentElement.dataset.stageMounted = 'true';</script>}
   <div class="interactive-copy" data-interactive-copy>
+    {hasDisplay && (
+      <noscript>
+        <p class="interactive-noscript">当前浏览器未启用 JavaScript：展示内容已按顺序插入正文，其中的交互控件不可用。</p>
+      </noscript>
+    )}
     <div class="prose"><slot /></div>
   </div>
 
   {hasDisplay && (
     <aside class="interactive-display" aria-label={label} data-pagefind-ignore>
-      <div class="stage-viewport">
-        <slot name="display" />
-      </div>
+      <div class="stage-viewport"></div>
     </aside>
   )}
 </div>
+
+{hasDisplay && (
+  <script is:inline>
+    (() => {
+      const root = document.currentScript.previousElementSibling;
+      root?.querySelector('.stage-viewport')?.append(...root.querySelectorAll('[data-interactive-copy] > .prose > [data-stage-panel]'));
+    })();
+  </script>
+)}
 
 <script>
   import { bindArticleStages } from '../lib/articleStages';
@@ -66,29 +80,67 @@ const hasDisplay = Astro.slots.has('display');
 
 <style>
   .interactive-article {
+    --stage-bg: #17191f;
+    --stage-text: #eceef3;
+    --stage-muted: #9aa1ad;
+    --stage-accent: color-mix(in srgb, var(--accent) 68%, white);
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0;
     align-items: start;
     width: 100%;
   }
-  .interactive-article.without-display {
+  /* 面板未移入舞台（无脚本）时按普通文章单栏排版。 */
+  .interactive-article:is(.without-display, :not([data-stage-mounted])) {
     grid-template-columns: minmax(0, var(--measure));
     justify-content: center;
     width: min(calc(100% - 3rem), var(--measure));
     margin-inline: auto;
   }
+  .interactive-article:not([data-stage-mounted]) .interactive-display { display: none; }
+  /* 开头的脚本先切换为舞台布局，末尾的脚本再移入面板；两者之间不显示正文内的面板。 */
+  .interactive-article[data-stage-mounted] .interactive-copy :global(.prose > [data-stage-panel]) { display: none; }
   .interactive-copy {
     width: 100%;
     min-width: 0;
     padding-inline: max(1.5rem, calc((100vw - var(--page)) / 2)) clamp(1.5rem, 3vw, 3rem);
   }
-  .interactive-article.without-display .interactive-copy { width: 100%; padding-inline: 0; }
+  .interactive-article:is(.without-display, :not([data-stage-mounted])) .interactive-copy { width: 100%; padding-inline: 0; }
+  .interactive-noscript {
+    margin: 0 0 2rem;
+    padding: 0.75rem 1rem;
+    border-left: 2px solid var(--accent);
+    border-radius: var(--radius-control);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: var(--text-sm);
+    line-height: var(--leading-ui);
+  }
+  /* 正文内面板沿用 .prose 的控件样式，因此把其依赖的主题变量换成舞台配色。 */
+  .interactive-copy :global(.prose > [data-stage-panel]) {
+    --bg: var(--stage-bg);
+    --text: var(--stage-text);
+    --muted: var(--stage-muted);
+    --accent: var(--stage-accent);
+    --surface: color-mix(in srgb, var(--stage-text) 6%, var(--stage-bg));
+    --line: color-mix(in srgb, var(--stage-text) 14%, transparent);
+    --line-strong: color-mix(in srgb, var(--stage-text) 26%, transparent);
+    margin-block: 1.5rem 2rem;
+    padding: 1.5rem;
+    border-radius: var(--radius-panel);
+    background: var(--stage-bg);
+    color: var(--stage-text);
+    color-scheme: dark;
+    line-height: 1.75;
+  }
+  .interactive-copy :global(.prose > [data-stage-panel][data-label])::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 1rem;
+    color: var(--stage-muted);
+    font-size: var(--text-sm);
+  }
   .interactive-display {
-    --stage-bg: #17191f;
-    --stage-text: #eceef3;
-    --stage-muted: #9aa1ad;
-    --stage-accent: color-mix(in srgb, var(--accent) 68%, white);
     --stage-presence: 1;
     --stage-content: 1;
     position: sticky;
@@ -121,7 +173,7 @@ const hasDisplay = Astro.slots.has('display');
     opacity: var(--stage-content);
     transition: opacity 90ms linear;
   }
-  .interactive-article :global([data-stage-panel]) {
+  .stage-viewport > :global([data-stage-panel]) {
     grid-area: 1 / 1;
     align-content: safe center;
     justify-self: center;
@@ -137,14 +189,14 @@ const hasDisplay = Astro.slots.has('display');
     pointer-events: none;
     transition: opacity 160ms ease-out, visibility 0s linear 160ms;
   }
-  .interactive-article :global([data-stage-panel][data-stage-active="true"]),
-  .interactive-article:not([data-stage-ready="true"]) :global([data-stage-panel]:first-child) {
+  .stage-viewport > :global([data-stage-panel][data-stage-active="true"]),
+  .interactive-article:not([data-stage-ready="true"]) .stage-viewport > :global([data-stage-panel]:first-child) {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
     transition-delay: 0s;
   }
-  .interactive-article:not([data-stage-ready="true"]) :global([data-stage-panel]:not(:first-child)) { display: none; }
+  .interactive-article:not([data-stage-ready="true"]) .stage-viewport > :global([data-stage-panel]:not(:first-child)) { display: none; }
   .interactive-article :global([data-stage-panel] > :first-child) { margin-top: 0; }
   .interactive-article :global([data-stage-panel] > :last-child) { margin-bottom: 0; }
   .interactive-article :global([data-stage-panel] :where(p, ul, ol, figure, form, details)) { margin-block: 1.25rem; }
@@ -171,7 +223,7 @@ const hasDisplay = Astro.slots.has('display');
       margin-inline: auto;
     }
     .interactive-copy { width: 100%; padding-inline: 0; }
-    .interactive-article:not(.without-display) .interactive-copy :global(:is(h2, h3, h4, h5, h6)) {
+    .interactive-article[data-stage-mounted]:not(.without-display) .interactive-copy :global(:is(h2, h3, h4, h5, h6)) {
       scroll-margin-top: calc(52svh + 1.5rem);
     }
     .interactive-display {
@@ -193,6 +245,6 @@ const hasDisplay = Astro.slots.has('display');
   @media (prefers-reduced-motion: reduce) {
     .interactive-display::before,
     .stage-viewport { opacity: 1; transition: none; }
-    .interactive-article :global([data-stage-panel]) { transition: none; }
+    .stage-viewport > :global([data-stage-panel]) { transition: none; }
   }
 </style>
