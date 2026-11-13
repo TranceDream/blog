@@ -8,7 +8,7 @@ import { getVisiblePosts } from '../lib/posts';
 import Profile from '../components/Profile.astro';
 
 const posts = await getVisiblePosts();
-const latest = posts.slice(0, 4);
+const latest = posts.slice(0, 3);
 ---
 
 <BaseLayout>
