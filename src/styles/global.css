@@ -4,12 +4,6 @@
 @import "katex/dist/katex.css";
 
 :root {
-  --surface: color-mix(in srgb, var(--text) 5%, var(--bg));
-  --surface-raised: color-mix(in srgb, var(--text) 9%, var(--bg));
-  --muted: color-mix(in srgb, var(--text) 72%, var(--bg));
-  --faint: color-mix(in srgb, var(--text) 52%, var(--bg));
-  --line: color-mix(in srgb, var(--text) 14%, transparent);
-  --line-strong: color-mix(in srgb, var(--text) 26%, transparent);
   --page: 70rem;
   --measure: 48rem;
   --font-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;

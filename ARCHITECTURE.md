@@ -20,7 +20,8 @@ Markdown / MDX → content.config.ts → pages/ → layouts/ → components/ →
 | `src/lib/` | 排序、链接、日期、主题和交互展示逻辑 |
 | `src/scripts/` | Note 折叠、媒体查看器等较长的浏览器行为 |
 | `src/plugins/` | Markdown 扩展：提示块、图片标题、emoji 等 |
-| `src/styles/global.css` | 主题变量、正文排版和全局基础样式 |
+| `src/styles/ui.css` | 博客与 Labs 共用：字号、圆角、派生颜色变量（`--surface`、`--muted`、`--line` 等）和通用控件 |
+| `src/styles/global.css` | 正文排版和全局基础样式 |
 | `src/content/labs/` | 独立 HTML 工具、元数据和各自资源 |
 | `src/features/labs/` | Labs 通用路由、资源输出、共享样式与主题同步 |
 | `src/config/` | 站点信息、功能开关和主题清单 |

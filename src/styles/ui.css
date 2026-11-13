@@ -12,6 +12,12 @@
   --input-height: 3.25rem;
   --radius-control: 0.5rem;
   --radius-panel: 0.75rem;
+  --surface: color-mix(in srgb, var(--text) 5%, var(--bg));
+  --surface-raised: color-mix(in srgb, var(--text) 9%, var(--bg));
+  --muted: color-mix(in srgb, var(--text) 72%, var(--bg));
+  --faint: color-mix(in srgb, var(--text) 52%, var(--bg));
+  --line: color-mix(in srgb, var(--text) 14%, transparent);
+  --line-strong: color-mix(in srgb, var(--text) 26%, transparent);
 }
 
 .detail-title, .section-title, .post-title {
