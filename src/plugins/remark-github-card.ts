@@ -1,5 +1,6 @@
 // Adapted from MultiTerm (MIT). Network failures intentionally degrade to a normal link.
 import type { Node, Paragraph, Root, RootContent } from 'mdast';
+import type {} from 'mdast-util-to-hast';
 import type { Directives } from 'mdast-util-directive';
 import type { Plugin } from 'unified';
 import { h as createHast, type Properties } from 'hastscript';

@@ -1,5 +1,6 @@
 // Adapted from MultiTerm (MIT): https://github.com/stelcodes/multiterm-astro
 import type { Paragraph, PhrasingContent, Root } from 'mdast';
+import type {} from 'mdast-util-to-hast';
 import { toString } from 'mdast-util-to-string';
 import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
