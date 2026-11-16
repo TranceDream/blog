@@ -201,19 +201,25 @@ const { label = '文章交互展示', hasDisplay = false } = Astro.props;
   .interactive-article :global([data-stage-panel] > :last-child) { margin-bottom: 0; }
   .interactive-article :global([data-stage-panel] :where(p, ul, ol, figure, form, details)) { margin-block: 1.25rem; }
   .interactive-article :global([data-stage-panel] :where(ul, ol)) { padding-left: 1.5rem; }
-  .interactive-article :global([data-stage-panel] :where(strong, code)) { color: var(--stage-accent); }
+  .interactive-article :global([data-stage-panel] :where(strong, :not(pre) > code)) { color: var(--stage-accent); }
   .interactive-article :global([data-stage-panel] small) { color: var(--stage-muted); }
   .interactive-article :global([data-stage-panel] fieldset) { display: grid; gap: 1rem; margin: 0; padding: 0; border: 0; }
   .interactive-article :global([data-stage-panel] label) { display: flex; gap: 0.75rem; align-items: center; }
   .interactive-article :global([data-stage-panel] .expressive-code) { margin: 0; }
-  .interactive-article :global([data-stage-panel] .expressive-code figure),
+  /* 高亮颜色跟随全站主题，代码块需保留主题自身背景，浅色主题下才不会与深色舞台冲突。 */
+  .interactive-article :global([data-stage-panel] .expressive-code figure) {
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--stage-text) 14%, transparent) !important;
+    border-radius: var(--radius-control) !important;
+    background: var(--ec-codeBg) !important;
+    box-shadow: none !important;
+  }
   .interactive-article :global([data-stage-panel] .expressive-code figure > pre) {
     border: 0 !important;
     border-radius: 0 !important;
     background: transparent !important;
-    box-shadow: none !important;
   }
-  .interactive-article :global([data-stage-panel] .expressive-code figcaption) { display: none; }
+  .interactive-article :global([data-stage-panel] .expressive-code figure.frame > figcaption.header) { display: none; }
 
   @media (max-width: 60rem) {
     .interactive-article {
