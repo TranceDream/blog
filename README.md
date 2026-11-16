@@ -1,111 +1,65 @@
 # TranceDream’s Blog
 
-正式站点地址为 `https://trancedre.am`，集中配置在 `src/config/site.ts`；Astro 的 `site`、canonical、分享地址、RSS 和 robots.txt 使用这一配置。
+这是 TranceDream 的个人博客，地址是 [trancedre.am](https://trancedre.am)。这里记录日常生活和技术笔记，也放一些可以直接在浏览器里使用的小工具。
 
-- `/rss.xml`：已发布文章和 Notes 的摘要订阅；生产构建不包含草稿，本地开发包含草稿。
-- `/sitemap-index.xml`：构建时自动生成站点地图。
-- `/robots.txt`：允许抓取并声明站点地图；404 页面设置为不收录。
-- 分享图片优先使用文章头图；没有头图时，Life/Tech 使用构建生成的 `/social-cards/<id>.png`，其他页面使用 `/social-cards/__default.png`。模板位于 `src/pages/social-cards/[...slug].png.ts`，头像、作者和配色读取站点配置与默认主题。中文字体仅在构建时使用，许可见 `licenses/MapleMono-OFL.txt`。
-- 计划使用 Cloudflare Pages，仍为纯静态输出：构建命令 `pnpm build`，产物目录 `dist/`。尚未配置或执行部署，DNS、自定义域名绑定和重定向留待上线时处理。
+## 站点里有什么
 
-一个静态优先的 Astro 个人博客。视觉语言来自 MultiTerm：编辑器主题色、Markdown 标题符号、平面文章流和克制的边框；内容宽度则按文章用途变化。
+- **首页**：头像、简短的自我介绍，以及最近更新的几条内容。
+- **Archive**：所有内容的时间线，长文和随手记的短日志按发布时间排在一起。
+- **Labs**：独立的小工具，比如 JSON 工具箱、健康计算器和日历复制器，打开就能用。
+- **About**：更详细的自我介绍、兴趣爱好和友链。
+- **标签与系列**：点击文章上的标签或系列名，可以只看相关的内容。
 
-简要代码地图与改进建议见 [`ARCHITECTURE.md`](./ARCHITECTURE.md)。
+## 阅读时的小功能
 
-交互文章与 Labs 编写教程统一维护在 `src/content/posts/`，参与站点构建；`docs/` 只保留链接入口。交互文章教程见 [`docs/how-to-write-interactive-articles.mdx`](./docs/how-to-write-interactive-articles.mdx)，本地预览时直接从 Archive 打开，无需复制文件。
+- **搜索**：点击页面右上角的放大镜，或按 `⌘ K`（Windows 上是 `Ctrl K`），可以搜索全站文字。
+- **换配色**：点击放大镜旁边的调色盘，可以在 60 套编辑器配色之间切换，选择会保存在当前浏览器里。
+- **看大图**：点击文章里的图片会放大查看，同一篇文章里的图片可以左右切换。
+- **订阅**：用 RSS 阅读器订阅 [trancedre.am/rss.xml](https://trancedre.am/rss.xml)，就能收到更新。
+- **交互文章**：部分技术文章旁边有一块展示区，会跟着阅读位置切换内容。浏览器关闭了 JavaScript 也能正常阅读，展示内容会按顺序穿插在正文里。
 
-现有测试文章、Notes、Labs 示例及演示素材已备份到项目外并清理。当前内容以 `src/content/` 为准。MultiTerm 许可保留在 [`licenses/MultiTerm.txt`](./licenses/MultiTerm.txt)。
+## 内容是怎么写的
 
-## 个人介绍与社交链接
-
-在 `src/config/site.ts` 编辑 `profile`：`avatar` 为 `public/` 下的图片地址（当前 `/avatar.webp`），`avatarAlt` 为替代文本，`greeting` 为开场白，`bio` 每一项是一段简介。头像留空即可隐藏。
-
-`socials` 控制页脚图标、顺序和地址，支持 `github`、`twitter`、`email`、`rss` 和通用 `link` 图标；每项填写 `label`、`href`、`icon`。邮箱填写一次 `mailto:`，删除条目或留空地址即可隐藏。
-
-## 写作内容
-
-`draft: true` 在 `pnpm dev` 中正常显示；`pnpm build` 会从列表、详情、标签、系列、搜索、RSS、站点地图及分享图中排除草稿。`pnpm preview` 查看的是构建产物，因此也不包含草稿。准备发布时再改为 `draft: false`。
-
-所有文章与短日志都放在 `src/content/posts/`，由 `src/content.config.ts` 统一校验。`type` 只决定内部渲染方式，不再对应公开分区：
+每篇内容都是一个 Markdown 文件，放在 `src/content/posts/` 里，文件名写成 `日期-标题.md`。文件开头有一小段说明，比如：
 
 ```yaml
 ---
-type: life # life | tech | note
-title: 一篇文章 # note 可省略
-description: 列表和分享摘要
-publishedAt: 2026-08-26
-author: tranced # 可选
-series: Astro Notes # 可选
-tags: [example]
-draft: false
-toc: true
-presentation: composed # 仅组合式 MDX Tech 文章需要
+type: life          # life 是生活文章，tech 是技术文章，note 是短日志
+title: 文章标题      # 短日志可以不写
+description: 一句话简介，会显示在列表和分享卡片里
+publishedAt: 2026-11-02
+tags: [日常]
+draft: false        # 写成 true 就只在本地预览里出现，不会发布
 ---
 ```
 
-- `life`：使用普通文章布局，详情地址为 `/archive/<id>/`。
-- `tech`：默认使用普通文章布局；需要交互展示时使用 `.mdx`、`presentation: composed` 与通用 `InteractiveArticle`，详情同样位于 `/archive/<id>/`。
-- `note`：不生成独立详情页；可不写标题，Markdown 正文直接显示在 `/archive/`，较长内容会折叠并可原位展开，规范链接为 `/archive/#note-<id>`。
-- `labs`：独立 HTML 小工具展示，目前包含健康计算与 JSON 工具。
+内容分三种：
 
-公开导航包含 Home、Archive 和可选的 Labs。Archive 是所有写作内容唯一的时间归档；标签与系列页面只是这条内容流的筛选视图。
+- **生活文章（life）和技术文章（tech）** 会有自己的页面。
+- **短日志（note）** 直接显示在 Archive 列表里，较长的会折叠起来，点击就能展开。
+- **交互文章** 是带展示区的技术文章，写法见博客里的[《编写交互式 Tech 文章》](src/content/posts/2026-10-01-编写交互式Tech文章.mdx)。Labs 小工具的写法见[《编写独立 HTML 小工具》](src/content/posts/2026-10-01-编写独立HTML小工具.md)。
 
-Labs 由 `src/config/site.ts` 中的 `features.labs` 控制。每个工具放在 `src/content/labs/<id>/`，包含 `index.md`、`index.html` 及其资源；博客自动生成列表与页面，注入共用样式并同步主题。详见 [`docs/how-to-write-labs.md`](./docs/how-to-write-labs.md)。
+## 修改个人信息
 
-## 结构边界
+- 头像、问候语、简介和页脚的社交链接，在 `src/config/site.ts` 里修改。
+- About 页的详细介绍、兴趣和友链，在 `src/config/about.ts` 里修改。新增一个友链，只要照着已有的格式补上名字、地址和简介即可。
 
-```text
-src/
-├── components/       # 可复用的静态 UI 与交互展示
-├── config/           # 站点级配置
-├── content/          # Markdown 内容
-├── layouts/          # 普通文章与组合式 Tech 两种布局
-├── lib/              # 路由、日期、排序等纯函数
-├── pages/            # Astro 文件路由
-└── styles/           # 全局主题变量与文章排版
-```
+## 本地预览与发布
 
-共用视觉规则集中在 `src/styles/ui.css`（博客与 Labs 共用）：正文/控件 16px、辅助信息/标签 14px、章节标题 24px、详情标题 28px。新增页面优先使用 `PageIntro`、`Tags` 和 `.action-button` / `.section-title` 等共用样式；页面自己的 CSS 只负责布局与特殊交互，避免复制字号、按钮和标签规则。
-
-项目刻意不预装 React、Tailwind 或 shadcn/ui。真实交互需求出现后，再把单个 React Island 放进 `components/`；静态文章与页面不会因此被整体水合。
-
-项目默认只在本地运行和构建，不包含任何托管平台绑定或自动部署流程。
-
-## 主题、搜索与正文渲染
-
-- Header 右侧按 MultiTerm 的顺序放置搜索与主题入口，均为融入标题色带的图标按钮。
-- 首页显示 Archive 的最新条目；Archive 按发布时间混排长文和短日志，并共用同一个列表组件。
-- 主题注册表位于 `src/config/themes.ts`，包含 MultiTerm 当前的 60 套 Shiki 主题；页面语义色、代码高亮和选择器中的三色色块来自同一份配置。
-- `⌘/Ctrl + K` 打开搜索。开发服务器使用内容集合的本地搜索，`pnpm build` 后由 Pagefind 为最终 HTML 建立全文索引。生产搜索在首次打开时加载；界面或索引初始化失败时显示提示，可点击重试。
-- Markdown/MDX 支持标题锚点、h2/h3 目录、Expressive Code、表格、任务列表、脚注、图片标题、像素图、五类提示块、数学公式、emoji、角色对话与 GitHub 卡片。
-- 组合式 Tech 文章把正文与展示内容写在同一个 `.mdx` 文件中；页面无需注册专属展示组件。
-- Markdown 正文图片与文章头图会自动接入全站媒体查看器，同一篇文章内可前后切换；显式写成 `<video data-media-viewer>` 的视频也会获得查看器入口。可用 `data-media-viewer="off"` 排除单个媒体。
-- 标签与系列分别生成 `/tags/.../` 和 `/series/.../` 页面；普通文章显示相邻文章导航。
-
-## 开发
+在电脑上预览，需要先安装 [Node.js](https://nodejs.org/) 22.12 或更新的版本，以及 [pnpm](https://pnpm.io/)。然后在项目目录里运行：
 
 ```sh
 pnpm install --frozen-lockfile
 pnpm astro dev --background
-pnpm build
 ```
 
-后台开发服务器可用 `pnpm astro dev status`、`pnpm astro dev logs` 和 `pnpm astro dev stop` 管理。
+浏览器打开 http://localhost:4321 就能看到博客，草稿也会显示出来。用完运行 `pnpm astro dev stop` 关闭。
 
-主题选择保存在浏览器本地；旧版的 Mocha、Kanagawa 和 Latte 偏好会自动迁移到对应的新主题 ID。构建命令只生成本地 `dist/` 与 Pagefind 索引，不包含发布步骤。
+修改先在 `next` 分支上完成，确认没问题后合并到 `main`。`main` 一更新，Cloudflare Pages 就会自动构建并发布到线上。
 
-## 固定构建环境
+## 致谢与许可
 
-仅使用 pnpm，版本由 `package.json` 的 `packageManager` 固定。CI 使用 `pnpm install --frozen-lockfile`、`pnpm check`、`pnpm test` 和 `pnpm build`，再将 `dist/` 上传至 Cloudflare Pages。CI 需先安装声明版本的 pnpm 与满足 `engines.node` 的 Node.js；配置时优先选择支持中的 Node.js LTS。日期显示由 `SITE.timeZone` 固定，不依赖 CI 系统时区。此处仅说明流程，尚未新增自动部署工作流。
+- 视觉风格参考了 [MultiTerm](https://github.com/stelcodes/multiterm-astro) 主题，许可见 [`licenses/MultiTerm.txt`](licenses/MultiTerm.txt)。
+- 分享卡片使用了 Maple Mono 字体，许可见 [`licenses/MapleMono-OFL.txt`](licenses/MapleMono-OFL.txt)。
 
-`pnpm-workspace.yaml` 仅保存当前项目的定向依赖覆盖，不引入多包架构：数学插件与站点 CSS 统一使用 KaTeX 0.19.1，Satori 的两条解压依赖使用修复后的 fflate 0.7.5。升级这些上游包时检查是否可以移除覆盖；更新 KaTeX 时同步直接依赖和覆盖版本，`pnpm test` 会校验渲染器与样式来源一致。`mdast-util-to-hast` 作为开发依赖提供 Markdown 插件的官方类型扩展。TypeScript 暂时保持 6.x：当前 `@astrojs/check` 的 peer dependency 只声明支持 5.x / 6.x，待检查工具支持后再升级至 7.x。
-
-回归测试覆盖摘要、草稿过滤、排序、Archive 分页、Note 跨页链接、公式渲染与 Labs 逻辑；`pnpm audit` 检查锁文件中的已知依赖漏洞。
-
-Notes 的 RSS 摘要从 Markdown 正文提取纯文本，保留原文顺序，最多 200 个可见字符；超出时添加省略号，不改写正文或 frontmatter。
-
-开发服务器会为草稿显示 `Draft` 标识。交互文章编译时会检查组合容器、H2 与展示面板数量、面板插槽等结构问题，并输出带文件路径的 warning；这些提醒不阻止预览或构建。
-
-## About 与友链
-
-`/about/` 沿用站点头像、作者与问候语；详细介绍、兴趣及友链集中维护在 `src/config/about.ts`。友链填写 `name`、`href` 和可选 `description`，不需要修改页面。
+想了解代码结构，请看 [`ARCHITECTURE.md`](ARCHITECTURE.md)。
