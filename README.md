@@ -12,7 +12,7 @@
 
 简要代码地图与改进建议见 [`ARCHITECTURE.md`](./ARCHITECTURE.md)。
 
-交互文章编写教程与完整 MDX 示例保留在 [`docs/how-to-write-interactive-articles.mdx`](./docs/how-to-write-interactive-articles.mdx)，不参与站点构建。需要预览时可复制到 `src/content/posts/` ，保留 `draft: true` 即可在开发服务器中查看。
+交互文章与 Labs 编写教程统一维护在 `src/content/posts/`，参与站点构建；`docs/` 只保留链接入口。交互文章教程见 [`docs/how-to-write-interactive-articles.mdx`](./docs/how-to-write-interactive-articles.mdx)，本地预览时直接从 Archive 打开，无需复制文件。
 
 现有测试文章、Notes、Labs 示例及演示素材已备份到项目外并清理。当前内容以 `src/content/` 为准。MultiTerm 许可保留在 [`licenses/MultiTerm.txt`](./licenses/MultiTerm.txt)。
 
@@ -76,7 +76,7 @@ src/
 - Header 右侧按 MultiTerm 的顺序放置搜索与主题入口，均为融入标题色带的图标按钮。
 - 首页显示 Archive 的最新条目；Archive 按发布时间混排长文和短日志，并共用同一个列表组件。
 - 主题注册表位于 `src/config/themes.ts`，包含 MultiTerm 当前的 60 套 Shiki 主题；页面语义色、代码高亮和选择器中的三色色块来自同一份配置。
-- `⌘/Ctrl + K` 打开搜索。开发服务器使用内容集合的本地搜索，`pnpm build` 后由 Pagefind 为最终 HTML 建立全文索引。
+- `⌘/Ctrl + K` 打开搜索。开发服务器使用内容集合的本地搜索，`pnpm build` 后由 Pagefind 为最终 HTML 建立全文索引。生产搜索在首次打开时加载；界面或索引初始化失败时显示提示，可点击重试。
 - Markdown/MDX 支持标题锚点、h2/h3 目录、Expressive Code、表格、任务列表、脚注、图片标题、像素图、五类提示块、数学公式、emoji、角色对话与 GitHub 卡片。
 - 组合式 Tech 文章把正文与展示内容写在同一个 `.mdx` 文件中；页面无需注册专属展示组件。
 - Markdown 正文图片与文章头图会自动接入全站媒体查看器，同一篇文章内可前后切换；显式写成 `<video data-media-viewer>` 的视频也会获得查看器入口。可用 `data-media-viewer="off"` 排除单个媒体。
@@ -97,6 +97,10 @@ pnpm build
 ## 固定构建环境
 
 仅使用 pnpm，版本由 `package.json` 的 `packageManager` 固定。CI 使用 `pnpm install --frozen-lockfile`、`pnpm check`、`pnpm test` 和 `pnpm build`，再将 `dist/` 上传至 Cloudflare Pages。CI 需先安装声明版本的 pnpm 与满足 `engines.node` 的 Node.js；配置时优先选择支持中的 Node.js LTS。日期显示由 `SITE.timeZone` 固定，不依赖 CI 系统时区。此处仅说明流程，尚未新增自动部署工作流。
+
+`pnpm-workspace.yaml` 仅保存当前项目的定向依赖覆盖，不引入多包架构：数学插件与站点 CSS 统一使用 KaTeX 0.19.1，Satori 的两条解压依赖使用修复后的 fflate 0.7.5。升级这些上游包时检查是否可以移除覆盖；更新 KaTeX 时同步直接依赖和覆盖版本，`pnpm test` 会校验渲染器与样式来源一致。`mdast-util-to-hast` 作为开发依赖提供 Markdown 插件的官方类型扩展。TypeScript 暂时保持 6.x：当前 `@astrojs/check` 的 peer dependency 只声明支持 5.x / 6.x，待检查工具支持后再升级至 7.x。
+
+回归测试覆盖摘要、草稿过滤、排序、Archive 分页、Note 跨页链接、公式渲染与 Labs 逻辑；`pnpm audit` 检查锁文件中的已知依赖漏洞。
 
 Notes 的 RSS 摘要从 Markdown 正文提取纯文本，保留原文顺序，最多 200 个可见字符；超出时添加省略号，不改写正文或 frontmatter。
 

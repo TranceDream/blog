@@ -14,7 +14,8 @@ export async function GET() {
       description: post.data.type === 'note' && typeof metadata?.excerpt === 'string'
         ? metadata.excerpt : post.data.description,
       pubDate: post.data.publishedAt,
-      link: postHref(post, posts),
+      // Resolve first so RSS canonicalization does not append a slash to Note anchors.
+      link: new URL(postHref(post, posts), SITE.url).href,
       categories: post.data.tags,
     };
   }));

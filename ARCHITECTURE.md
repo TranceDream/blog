@@ -20,11 +20,12 @@ Markdown / MDX → content.config.ts → pages/ → layouts/ → components/ →
 | `src/lib/` | 排序、链接、日期、主题和交互展示逻辑 |
 | `src/scripts/` | Note 折叠、媒体查看器等较长的浏览器行为 |
 | `src/plugins/` | Markdown 扩展：提示块、图片标题、emoji 等 |
-| `src/styles/global.css` | 主题变量、正文排版和全局基础样式 |
+| `src/styles/ui.css` | 博客与 Labs 共用：字号、圆角、派生颜色变量（`--surface`、`--muted`、`--line` 等）和通用控件 |
+| `src/styles/global.css` | 正文排版和全局基础样式 |
 | `src/content/labs/` | 独立 HTML 工具、元数据和各自资源 |
 | `src/features/labs/` | Labs 通用路由、资源输出、共享样式与主题同步 |
 | `src/config/` | 站点信息、功能开关和主题清单 |
-| `docs/` | 编写教程与 MDX 示例，不生成公开页面 |
+| `docs/` | 编写教程的链接入口；完整教程与 MDX 示例统一维护在 `src/content/posts/` |
 | `licenses/` | 第三方许可证 |
 
 ## 页面生成
@@ -38,7 +39,7 @@ Markdown / MDX → content.config.ts → pages/ → layouts/ → components/ →
 
 ## 统一规则
 
-- `getPublishedPosts()` 提供非草稿、按时间倒序的文章；`groupPostsByTag()` 供首页和标签页共用。
+- `getVisiblePosts()` 读取集合，通过 `selectVisiblePosts()` 统一过滤草稿并按时间倒序排列；开发环境包含草稿，生产构建排除。过滤、分页和链接规则在 `scripts/posts.test.mjs` 中验证；`groupPostsByTag()` 供标签列表和标签详情页共用。
 - 标签在内容校验时归一化：全半角统一、小写、去首尾空格、空白转连字符、去重；显示与 URL 使用同一个名称。
 - 阅读时长由 `remark-reading-time` 从解析后的文字与代码示例估算，排除 MDX 导入和表达式；列表与详情读取同一结果。
 - 弹窗外观使用 `.site-dialog`，开关与滚动锁使用 `lib/dialog.ts`。

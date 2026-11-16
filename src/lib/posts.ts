@@ -1,7 +1,7 @@
-import { getCollection, type CollectionEntry } from 'astro:content';
-import { normalizeTags, termSlug } from './terms';
-import { SITE } from '../config/site';
-export { termSlug } from './terms';
+import type { CollectionEntry } from 'astro:content';
+import { normalizeTags, termSlug } from './terms.ts';
+import { SITE } from '../config/site.ts';
+export { termSlug } from './terms.ts';
 
 export type PostEntry = CollectionEntry<'posts'>;
 
@@ -32,7 +32,12 @@ export function noteAnchor(post: PostEntry) {
 }
 
 export async function getVisiblePosts() {
-  return sortPosts(await getCollection('posts', ({ data }) => import.meta.env.DEV || !data.draft));
+  const { getCollection } = await import('astro:content');
+  return selectVisiblePosts(await getCollection('posts'), import.meta.env.DEV);
+}
+
+export function selectVisiblePosts(posts: PostEntry[], includeDrafts = false) {
+  return sortPosts(posts.filter(({ data }) => includeDrafts || !data.draft));
 }
 
 export function groupPostsByTag(posts: PostEntry[]) {

@@ -64,7 +64,11 @@ const devIndex = JSON.stringify(devRecords).replaceAll('<', '\\u003c');
           <script is:inline type="application/json" data-dev-index set:html={devIndex}></script>
         </div>
       ) : (
-        <div id="pagefind-search"></div>
+        <div>
+          <p class="search-status" role="status" data-pagefind-status>正在加载搜索…</p>
+          <button class="action-button" type="button" data-retry-search hidden>重试</button>
+          <div id="pagefind-search" aria-busy="false"></div>
+        </div>
       )}
     </div>
   </dialog>
@@ -90,6 +94,7 @@ const devIndex = JSON.stringify(devRecords).replaceAll('<', '\\u003c');
     results: HTMLOListElement | null;
     status: HTMLElement | null;
     records: DevRecord[];
+    searchState: 'idle' | 'loading' | 'ready' | 'error' = 'idle';
     controller = new AbortController();
 
     constructor() {
@@ -112,8 +117,7 @@ const devIndex = JSON.stringify(devRecords).replaceAll('<', '\\u003c');
         syncDialogScrollLock();
       });
       this.query?.addEventListener('input', () => this.renderDevResults());
-
-      if (!import.meta.env.DEV) this.loadPagefind();
+      this.querySelector('[data-retry-search]')?.addEventListener('click', () => this.loadPagefind());
     }
 
     connectedCallback() {
@@ -122,21 +126,50 @@ const devIndex = JSON.stringify(devRecords).replaceAll('<', '\\u003c');
 
     disconnectedCallback() { this.controller.abort(); }
 
-    loadPagefind() {
-      const onIdle = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 1));
-      onIdle(async () => {
+    async loadPagefind() {
+      if (this.searchState === 'loading' || this.searchState === 'ready') return;
+      const container = this.querySelector<HTMLElement>('#pagefind-search');
+      const status = this.querySelector<HTMLElement>('[data-pagefind-status]');
+      const retry = this.querySelector<HTMLButtonElement>('[data-retry-search]');
+      if (!container || !status || !retry) return;
+
+      this.searchState = 'loading';
+      container.setAttribute('aria-busy', 'true');
+      status.hidden = false;
+      status.textContent = '正在加载搜索…';
+      retry.hidden = true;
+      let index: { filters: () => Promise<unknown>; destroy: () => Promise<void> } | undefined;
+      try {
         const { PagefindUI } = await import('@pagefind/default-ui');
+        // 索引由 postbuild 生成；先确认它可用，避免只加载了空的搜索界面。
+        const indexUrl = '/pagefind/pagefind.js';
+        index = await import(/* @vite-ignore */ indexUrl);
+        await index!.filters();
         new PagefindUI({
-          element: '#pagefind-search',
+          element: container,
           bundlePath: '/pagefind/',
           showImages: false,
           showSubResults: true,
         });
-      });
+        this.searchState = 'ready';
+        status.hidden = true;
+        if (this.dialog?.open) container.querySelector<HTMLInputElement>('input')?.focus();
+      } catch {
+        // 清理失败的索引实例，让网络恢复后的重试重新初始化。
+        await index?.destroy().catch(() => {});
+        container.replaceChildren();
+        this.searchState = 'error';
+        status.textContent = '搜索暂时无法加载，请检查网络后重试。';
+        retry.hidden = false;
+        if (this.dialog?.open) retry.focus();
+      } finally {
+        container.setAttribute('aria-busy', 'false');
+      }
     }
 
     open() {
       openDialog(this.dialog);
+      if (!import.meta.env.DEV && this.searchState === 'idle') void this.loadPagefind();
       window.setTimeout(() => this.dialog?.querySelector<HTMLInputElement>('input')?.focus(), 0);
     }
 
@@ -214,6 +247,7 @@ const devIndex = JSON.stringify(devRecords).replaceAll('<', '\\u003c');
   .pagefind-ui__form::before { display: none !important; }
   .pagefind-ui__search-clear { top: 2px !important; right: 2px !important; height: calc(var(--input-height) - 4px) !important; padding-inline: 0.75rem !important; background: transparent !important; font-size: var(--text-sm) !important; line-height: var(--leading-ui) !important; }
   .search-status { margin: 0.8rem 0; color: var(--muted); font-size: var(--text-sm); line-height: var(--leading-ui); }
+  [data-retry-search][hidden] { display: none; }
   .search-results { display: grid; gap: 0.35rem; margin: 0; padding: 0; list-style: none; }
   .search-results a { min-width: 0; overflow-wrap: anywhere; display: grid; gap: 0.2rem; padding: 0.8rem; border-radius: var(--radius-control); }
   .search-results a:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); }
