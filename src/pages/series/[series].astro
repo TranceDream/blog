@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import PostItem from '../../components/PostItem.astro';
+import { getVisiblePosts, sortPosts, termSlug } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = (await getVisiblePosts()).filter(({ data }) => Boolean(data.series));
+  const groups = new Map<string, { series: string; posts: typeof posts }>();
+  for (const post of posts) {
+    if (!post.data.series) continue;
+    const slug = termSlug(post.data.series);
+    const group = groups.get(slug) ?? { series: post.data.series, posts: [] };
+    group.posts.push(post);
+    groups.set(slug, group);
+  }
+  return [...groups.entries()].map(([series, group]) => ({ params: { series }, props: group }));
+}
+
+const { series, posts } = Astro.props;
+const entries = sortPosts(posts).reverse();
+---
+
+<BaseLayout title={series} description={`${series} 系列文章。`}>
+  <PageIntro title={series} description="按系列顺序阅读。" count={`${entries.length} ${entries.length === 1 ? 'part' : 'parts'}`} />
+  <section class="post-stream shell">
+    {entries.map((post) => <PostItem post={post} />)}
+  </section>
+</BaseLayout>

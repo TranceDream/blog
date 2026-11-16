@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import { getVisiblePosts, groupPostsByTag, tagHref } from '../../lib/posts';
+
+const tags = groupPostsByTag(await getVisiblePosts());
+---
+
+<BaseLayout title="Tags" description="按标签浏览全部内容。">
+  <PageIntro title="Tags" description="同一主题下的内容会在这里相遇。" count={`${tags.length} ${tags.length === 1 ? 'tag' : 'tags'}`} />
+  <ul class="tag-index shell">
+    {tags.map(([tag, posts]) => <li><a class="tag-chip" href={tagHref(tag)}><span>#{tag}</span><b class="tag-count">{posts.length}</b></a></li>)}
+  </ul>
+</BaseLayout>
+
+<style>
+  .tag-index { display: flex; flex-wrap: wrap; gap: 0.8rem; width: min(calc(100% - 3rem), var(--measure)); margin-block: 0; padding: 0 0 5rem; list-style: none; }
+  @media (max-width: 48rem) { .tag-index { width: min(calc(100% - 1.5rem), var(--measure)); } }
+</style>

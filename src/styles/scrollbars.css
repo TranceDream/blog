@@ -1,0 +1,15 @@
+/* Match MultiTerm: subtle theme-colored thumbs on transparent tracks. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) transparent;
+}
+
+html {
+  scrollbar-color: var(--accent) transparent;
+  scrollbar-gutter: stable;
+}
+
+@supports (color: color-mix(in oklab, red, transparent)) {
+  * { scrollbar-color: color-mix(in oklab, var(--accent) 20%, transparent) transparent; }
+  html { scrollbar-color: color-mix(in oklab, var(--accent) 30%, transparent) transparent; }
+}

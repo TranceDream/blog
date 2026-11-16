@@ -1,221 +1,270 @@
 ---
-import '@pagefind/default-ui/css/ui.css'
-import IconCircleX from '~/icons/circle-x.svg'
-import IconSearch from '~/icons/search.svg'
+import '@pagefind/default-ui/css/ui.css';
+import { getCollection } from 'astro:content';
+import IconSearch from '../icons/search.svg';
+import IconCircleX from '../icons/circle-x.svg';
+import { SITE } from '../config/site';
+import { formatDate, getVisiblePosts, postHref, postTitle } from '../lib/posts';
 
-const { trailingSlashes = false } = Astro.props
+const devRecords = import.meta.env.DEV
+  ? [
+      ...(await getVisiblePosts()).map((post, _index, posts) => ({
+        title: postTitle(post),
+        description: post.data.description,
+        href: postHref(post, posts),
+        type: 'Archive',
+        date: formatDate(post.data.publishedAt),
+        tags: post.data.tags,
+        body: post.body ?? '',
+      })),
+      ...(SITE.features.labs
+        ? (await getCollection('labs')).map((lab) => ({
+            title: lab.data.title,
+            description: lab.data.description,
+            href: `/labs/${lab.id}/`,
+            type: 'Labs',
+            date: '',
+            tags: lab.data.tags,
+            body: lab.body ?? '',
+          }))
+        : []),
+    ]
+  : [];
+const devIndex = JSON.stringify(devRecords).replaceAll('<', '\\u003c');
 ---
 
-<site-search class="ms-auto" id="search" data-trailing-slashes={trailingSlashes}>
+<site-search>
   <button
-    class="hover:text-accent flex cursor-pointer items-center justify-center rounded-md"
+    class="header-action"
+    type="button"
+    aria-label="搜索内容"
     aria-keyshortcuts="Control+K Meta+K"
-    data-open-modal
-    disabled
+    aria-haspopup="dialog"
+    aria-controls="search-dialog"
+    data-open-search
+    title="搜索（⌘/Ctrl + K）"
   >
-    <IconSearch class="size-6 text-accent" />
-    <span class="sr-only">Open Search</span>
+    <IconSearch aria-hidden="true" />
   </button>
-  <dialog
-    aria-label="search"
-    class="text-foreground! bg-background max-h-5/6 min-h-48 w-7/8 sm:w-5/6 max-w-xl border-double! border-4 border-accent/30 shadow-sm backdrop:backdrop-blur-sm open:flex mx-auto mt-10 sm:mt-16 mb-auto rounded-xl"
-  >
-    <div class="dialog-frame flex grow flex-col gap-4 p-6 pt-6 max-w-full">
-      <button class="cursor-pointer fixed top-2 right-2 rounded-full" data-close-modal>
-        <IconCircleX class="size-6 text-accent/50" />
+
+  <dialog class="site-dialog" id="search-dialog" aria-label="搜索内容">
+    <div class="dialog-frame search-panel">
+      <button class="dialog-close" type="button" aria-label="关闭搜索" data-close-search>
+        <IconCircleX aria-hidden="true" />
       </button>
-      {
-        import.meta.env.DEV ? (
-          <div class="mx-auto text-center">
-            <p>
-              Search is only available in production builds. <br />
-              Try building and previewing the site to test it out locally.
-            </p>
-          </div>
-        ) : (
-          <div class="search-container">
-            <div id="pagefind-search" class="max-w-full" />
-          </div>
-        )
-      }
+      <h2 class="search-title dialog-title">搜索</h2>
+      {import.meta.env.DEV ? (
+        <div class="dev-search">
+          <label>
+            <span class="sr-only">输入关键词</span>
+            <input class="dialog-input" type="search" placeholder="搜索标题、正文或标签…" autocomplete="off" data-dev-query />
+          </label>
+          <p class="search-status" aria-live="polite" data-search-status>输入关键词开始搜索。</p>
+          <ol class="search-results" data-dev-results></ol>
+          <script is:inline type="application/json" data-dev-index set:html={devIndex}></script>
+        </div>
+      ) : (
+        <div>
+          <p class="search-status" role="status" data-pagefind-status>正在加载搜索…</p>
+          <button class="action-button" type="button" data-retry-search hidden>重试</button>
+          <div id="pagefind-search" aria-busy="false"></div>
+        </div>
+      )}
     </div>
   </dialog>
 </site-search>
 
-<style is:global>
-  :root {
-    --pagefind-ui-font: inherit;
-    --pagefind-ui-primary: var(--theme-accent);
-    --pagefind-ui-text: var(--theme-foreground);
-    --pagefind-ui-background: var(--theme-background);
-    --pagefind-ui-border: var(--theme-accent);
-    --pagefind-ui-border-width: 2px;
-  }
-
-  .pagefind-ui__results-area {
-    margin: 16px 0;
-  }
-  .pagefind-ui__result {
-    overflow-x: scroll !important;
-  }
-
-  .pagefind-ui__result-inner {
-    max-width: 100% !important;
-  }
-
-  .pagefind-ui__result-inner mark {
-    background-color: var(--theme-accent) !important;
-    color: var(--theme-background) !important;
-    font-weight: 600 !important;
-    padding: 0 3px !important;
-    border-radius: 6px !important;
-  }
-
-  .pagefind-ui__result-nested .pagefind-ui__result-link:before {
-    content: '>' !important;
-    left: -16px !important;
-    right: unset !important;
-    color: var(--theme-accent) !important;
-    font-weight: 600 !important;
-  }
-</style>
-
 <script>
+  import { openDialog, closeDialog, syncDialogScrollLock } from '../lib/dialog';
+  interface DevRecord {
+    title: string;
+    description?: string;
+    href: string;
+    type: string;
+    date: string;
+    tags: string[];
+    body: string;
+  }
+
   class SiteSearch extends HTMLElement {
-    #closeBtn: HTMLButtonElement | null
-    #dialog: HTMLDialogElement | null
-    #dialogFrame: HTMLDivElement | null
-    #openBtn: HTMLButtonElement | null
-    #controller: AbortController
-    trailingSlashes: boolean
-    stripTrailingSlash: (path: string) => string
-    formatURL: (path: string) => string
+    dialog: HTMLDialogElement | null;
+    openButton: HTMLButtonElement | null;
+    closeButton: HTMLButtonElement | null;
+    query: HTMLInputElement | null;
+    results: HTMLOListElement | null;
+    status: HTMLElement | null;
+    records: DevRecord[];
+    searchState: 'idle' | 'loading' | 'ready' | 'error' = 'idle';
+    controller = new AbortController();
 
     constructor() {
-      super()
-      this.#openBtn = this.querySelector<HTMLButtonElement>('button[data-open-modal]')
-      this.#closeBtn = this.querySelector<HTMLButtonElement>('button[data-close-modal]')
-      this.#dialog = this.querySelector<HTMLDialogElement>('dialog')
-      this.#dialogFrame = this.querySelector('.dialog-frame')
-      this.#controller = new AbortController()
+      super();
+      this.dialog = this.querySelector('dialog');
+      this.openButton = this.querySelector('[data-open-search]');
+      this.closeButton = this.querySelector('[data-close-search]');
+      this.query = this.querySelector('[data-dev-query]');
+      this.results = this.querySelector('[data-dev-results]');
+      this.status = this.querySelector('[data-search-status]');
+      const data = this.querySelector('[data-dev-index]')?.textContent;
+      this.records = data ? JSON.parse(data) : [];
 
-      this.trailingSlashes = this.dataset.trailingSlashes === 'true' ? true : false
-      this.stripTrailingSlash = (path: string) => path.replace(/(.)\/(#.*)?$/, '$1$2')
-      this.formatURL = !this.trailingSlashes
-        ? this.stripTrailingSlash
-        : (path: string) => path
-
-      // Set up events
-      if (this.#openBtn) {
-        this.#openBtn.addEventListener('click', this.openModal)
-        this.#openBtn.disabled = false
-      } else {
-        console.warn('Search button not found')
-      }
-
-      if (this.#closeBtn) {
-        this.#closeBtn.addEventListener('click', this.closeModal)
-      } else {
-        console.warn('Close button not found')
-      }
-
-      if (this.#dialog) {
-        this.#dialog.addEventListener('close', () => {
-          window.removeEventListener('click', this.onWindowClick)
-          const body = document.querySelector('body')
-          body?.classList.remove('overflow-hidden')
-        })
-      } else {
-        console.warn('Dialog not found')
-      }
-
-      // only add pagefind in production
-      if (import.meta.env.DEV) return
-      const onIdle = window.requestIdleCallback || ((cb) => setTimeout(cb, 1))
-      onIdle(async () => {
-        const { PagefindUI } = await import('@pagefind/default-ui')
-
-        new PagefindUI({
-          baseUrl: import.meta.env.BASE_URL,
-          bundlePath: import.meta.env.BASE_URL.replace(/\/$/, '') + '/pagefind/',
-          element: '#pagefind-search',
-          showImages: false,
-          showSubResults: true,
-          processResult: (result: {
-            url: string
-            sub_results: Array<{ url: string }>
-          }) => {
-            // Ensure links in search results match the trailing slashes setting
-            result.url = this.formatURL(result.url)
-
-            result.sub_results = result.sub_results.map((res) => {
-              res.url = this.formatURL(res.url)
-              return res
-            })
-
-            return result
-          },
-        })
-      })
+      this.openButton?.addEventListener('click', () => this.open());
+      this.closeButton?.addEventListener('click', () => this.close());
+      this.dialog?.addEventListener('click', (event) => {
+        if (event.target === this.dialog) this.close();
+      });
+      this.dialog?.addEventListener('close', () => {
+        syncDialogScrollLock();
+      });
+      this.query?.addEventListener('input', () => this.renderDevResults());
+      this.querySelector('[data-retry-search]')?.addEventListener('click', () => this.loadPagefind());
     }
 
     connectedCallback() {
-      // window events, requires cleanup
-      window.addEventListener('keydown', this.onWindowKeydown, {
-        signal: this.#controller.signal,
-      })
+      window.addEventListener('keydown', this.onKeydown, { signal: this.controller.signal });
     }
 
-    disconnectedCallback() {
-      this.#controller.abort()
+    disconnectedCallback() { this.controller.abort(); }
+
+    async loadPagefind() {
+      if (this.searchState === 'loading' || this.searchState === 'ready') return;
+      const container = this.querySelector<HTMLElement>('#pagefind-search');
+      const status = this.querySelector<HTMLElement>('[data-pagefind-status]');
+      const retry = this.querySelector<HTMLButtonElement>('[data-retry-search]');
+      if (!container || !status || !retry) return;
+
+      this.searchState = 'loading';
+      container.setAttribute('aria-busy', 'true');
+      status.hidden = false;
+      status.textContent = '正在加载搜索…';
+      retry.hidden = true;
+      let index: { filters: () => Promise<unknown>; destroy: () => Promise<void> } | undefined;
+      try {
+        const { PagefindUI } = await import('@pagefind/default-ui');
+        // 索引由 postbuild 生成；先确认它可用，避免只加载了空的搜索界面。
+        const indexUrl = '/pagefind/pagefind.js';
+        index = await import(/* @vite-ignore */ indexUrl);
+        await index!.filters();
+        new PagefindUI({
+          element: container,
+          bundlePath: '/pagefind/',
+          showImages: false,
+          showSubResults: true,
+        });
+        this.searchState = 'ready';
+        status.hidden = true;
+        if (this.dialog?.open) container.querySelector<HTMLInputElement>('input')?.focus();
+      } catch {
+        // 清理失败的索引实例，让网络恢复后的重试重新初始化。
+        await index?.destroy().catch(() => {});
+        container.replaceChildren();
+        this.searchState = 'error';
+        status.textContent = '搜索暂时无法加载，请检查网络后重试。';
+        retry.hidden = false;
+        if (this.dialog?.open) retry.focus();
+      } finally {
+        container.setAttribute('aria-busy', 'false');
+      }
     }
 
-    openModal = (event?: MouseEvent) => {
-      if (!this.#dialog) {
-        console.warn('Dialog not found')
-        return
+    open() {
+      openDialog(this.dialog);
+      if (!import.meta.env.DEV && this.searchState === 'idle') void this.loadPagefind();
+      window.setTimeout(() => this.dialog?.querySelector<HTMLInputElement>('input')?.focus(), 0);
+    }
+
+    close() {
+      closeDialog(this.dialog);
+      this.openButton?.focus();
+    }
+
+    onKeydown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        this.dialog?.open ? this.close() : this.open();
+      }
+    };
+
+    renderDevResults() {
+      if (!this.query || !this.results || !this.status) return;
+      const query = this.query.value.trim().toLocaleLowerCase('zh-CN');
+      this.results.replaceChildren();
+      if (!query) {
+        this.status.textContent = '输入关键词开始搜索。';
+        return;
       }
 
-      const body = document.querySelector('body')
-      body?.classList.add('overflow-hidden')
+      const matches = this.records.filter((record) => {
+        const haystack = [record.title, record.description, record.type, record.tags.join(' '), record.body]
+          .filter(Boolean)
+          .join(' ')
+          .toLocaleLowerCase('zh-CN');
+        return haystack.includes(query);
+      }).slice(0, 12);
 
-      this.#dialog.showModal()
-      this.querySelector('input')?.focus()
-      event?.stopPropagation()
-      window.addEventListener('click', this.onWindowClick, {
-        signal: this.#controller.signal,
-      })
-    }
-
-    closeModal = () => {
-      this.#dialog?.close()
-    }
-
-    onWindowClick = (event: MouseEvent) => {
-      // check if it's a link
-      const isLink = 'href' in (event.target || {})
-      // make sure the click is either a link or outside of the dialog
-      if (
-        isLink ||
-        (document.body.contains(event.target as Node) &&
-          !this.#dialogFrame?.contains(event.target as Node))
-      ) {
-        this.closeModal()
-      }
-    }
-
-    onWindowKeydown = (e: KeyboardEvent) => {
-      if (!this.#dialog) {
-        console.warn('Dialog not found')
-        return
-      }
-      // check if it's the Control+K or ⌘+K shortcut
-      if ((e.metaKey === true || e.ctrlKey === true) && e.key === 'k') {
-        this.#dialog.open ? this.closeModal() : this.openModal()
-        e.preventDefault()
+      this.status.textContent = matches.length ? `${matches.length} 条结果` : '没有匹配内容。';
+      for (const record of matches) {
+        const item = document.createElement('li');
+        const link = document.createElement('a');
+        const title = document.createElement('strong');
+        const meta = document.createElement('span');
+        const description = document.createElement('p');
+        link.href = record.href;
+        title.textContent = record.title;
+        meta.textContent = [record.type, record.date].filter(Boolean).join(' · ');
+        description.textContent = record.description ?? '';
+        link.append(title, meta, description);
+        item.append(link);
+        this.results.append(item);
       }
     }
   }
 
-  customElements.define('site-search', SiteSearch)
+  if (!customElements.get('site-search')) customElements.define('site-search', SiteSearch);
 </script>
+
+<style is:global>
+  site-search { display: flex; }
+  #search-dialog {
+    width: min(calc(100% - 2rem), 40rem);
+    max-height: min(82vh, 48rem);
+  }
+  .search-panel { position: relative; overflow-y: auto; min-height: 12rem; padding: 1.35rem; }
+  .search-panel .dialog-close { position: absolute; top: 0.8rem; right: 0.8rem; display: grid; width: 2rem; height: 2rem; padding: 0.2rem; border: 0; background: transparent; color: var(--accent); cursor: pointer; }
+  .search-panel .dialog-close svg { width: 100%; height: 100%; }
+  .search-title { margin: 0 3rem 1rem 0; }
+  .pagefind-ui__search-input {
+    width: 100% !important;
+    height: var(--input-height) !important;
+    padding: 0.65rem 4.5rem 0.65rem 0.85rem !important;
+    border: 2px solid color-mix(in srgb, var(--accent) 30%, transparent) !important;
+    border-radius: var(--radius-control) !important;
+    background: var(--surface) !important;
+    color: var(--text) !important;
+    font: inherit !important;
+    line-height: var(--leading-ui) !important;
+  }
+  .pagefind-ui__form::before { display: none !important; }
+  .pagefind-ui__search-clear { top: 2px !important; right: 2px !important; height: calc(var(--input-height) - 4px) !important; padding-inline: 0.75rem !important; background: transparent !important; font-size: var(--text-sm) !important; line-height: var(--leading-ui) !important; }
+  .search-status { margin: 0.8rem 0; color: var(--muted); font-size: var(--text-sm); line-height: var(--leading-ui); }
+  [data-retry-search][hidden] { display: none; }
+  .search-results { display: grid; gap: 0.35rem; margin: 0; padding: 0; list-style: none; }
+  .search-results a { min-width: 0; overflow-wrap: anywhere; display: grid; gap: 0.2rem; padding: 0.8rem; border-radius: var(--radius-control); }
+  .search-results a:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+  .search-results strong, .pagefind-ui__result-title { color: var(--accent); font-size: var(--text-base) !important; font-weight: 600 !important; line-height: var(--leading-ui) !important; }
+  .search-results span { color: var(--muted); font-size: var(--text-sm); line-height: var(--leading-ui); }
+  .search-results p, .pagefind-ui__result-excerpt { margin: 0.25rem 0 0; color: var(--muted) !important; font-size: var(--text-sm) !important; line-height: var(--leading-body) !important; }
+  :root {
+    --pagefind-ui-font: inherit;
+    --pagefind-ui-primary: var(--accent);
+    --pagefind-ui-text: var(--text);
+    --pagefind-ui-background: var(--bg);
+    --pagefind-ui-border: color-mix(in srgb, var(--accent) 35%, transparent);
+    --pagefind-ui-border-width: 2px;
+    --pagefind-ui-border-radius: var(--radius-control);
+  }
+  .pagefind-ui__result { border-top-color: var(--line) !important; }
+  .pagefind-ui__result-link { color: var(--accent) !important; }
+  .pagefind-ui__message { color: var(--muted); font-size: var(--text-sm) !important; font-weight: 400 !important; line-height: var(--leading-ui) !important; }
+  .pagefind-ui__result-inner mark { padding: 0 0.2rem !important; border-radius: 0.25rem !important; background: var(--accent) !important; color: var(--bg) !important; }
+</style>

@@ -1,34 +1,28 @@
-# TranceDream's Blog
+# TranceDream’s Blog
 
-> "After we're gone, the spirit carries on."
+这是 TranceDream 的个人博客，地址是 [trancedre.am](https://trancedre.am)。这里记录日常生活和技术笔记，也放一些可以直接在浏览器里使用的小工具。
 
-这是我的博客，现在使用 Astro 构建，速度快了不少😄
+## 阅读时的小功能
 
-## 主题系统
+- **搜索**：点击页面右上角的放大镜，或按 `⌘ K`（Windows 上是 `Ctrl K`），可以搜索全站文字。
+- **换配色**：点击放大镜旁边的调色盘，可以在 60 套编辑器配色之间切换，选择会保存在当前浏览器里。
+- **看大图**：点击文章里的图片会放大查看，同一篇文章里的图片可以左右切换。
+- **订阅**：用 RSS 阅读器订阅 [trancedre.am/rss.xml](https://trancedre.am/rss.xml)，就能收到更新。
 
-本站现在支持 50+ 主题，包括：
+## 在本地运行
 
-- Catppuccin 系列（Latte, Frappe, Macchiato, Mocha）
-- GitHub 系列（Light, Dark, Dimmed, High Contrast）
-- Gruvbox 系列
-- Kanagawa 系列
-- Material Theme 系列
-- 以及更多...
+需要先安装 [Node.js](https://nodejs.org/) 22.12 或更新的版本，以及 [pnpm](https://pnpm.io/)。然后在项目目录里运行：
 
-## 技术栈
+```sh
+pnpm install --frozen-lockfile
+pnpm astro dev --background
+```
 
-- **[Astro](https://astro.build)** - 静态站点生成器
-- **[TypeScript](https://www.typescriptlang.org/)** - 类型安全
-- **[Tailwind CSS](https://tailwindcss.com/)** - 实用优先的 CSS 框架
-- **[MDX](https://mdxjs.com/)** - Markdown + JSX
-- **[Expressive Code](https://expressive-code.com/)** - 代码高亮
-- **[KaTeX](https://katex.org/)** - 数学公式渲染
-- **[Pagefind](https://pagefind.app/)** - 全文搜索
-- **[Giscus](https://giscus.app/)** - 评论系统
-- **[date-fns](https://date-fns.org/)** - 日期处理
+浏览器打开 http://localhost:4321 就能看到博客。用完运行 `pnpm astro dev stop` 关闭。
 
-## 模板
+## 致谢与许可
 
-Powered by [MultiTerm-Astro](https://github.com/stelcodes/multiterm-astro)
+- 视觉风格参考了 [MultiTerm](https://github.com/stelcodes/multiterm-astro) 主题，许可见 [`licenses/MultiTerm.txt`](licenses/MultiTerm.txt)。
+- 分享卡片使用了 Maple Mono 字体，许可见 [`licenses/MapleMono-OFL.txt`](licenses/MapleMono-OFL.txt)。
 
-非常优雅的终端风格模板～ 本站基于这个模板进行了二次开发
+想了解代码结构，请看 [`ARCHITECTURE.md`](ARCHITECTURE.md)。

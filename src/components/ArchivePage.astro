@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from './PageIntro.astro';
+import PostItem from './PostItem.astro';
+import { SITE } from '../config/site';
+import { archiveHref, archivePageCount, noteAnchor, postHref, type PostEntry } from '../lib/posts';
+
+interface Props { posts: PostEntry[]; currentPage?: number }
+const { posts, currentPage = 1 } = Astro.props;
+const totalPages = archivePageCount(posts.length);
+const pagePosts = posts.slice((currentPage - 1) * SITE.archivePageSize, currentPage * SITE.archivePageSize);
+// Keep old Note bookmarks working when newly published content moves a Note to another page.
+const noteLocations = Object.fromEntries(posts.filter((post) => post.data.type === 'note')
+  .map((post) => [noteAnchor(post), postHref(post, posts)]));
+---
+
+<BaseLayout title={currentPage === 1 ? 'Archive' : `Archive · 第 ${currentPage} 页`} description="所有文章与短日志的时间归档。">
+  <PageIntro title="Archive" />
+  <section class="post-stream shell" aria-label="全部内容时间线">
+    {pagePosts.map((post) => <PostItem post={post} indexBody={post.data.type === 'note'} />)}
+    {posts.length === 0 && <p class="empty">这里还没有文章或短日志。</p>}
+  </section>
+  {totalPages > 1 && (
+    <nav class="pagination shell" aria-label="Archive 分页" data-pagefind-ignore>
+      {currentPage > 1
+        ? <a href={archiveHref(currentPage - 1)} rel="prev">← 上一页</a>
+        : <span class="disabled" aria-disabled="true">← 上一页</span>}
+      <span class="position" aria-current="page" aria-label={`第 ${currentPage} 页，共 ${totalPages} 页`}>{currentPage} / {totalPages}</span>
+      {currentPage < totalPages
+        ? <a href={archiveHref(currentPage + 1)} rel="next">下一页 →</a>
+        : <span class="disabled" aria-disabled="true">下一页 →</span>}
+    </nav>
+  )}
+</BaseLayout>
+
+<script is:inline define:vars={{ noteLocations }}>
+  (() => {
+    const resolveNote = () => {
+      let id;
+      try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
+      if (!id || document.getElementById(id)) return;
+      const href = Object.hasOwn(noteLocations, id) ? noteLocations[id] : undefined;
+      if (href) location.replace(href);
+    };
+    resolveNote();
+    window.addEventListener('hashchange', resolveNote);
+  })();
+</script>
+
+<style>
+  .pagination { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-block: 2rem; font-size: var(--text-base); }
+  .pagination a { color: var(--accent); padding-block: 0.5rem; text-underline-offset: 0.25em; }
+  .pagination a:hover { text-decoration: underline; }
+  .pagination a:focus-visible { outline: 2px solid var(--accent); outline-offset: 0.25rem; }
+  .position, .disabled, .empty { color: var(--muted); }
+  .disabled { opacity: 0.6; }
+  .position { white-space: nowrap; }
+</style>

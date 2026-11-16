@@ -1,0 +1,27 @@
+---
+interface Props {
+  as?: 'h1' | 'p';
+  label: string;
+}
+
+const { as: Tag = 'h1', label }: Props = Astro.props;
+---
+
+<Tag class="page-marker">/ {label}</Tag>
+
+<style>
+  .page-marker {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0;
+    padding: 0.5rem 0.85rem;
+    border-radius: 0.75rem;
+    background: color-mix(in srgb, var(--accent) 7%, transparent);
+    color: var(--accent);
+    font-size: var(--text-section);
+    font-weight: 600;
+    line-height: var(--leading-heading);
+    letter-spacing: normal;
+  }
+</style>

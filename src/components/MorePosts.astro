@@ -1,0 +1,28 @@
+---
+import type { PostEntry } from '../lib/posts';
+import PostItem from './PostItem.astro';
+
+interface Props {
+  newer?: PostEntry;
+  older?: PostEntry;
+}
+
+const { newer, older } = Astro.props;
+const posts = [newer, older].filter((post): post is PostEntry => !!post && post.data.type !== 'note');
+---
+
+{posts.length > 0 && (
+  <section class="more-posts shell" aria-label="More Posts" data-pagefind-ignore>
+    <h2 class="divider">More Posts</h2>
+    {posts.map((post) => <PostItem post={post} />)}
+  </section>
+)}
+
+<style>
+  .more-posts { width: min(calc(100% - 3rem), var(--measure)); padding-block: 1rem 4rem; }
+  .divider { display: flex; align-items: center; gap: 0.75rem; margin: 1rem 0; color: var(--text); font-size: var(--text-base); font-weight: 400; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 2px; background: var(--accent); }
+  @media (max-width: 48rem) {
+    .more-posts { width: min(calc(100% - 1.5rem), var(--measure)); }
+  }
+</style>

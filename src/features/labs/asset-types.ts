@@ -1,0 +1,1 @@
+export const assetTypes: Record<string, string> = { html: 'text/html', css: 'text/css', js: 'text/javascript', json: 'application/json', svg: 'image/svg+xml', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif', wasm: 'application/wasm', woff2: 'font/woff2' };

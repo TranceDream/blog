@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>日历复制器</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<main id="calendar-tool">
+  <div class="calendar-toolbar">
+    <label class="month-jump">跳转月份 <input id="month-jump" type="month" min="1000-01" max="9999-12" /></label>
+    <button id="today" type="button">回到本月</button>
+    <button id="clear" type="button">清除选择</button>
+  </div>
+  <p class="hint" id="calendar-help">上下滚动浏览月份；拖拽日期，或依次点击起止日期。点击「整月」可直接选中该月。</p>
+  <div class="calendar" aria-describedby="calendar-help">
+    <div class="weekdays" id="weekdays" aria-hidden="true"></div>
+    <div class="calendar-scroll" id="calendar-scroll" aria-label="可滚动的月份日历" tabindex="0">
+      <div id="months"></div>
+    </div>
+  </div>
+  <p class="selection" id="selection" role="status" aria-live="polite"></p>
+
+  <section class="settings" aria-labelledby="settings-title">
+    <h2 class="section-title" id="settings-title">排版选项</h2>
+    <div class="fields">
+      <label>开始日期<input type="date" id="start" min="1000-01-01" max="9999-12-31" /></label>
+      <label>结束日期<input type="date" id="end" min="1000-01-01" max="9999-12-31" /></label>
+      <label>每周从<select id="week-start"><option value="1">周一开始</option><option value="0">周日开始</option></select></label>
+      <label>列间距<select id="gap"><option value="1">1 个空格</option><option value="2">2 个空格</option><option value="3">3 个空格</option><option value="4">4 个空格</option></select></label>
+    </div>
+    <div class="checks">
+      <label><input id="show-title" type="checkbox" checked /> 显示年月</label>
+      <label><input id="show-weekdays" type="checkbox" checked /> 显示星期</label>
+      <label><input id="zero-pad" type="checkbox" /> 日期补零</label>
+    </div>
+  </section>
+
+  <section class="preview-section" aria-labelledby="preview-title">
+    <div class="preview-head">
+      <h2 class="section-title" id="preview-title">文本预览</h2>
+      <button class="action-button" type="button" id="copy">Copy <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 17 5-5-5-5"/><path d="m13 17 5-5-5-5"/></svg></button>
+    </div>
+    <pre id="preview" tabindex="0" aria-label="可复制的日历文本"></pre>
+    <p class="hint">日期按固定列宽排列，未选日期留空；跨月时分段显示。粘贴到等宽字体的编辑器或 Markdown 代码块中，可保持对齐。</p>
+    <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
+  </section>
+</main>
+<noscript>请启用 JavaScript，以选择日期并生成日历文本。</noscript>
+<script type="module" src="./client.js"></script>
+</body>
+</html>

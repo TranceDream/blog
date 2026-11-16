@@ -1,0 +1,222 @@
+---
+import IconCircleX from '../icons/circle-x.svg';
+---
+
+<site-media-viewer data-pagefind-ignore>
+  <dialog class="site-dialog" id="media-viewer-dialog" aria-label="媒体查看器">
+    <div class="media-viewer-frame">
+      <header class="media-viewer-bar">
+        <span class="media-viewer-count" data-media-count hidden>01 / 01</span>
+        <div class="media-viewer-navigation">
+          <button type="button" aria-label="上一张媒体" aria-keyshortcuts="ArrowLeft" data-media-previous>←</button>
+          <button type="button" aria-label="下一张媒体" aria-keyshortcuts="ArrowRight" data-media-next>→</button>
+          <button class="media-viewer-close" type="button" aria-label="关闭媒体查看器" data-media-close autofocus>
+            <IconCircleX aria-hidden="true" />
+          </button>
+        </div>
+      </header>
+
+      <div class="media-viewer-stage" data-media-stage data-media-size="fit">
+        <div class="media-viewer-canvas" data-media-canvas></div>
+      </div>
+
+      <footer class="media-viewer-footer">
+        <p id="media-viewer-caption" class="media-viewer-caption" data-media-caption hidden></p>
+        <div class="media-viewer-utilities">
+          <div class="media-viewer-size" data-media-size-controls role="group" aria-label="图片尺寸">
+            <button type="button" aria-pressed="true" data-media-fit>适应</button>
+            <button type="button" aria-pressed="false" data-media-actual>1:1</button>
+          </div>
+          <a data-media-original target="_blank" rel="noreferrer noopener">原始文件 ↗</a>
+        </div>
+      </footer>
+      <p class="sr-only" data-media-announcement aria-live="polite"></p>
+    </div>
+  </dialog>
+</site-media-viewer>
+
+<script>
+  import '../scripts/media-viewer';
+</script>
+
+<style is:global>
+  [data-media-viewer-trigger] { cursor: zoom-in; }
+  img[data-media-viewer-trigger] { transition: border-color 150ms ease; }
+  img[data-media-viewer-trigger]:hover { border-color: color-mix(in srgb, var(--accent) 28%, transparent); }
+  img[data-media-viewer-trigger]:focus-visible { border-color: color-mix(in srgb, var(--accent) 40%, transparent); outline: 2px solid var(--accent); outline-offset: 0.25rem; }
+  .media-viewer-open-media {
+    display: inline-flex;
+    margin: -0.9rem 0 1.65rem;
+    padding: 0.25rem 0;
+    border: 0;
+    background: transparent;
+    color: var(--accent);
+    font-size: var(--text-sm);
+    cursor: pointer;
+  }
+  .media-viewer-open-media:hover { text-decoration: underline; text-underline-offset: 0.22em; }
+
+  #media-viewer-dialog {
+    overflow: hidden;
+    width: 100%;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    padding: clamp(0.75rem, 2vw, 2rem);
+    padding-top: max(clamp(0.75rem, 2vw, 2rem), env(safe-area-inset-top));
+    padding-bottom: max(clamp(0.75rem, 2vw, 2rem), env(safe-area-inset-bottom));
+    padding-left: max(clamp(0.75rem, 2vw, 2rem), env(safe-area-inset-left));
+    padding-right: max(clamp(0.75rem, 2vw, 2rem), env(safe-area-inset-right));
+    border: 0;
+    border-radius: 0;
+    background: color-mix(in srgb, var(--bg) 96%, transparent);
+    margin: auto;
+    box-shadow: none;
+  }
+  .media-viewer-frame {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    height: 100%;
+  }
+  .media-viewer-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    align-items: center;
+    min-height: 2.75rem;
+    padding-bottom: 0.5rem;
+  }
+  .media-viewer-count {
+    color: var(--muted);
+    font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .media-viewer-navigation { display: flex; gap: 0.15rem; justify-self: end; }
+  .media-viewer-navigation button {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0.375rem;
+    background: transparent;
+    color: var(--muted);
+    font-size: var(--text-base);
+    cursor: pointer;
+    place-items: center;
+  }
+  .media-viewer-navigation button:hover:not(:disabled) {
+    color: var(--accent);
+  }
+  .media-viewer-navigation button:disabled { color: var(--faint); cursor: default; }
+  .media-viewer-navigation .media-viewer-close { margin-left: 0.15rem; }
+  .media-viewer-close svg { width: 1.45rem; height: 1.45rem; }
+
+  .media-viewer-stage {
+    position: relative;
+    overflow: auto;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    overscroll-behavior: contain;
+  }
+  .media-viewer-canvas {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    width: 100%;
+    height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+    place-items: center;
+  }
+  .media-viewer-media {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 0;
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    object-fit: contain;
+  }
+  .media-viewer-image { width: auto; height: auto; cursor: zoom-in; user-select: none; }
+  .media-viewer-image[data-pixelated] { image-rendering: pixelated; }
+  .media-viewer-stage[data-media-size="actual"] .media-viewer-canvas {
+    position: relative;
+    inset: auto;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+    width: max-content;
+    height: max-content;
+  }
+  .media-viewer-stage[data-media-size="actual"] .media-viewer-image {
+    max-width: none;
+    max-height: none;
+    cursor: zoom-out;
+  }
+  .media-viewer-video { width: min(100%, 80rem); }
+
+  .media-viewer-footer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1rem;
+    align-items: center;
+    min-height: 3rem;
+    padding-top: 0.75rem;
+  }
+  .media-viewer-caption {
+    overflow: hidden;
+    margin: 0;
+    color: var(--muted);
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .media-viewer-utilities { display: flex; gap: 0.85rem; align-items: center; justify-self: end; grid-column: 2; }
+  .media-viewer-size {
+    display: flex;
+    gap: 0.2rem;
+  }
+  .media-viewer-size[hidden] { display: none; }
+  .media-viewer-size button {
+    min-height: 2.75rem;
+    padding: 0.2rem 0.65rem;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--muted);
+    font-size: var(--text-sm);
+    cursor: pointer;
+  }
+  .media-viewer-size button:hover { color: var(--accent); }
+  .media-viewer-size button[aria-pressed="true"] {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+    color: var(--accent);
+  }
+  .media-viewer-utilities a { color: var(--muted); font-size: var(--text-sm); text-decoration: underline; text-underline-offset: 0.2em; }
+  .media-viewer-utilities a:hover { color: var(--accent); }
+
+  @media (max-width: 40rem) {
+    .media-viewer-footer { grid-template-columns: 1fr; gap: 0.25rem; }
+    .media-viewer-caption { text-align: center; max-height: 3em; white-space: normal; }
+    .media-viewer-utilities { grid-column: 1; flex-wrap: wrap; width: 100%; justify-content: center; justify-self: stretch; }
+  }
+
+  .media-viewer-navigation button[hidden], .media-viewer-count[hidden] { display: none; }
+  #media-viewer-dialog button:focus-visible, #media-viewer-dialog a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    img[data-media-viewer-trigger] { transition: none; }
+  }
+
+  @media print {
+    site-media-viewer { display: none; }
+  }
+</style>

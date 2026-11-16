@@ -1,0 +1,34 @@
+---
+import { render } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import TechPostLayout from '../../layouts/TechPostLayout.astro';
+import InteractiveArticle from '../../components/InteractiveArticle.astro';
+import { getVisiblePosts } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = (await getVisiblePosts()).filter(({ data }) => data.type !== 'note');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings, remarkPluginFrontmatter } = await render(post);
+const sortedPosts = (await getVisiblePosts()).filter(({ data }) => data.type !== 'note');
+const position = sortedPosts.findIndex((entry) => entry.id === post.id);
+const newer = position > 0 ? sortedPosts[position - 1] : undefined;
+const older = position >= 0 && position < sortedPosts.length - 1 ? sortedPosts[position + 1] : undefined;
+const minutesRead = typeof remarkPluginFrontmatter.minutesRead === 'string'
+  ? remarkPluginFrontmatter.minutesRead
+  : undefined;
+const isInteractive = post.data.presentation === 'composed';
+---
+
+{isInteractive ? (
+  <TechPostLayout post={post} headings={headings} minutesRead={minutesRead} newer={newer} older={older}>
+    <Content components={{ InteractiveArticle }} />
+  </TechPostLayout>
+) : (
+  <ArticleLayout post={post} headings={headings} minutesRead={minutesRead} newer={newer} older={older}><Content /></ArticleLayout>
+)}

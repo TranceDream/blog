@@ -1,6 +1,15 @@
-<>
-  <h1 class="text-accent text-[1.6rem] pb-2.5 pl-1 mt-4 md:mt-7 font-semibold">
-    <slot />
-  </h1>
-  <div class="border-1 border-accent/30 rounded-xl h-1 w-full"></div>
-</>
+---
+interface Props { id?: string }
+const { id } = Astro.props;
+---
+
+<div class="block-header">
+  <h2 id={id} class="section-title"><slot /></h2>
+  <div aria-hidden="true"></div>
+</div>
+
+<style>
+  .block-header { margin-top: 2.4rem; }
+  h2 { margin: 0; padding: 0 0 0.625rem 0.25rem; }
+  div > div { width: 100%; height: 0.25rem; border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); border-radius: 999px; }
+</style>

@@ -1,0 +1,31 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+export async function getStaticPaths() {
+  return (await getCollection('labs')).map(lab => ({ params: { slug: lab.id }, props: { lab } }));
+}
+const { lab } = Astro.props;
+const { Content } = await render(lab);
+const artifactUrl = `/lab-artifacts/${lab.id}/index.html`;
+---
+<BaseLayout title={lab.data.title} description={lab.data.description}>
+  <div data-pagefind-body>
+  <header class="lab-head shell">
+    <h1 class="detail-title"># {lab.data.title}</h1>
+    <p>{lab.data.description}</p>
+  </header>
+  <article class="lab shell">
+    <iframe src={artifactUrl} title={lab.data.title} data-lab-frame allow="clipboard-write" data-pagefind-ignore></iframe>
+    <div class="prose"><Content /></div>
+  </article>
+  </div>
+</BaseLayout>
+<style>
+  .lab-head, .lab { width: min(calc(100% - 3rem), var(--measure)); }
+  .lab-head { padding-block: 2.5rem; }
+  .lab-head p { margin: 1.25rem 0 0; color: var(--text); line-height: var(--leading-body); }
+  .lab { padding-bottom: 3rem; }
+  @media (max-width: 48rem) { .lab-head, .lab { width: min(calc(100% - 1.5rem), var(--measure)); } }
+  iframe { display: block; width: 100%; height: 52rem; border: 0; background: transparent; }
+  .prose:empty { display: none; }
+</style>

@@ -1,2 +1,8 @@
-onlyBuiltDependencies:
-  - cn-font-split
+# 上游仍使用旧版 KaTeX；让公式 HTML 与站点 CSS 使用同一版本。
+# 上游放宽版本范围后可移除此处覆盖。
+overrides:
+  'rehype-katex@7.0.1>katex': '0.19.1'
+  'micromark-extension-math@3.1.0>katex': '0.19.1'
+  # ZIP64 解压修复，限定在仍固定旧版本的两条依赖链。
+  'satori@0.63.2>fflate': '0.7.5'
+  '@shuding/opentype.js@1.4.0-beta.0>fflate': '0.7.5'

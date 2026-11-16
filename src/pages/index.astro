@@ -1,74 +1,40 @@
 ---
-import Layout from '~/layouts/Layout.astro'
-import { getSortedPosts } from '~/utils'
-import { getCollection, render } from 'astro:content'
-import PostPreview from '~/components/PostPreview.astro'
-import Pagination from '~/components/Pagination.astro'
-import BlockHeader from '~/components/BlockHeader.astro'
-import HomeBanner from '~/components/HomeBanner.astro'
-import siteConfig from '~/site.config'
-import TagsSection from '~/components/TagsSection.astro'
-import SeriesSection from '~/components/SeriesSection.astro'
+import ChevronsRight from '../icons/chevrons-right.svg';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BlockHeader from '../components/BlockHeader.astro';
+import PageIntro from '../components/PageIntro.astro';
+import PostItem from '../components/PostItem.astro';
+import { getVisiblePosts } from '../lib/posts';
+import Profile from '../components/Profile.astro';
 
-const home = await getCollection('home')
-let HomeContent
-let homeAvatarImage
-if (home.length > 0) {
-  const homeEntry = home[0]
-  const { Content } = await render(homeEntry)
-  HomeContent = Content
-  homeAvatarImage = homeEntry.data.avatarImage
-}
-const sortedPosts = await getSortedPosts()
-const postsHaveTags = sortedPosts.some(
-  (post) => post.data.tags && post.data.tags.length > 0,
-)
-
-const postsHaveSeries = sortedPosts.some((post) => post.data.series)
+const posts = await getVisiblePosts();
+const latest = posts.slice(0, 3);
 ---
 
-<Layout>
-  {
-    HomeContent && (
-      <HomeBanner avatarImage={homeAvatarImage}>
-        <HomeContent />
-      </HomeBanner>
-    )
-  }
-  {
-    postsHaveSeries && (
-      <section>
-        <BlockHeader>Series</BlockHeader>
-        <SeriesSection posts={sortedPosts} />
-      </section>
-    )
-  }
-  {
-    postsHaveTags && (
-      <section>
-        <BlockHeader>Tags</BlockHeader>
-        <TagsSection posts={sortedPosts} />
-      </section>
-    )
-  }
-  {
-    sortedPosts.length > 0 && (
-      <section>
-        <BlockHeader>Latest Posts</BlockHeader>
-        {sortedPosts
-          .reverse()
-          .slice(0, Math.floor(siteConfig.pageSize / 2))
-          .map((post) => (
-            <PostPreview post={post} />
-          ))}
-        <Pagination nextLink="/posts" nextText="Archive" />
-      </section>
-    )
-  }
-</Layout>
+<BaseLayout>
+  <PageIntro as="p" title="Home" />
+  <div class="home shell">
+    <Profile />
 
-<style is:global>
-  a.heading-anchor {
-    display: none !important;
+    <section aria-label="Latest Posts">
+      <BlockHeader>Latest Posts</BlockHeader>
+      {latest.map((post) => <PostItem post={post} />)}
+      <div class="archive-action">
+        <a class="archive-link action-button action-button--responsive" href="/archive/">Archive
+          <ChevronsRight aria-hidden="true" />
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .home {
+    width: min(calc(100% - 3rem), var(--measure));
+    padding-bottom: 4rem;
   }
+  .home :global(.block-header) { margin-top: 1.75rem; }
+  .archive-action { display: flex; justify-content: center; margin-block: 1.25rem; }
+  @media (max-width: 48rem) { .home { width: min(calc(100% - 1.5rem), var(--measure)); } }
+  @media (max-width: 40rem) { .home :global(.block-header) { margin-top: 1rem; } }
 </style>

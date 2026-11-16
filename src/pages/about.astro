@@ -1,54 +1,169 @@
 ---
-import Layout from '~/layouts/Layout.astro'
-import { getCollection } from 'astro:content'
-import { Image } from 'astro:assets'
-import GitHubActivityCalendar from '~/components/GitHubActivityCalendar.astro'
-
-const home = await getCollection('home')
-let githubCalendar: string | undefined
-if (home.length > 0) {
-  githubCalendar = home[0].data.githubCalendar
-}
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import BlockHeader from "../components/BlockHeader.astro";
+import { SITE } from "../config/site";
+import { ABOUT } from "../config/about";
 ---
 
-<Layout title="About Me">
-  <div class="max-w-full py-7.5">
-    <h1 class="md:mx-2 mb-3 text-[1.75rem] text-heading1 font-semibold">
-      # About Me
-    </h1>
-    <div class="mb-5 prose">
-      <div align="center">
-        <Image
-          priority
-          src="/avatar.webp"
-          alt="TranceDream"
-          class="rounded-full border-8 border-accent/15 size-36 aspect-square box-content shrink-0"
-          widths={[288]}
-          height={144}
-          width={144}
-        />
-        <b style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem;">
-          <span>社畜</span>
-          <span>|</span>
-          <span>NodeJS</span>
-          <span>|</span>
-          <span>多模态</span>
-          <span>|</span>
-          <span><del>前端</del></span>
-          <span>|</span>
-          <span>東方Project</span>
-          <span>|</span>
-          <span>Self-Hosted 爱好者</span>
-        </b>
-      </div>
+<BaseLayout
+    title="About"
+    description={`关于 ${SITE.author}、这个博客和朋友们。`}
+>
+    <div data-pagefind-body>
+        <PageIntro title="About" />
+        <div class="about shell">
+            <section aria-labelledby="about-me">
+                <BlockHeader id="about-me">About Me</BlockHeader>
+                <div class="identity">
+                    {SITE.profile.avatar && (
+                        <img
+                            src={SITE.profile.avatar}
+                            alt={SITE.profile.avatarAlt}
+                            width="144"
+                            height="144"
+                        />
+                    )}
+                    <ul class="interests" aria-label="兴趣方向">
+                        {ABOUT.interests.map((interest) => (
+                            <li>
+                                {interest.retired ? (
+                                    <del>{interest.label}</del>
+                                ) : (
+                                    interest.label
+                                )}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+                {ABOUT.bio.map((paragraph) => (
+                    <p>{paragraph}</p>
+                ))}
+            </section>
 
-      <p>我是 TranceDream，本科毕业于天津大学智能与计算学部软件工程学院，曾就职于某度、某手，meme 收藏家，Pusheen Stickers 收藏家，自部署服务爱好者。手持一台 N5095 小型服务器、一台 N105 NAS 以及一台 Mac Mini M4Pro，除了这个网页之外，大部分服务都运行在这几个小机器上，自部署乐趣无穷。本博客随机更新，我会偶尔更新一些技术探索的内容，大部分时间会写一些生活记录和碎碎念。</p>
-
-      {githubCalendar && (
-        <div class="my-6">
-          <GitHubActivityCalendar username={githubCalendar} />
+            <section aria-labelledby="friends">
+                <BlockHeader id="friends">Friends</BlockHeader>
+                <p class="muted">真正的高手们</p>
+                {ABOUT.friends.length ? (
+                    <ul class="friends">
+                        {ABOUT.friends.map((friend) => (
+                            <li>
+                                {friend.avatar && (
+                                    <img
+                                        src={friend.avatar}
+                                        alt=""
+                                        width="40"
+                                        height="40"
+                                        loading="lazy"
+                                        referrerpolicy="no-referrer"
+                                    />
+                                )}
+                                <div>
+                                    <a
+                                        href={friend.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {friend.name}
+                                    </a>
+                                    {friend.description && (
+                                        <p>{friend.description}</p>
+                                    )}
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p class="muted">友人链接正在整理中。</p>
+                )}
+            </section>
         </div>
-      )}
     </div>
-  </div>
-</Layout>
+</BaseLayout>
+
+<style>
+    .about {
+        width: min(calc(100% - 3rem), var(--measure));
+        padding-bottom: 3rem;
+        overflow-wrap: anywhere;
+    }
+    .about :global(.block-header) { margin-top: 0; }
+    section + section {
+        margin-top: 2.75rem;
+    }
+    p {
+        margin: 0.85rem 0;
+        line-height: var(--leading-body);
+    }
+    a {
+        color: var(--accent);
+        text-decoration: underline;
+        text-underline-offset: 0.2em;
+    }
+    a:hover {
+        color: var(--text);
+    }
+    .identity {
+        text-align: center;
+    }
+    .identity img {
+        display: block;
+        box-sizing: content-box;
+        width: 9rem;
+        height: 9rem;
+        margin: 1.75rem auto;
+        object-fit: cover;
+        border: 8px solid color-mix(in srgb, var(--accent) 15%, transparent);
+        border-radius: 50%;
+    }
+    .muted {
+        color: var(--muted);
+    }
+    .interests {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        list-style: none;
+        padding: 0;
+        margin: 1.75rem 0;
+        font-weight: 700;
+        line-height: 1.75;
+    }
+    .interests li {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .interests li + li::before {
+        content: "|";
+    }
+    .friends {
+        list-style: none;
+        padding: 0;
+        margin: 1.25rem 0 0;
+    }
+    .friends li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.9rem;
+    }
+    .friends img {
+        width: 2.5rem;
+        height: 2.5rem;
+        object-fit: cover;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    .friends li + li {
+        margin-top: 1.25rem;
+    }
+    .friends p {
+        margin: 0.25rem 0 0;
+        color: var(--muted);
+    }
+    @media (max-width: 48rem) {
+        .about {
+            width: min(calc(100% - 1.5rem), var(--measure));
+        }
+    }
+</style>

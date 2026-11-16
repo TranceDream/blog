@@ -1,0 +1,8 @@
+---
+import ArchivePage from '../../components/ArchivePage.astro';
+import { getVisiblePosts } from '../../lib/posts';
+
+const posts = await getVisiblePosts();
+---
+
+<ArchivePage posts={posts} />

@@ -1,0 +1,23 @@
+---
+import ChevronsRight from '../../../icons/chevrons-right.svg';
+import Tags from '../../../components/Tags.astro';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageIntro from '../../../components/PageIntro.astro';
+
+const labs = (await getCollection('labs')).sort((a, b) => a.id.localeCompare(b.id));
+---
+
+<BaseLayout title="Labs" description="一些实用工具和可以动手体验的小实验。">
+  <PageIntro title="Labs" description="一些实用工具和可以动手体验的小实验。" />
+  <section class="post-stream shell" aria-label="Labs 工具与成品列表">
+    {labs.map((lab) => (
+      <article class="post-item">
+          <h2 class="post-title"><a href={`/labs/${lab.id}/`}># {lab.data.title}</a></h2>
+          <p class="post-description">{lab.data.description}</p>
+          <Tags tags={lab.data.tags} linked={false} />
+          <a class="open action-button action-button--responsive" href={`/labs/${lab.id}/`} aria-label={`打开 ${lab.data.title}`}>Open <ChevronsRight aria-hidden="true" /></a>
+      </article>
+    ))}
+  </section>
+</BaseLayout>

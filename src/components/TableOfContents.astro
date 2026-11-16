@@ -1,54 +1,74 @@
 ---
-import type { MarkdownHeading } from 'astro'
-import TOCHeading from '~/components/TableOfContentsHeading.astro'
+import type { MarkdownHeading } from 'astro';
 
 interface Props {
-  headings: MarkdownHeading[]
+  headings: MarkdownHeading[];
+  variant?: 'aside' | 'inline';
 }
 
-const { headings } = Astro.props
-
-const filteredHeadings = headings.filter(({ depth }) => depth >= 2 && depth <= 3)
+const { headings, variant = 'aside' } = Astro.props;
+const items = headings.filter(({ depth }) => depth >= 2 && depth <= 3);
 ---
 
-<details
-  open
-  class="toc relative md:mx-2 xl:mx-0 text-foreground/90 text-sm bg-foreground/5 xl:bg-transparent px-8 xl:pr-0 py-6 mt-5 xl:mt-0 xl:w-full rounded-xl border-3 xl:border-none border-accent/10 xl:sticky xl:top-10 xl:basis-[274px] 2xl:basis-[320px] xl:order-2 xl:shrink-0 xl:opacity-90"
->
-  <summary
-    class="list-none marker:hidden marker:content-[''] before:content-['>'] before:text-accent before:font-semibold before:absolute before:left-3 cursor-pointer"
-    >Table of Contents</summary
-  >
-  <nav class="w-full text-sm xl:-ml-1">
-    <ul class="mt-4 flex flex-col max-w-full">
-      {filteredHeadings.map((heading) => <TOCHeading heading={heading} />)}
-    </ul>
+<details class:list={['toc', `toc-${variant}`]} open data-toc data-pagefind-ignore>
+  <summary>Table of Contents</summary>
+  <nav aria-label="文章目录">
+    <ol>
+      {items.map((heading) => (
+        <li data-depth={heading.depth}>
+          <a href={`#${heading.slug}`} data-toc-link>{heading.text}</a>
+        </li>
+      ))}
+    </ol>
   </nav>
 </details>
 
 <script>
-  const anchors = document.querySelectorAll('h2[id], h3[id]')
-  const links = document.querySelectorAll('details.toc > nav > ul > li')
-  if (anchors.length === links.length && anchors.length > 0) {
-    window.addEventListener('scroll', (_event) => {
-      let scrollTop = window.scrollY
-      let highlighted = false
-      // then iterate backwards, on the first match highlight it and break
-      for (var i = anchors.length - 1; i >= 0; i--) {
-        const anchor = anchors[i] as HTMLElement
-        if (!highlighted && scrollTop > anchor.offsetTop - 75) {
-          links[i].classList.add('active-heading')
-          highlighted = true
-        } else {
-          links[i].classList.remove('active-heading')
-        }
-      }
-    })
-  }
+  document.querySelectorAll<HTMLElement>('[data-toc]').forEach((toc) => {
+    const links = [...toc.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
+    const sections = links
+      .map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1))))
+      .filter((section): section is HTMLElement => Boolean(section));
+    if (!sections.length || sections.length !== links.length) return;
+
+    let queued = false;
+    const update = () => {
+      queued = false;
+      const position = window.scrollY + 110;
+      let active = 0;
+      sections.forEach((section, index) => {
+        if (section.getBoundingClientRect().top + window.scrollY <= position) active = index;
+      });
+      links.forEach((link, index) => {
+        if (index === active) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+    };
+    window.addEventListener('scroll', () => {
+      if (queued) return;
+      queued = true;
+      window.requestAnimationFrame(update);
+    }, { passive: true });
+    update();
+  });
 </script>
 
 <style>
-  details[open] summary:before {
-    transform: rotate(90deg);
-  }
+  .toc { position: relative; min-width: 0; margin: 1.25rem 0 2rem; padding: 1.5rem 2rem; border: 3px solid color-mix(in srgb, var(--accent) 10%, transparent); border-radius: 0.75rem; background: color-mix(in srgb, var(--text) 5%, transparent); color: color-mix(in srgb, var(--text) 90%, transparent); font-size: var(--text-sm); }
+  summary { cursor: pointer; list-style: none; line-height: 1.5; }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { position: absolute; left: 0.75rem; content: '>'; color: var(--accent); font-weight: 600; }
+  details[open] summary::before { transform: rotate(90deg); }
+  nav { margin-top: 1rem; }
+  ol { margin: 0; padding: 0; list-style: none; }
+  li { position: relative; padding-left: 1.75rem; border-left: 2px solid color-mix(in srgb, var(--text) 20%, transparent); }
+  li::before { content: ''; position: absolute; left: 0; top: 1rem; width: 1rem; border-top: 1px solid color-mix(in srgb, var(--text) 20%, transparent); }
+  li:last-child { border-left-color: transparent; }
+  li:last-child::after { content: ''; position: absolute; left: -2px; top: 0; height: 1rem; border-left: 2px solid color-mix(in srgb, var(--text) 20%, transparent); }
+  li[data-depth="3"] { padding-left: 2.75rem; }
+  li[data-depth="3"]::before { width: 2rem; }
+  a { display: block; padding: 0.25rem 0; line-height: 1.5; overflow-wrap: anywhere; }
+  a:hover, a[aria-current] { color: var(--accent); }
+  a[aria-current] { font-weight: 600; }
+  @media (min-width: 80rem) { .toc-aside { margin: 0; border: 0; background: transparent; padding: 0 0 0 2rem; max-height: calc(100svh - 5rem); overflow-y: auto; } }
 </style>

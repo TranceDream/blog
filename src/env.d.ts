@@ -1,15 +1,14 @@
-declare module '@pagefind/default-ui' {
-  declare class PagefindUI {
-    constructor(arg: unknown)
-  }
-}
+/// <reference types="astro/client" />
 
-// Type declarations for vite-plugin-font
-declare module '*.ttf?subsets' {
-  export const css: {
-    family: string
-    weight: string | number
-    style: string
+declare module '@pagefind/default-ui' {
+  interface PagefindUIOptions {
+    element: string | HTMLElement;
+    bundlePath?: string;
+    showImages?: boolean;
+    showSubResults?: boolean;
   }
-  export const fontFamilyFallback: string
+
+  export class PagefindUI {
+    constructor(options: PagefindUIOptions);
+  }
 }
