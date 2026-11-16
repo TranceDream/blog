@@ -5,7 +5,7 @@
 ## 项目背景
 
 - 这是部署在 Cloudflare Pages 上的个人博客 https://trancedre.am，用 Astro 生成纯静态站点。
-- `next` 是开发分支，`main` 是生产分支。`main` 一更新就会自动上线，由用户把 `next` 合并过去。
+- `main` 是生产分支，一更新就会自动上线。功能分支由用户合并到 `main`。
 - 项目不使用 React、Tailwind 或组件库。
 
 ## 开始之前
@@ -38,7 +38,7 @@ pnpm build
 node --test src/content/labs/<id>/core.test.js   # 只测单个 Labs 工具
 ```
 
-- 每个任务从 `next` 切出新分支，命名为 `feat/<主题>`、`fix/<主题>` 或 `chore/<主题>`。
+- 每个任务从 `main` 切出新分支，命名为 `feat/<主题>`、`fix/<主题>` 或 `chore/<主题>`。
 - 验证通过后再提交，提交信息遵循 Conventional Commits。
 - 和当前任务无关的未提交改动，不要去动。
 
