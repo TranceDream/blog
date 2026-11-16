@@ -9,11 +9,6 @@
 - **看大图**：点击文章里的图片会放大查看，同一篇文章里的图片可以左右切换。
 - **订阅**：用 RSS 阅读器订阅 [trancedre.am/rss.xml](https://trancedre.am/rss.xml)，就能收到更新。
 
-## 修改个人信息
-
-- 头像、问候语、简介和页脚的社交链接，在 `src/config/site.ts` 里修改。
-- About 页的详细介绍、兴趣和友链，在 `src/config/about.ts` 里修改。新增一个友链，只要照着已有的格式补上名字、地址和简介即可。
-
 ## 在本地运行
 
 需要先安装 [Node.js](https://nodejs.org/) 22.12 或更新的版本，以及 [pnpm](https://pnpm.io/)。然后在项目目录里运行：
