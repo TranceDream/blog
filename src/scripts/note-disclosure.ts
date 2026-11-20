@@ -63,7 +63,7 @@ class NoteDisclosure extends HTMLElement {
     let previewSnapped = false;
 
     const structuredBlocks = this.content.querySelectorAll<HTMLElement>(
-      ':scope > img, :scope > figure, :scope > pre, :scope > .expressive-code, :scope > table, :scope > blockquote, :scope > ul, :scope > ol',
+      ':scope > img, :scope > figure, :scope > pre, :scope > .expressive-code, :scope > table, :scope > blockquote, :scope > .character-dialogue, :scope > ul, :scope > ol',
     );
     const contentTop = this.content.getBoundingClientRect().top;
 
@@ -73,7 +73,14 @@ class NoteDisclosure extends HTMLElement {
       const blockBottom = blockTop + blockRect.height;
 
       if (blockTop < lineLimit && blockBottom > lineLimit) {
-        if (blockTop >= lineHeight) {
+        const bubble = block.matches('.character-dialogue')
+          ? block.querySelector<HTMLElement>('.character-dialogue-content')
+          : null;
+        if (bubble && blockTop + bubble.clientHeight <= lineLimit) {
+          // 短台词能放进预览时，为头像保留完整高度。
+          previewHeight = blockBottom;
+          previewSnapped = true;
+        } else if (blockTop >= lineHeight) {
           previewHeight = blockTop;
           previewSnapped = true;
         }
