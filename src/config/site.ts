@@ -32,5 +32,5 @@ export const SITE = {
     labs: true,
   },
   // 按需配置角色名与头像路径；角色对话插件仍然保留。
-  characters: {} as Record<string, string>,
+  characters: { 菲比: '/phoebe.webp' } satisfies Record<string, string>,
 } as const;
