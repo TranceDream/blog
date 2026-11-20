@@ -3,7 +3,7 @@ type: note
 description: ""
 publishedAt: "2026-11-20T17:09:01+08:00"
 tags: [日常]
-draft: true
+draft: false
 toc: false
 ---
 
@@ -13,4 +13,4 @@ toc: false
 
 属于用性能换美观了
 
-![博客字体预览](./2026-11-20-要不要换成-Maple-Mono/font-preview.png)
+![中文网字计划的 Maple Mono](https://img.trancedre.am/images/20261120183029651.png)
