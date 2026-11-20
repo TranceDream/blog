@@ -27,7 +27,7 @@ export const ABOUT = {
     },
     {
       name: '宇佐见函钩',
-      href: 'https://functionhooktju.github.io/fxHook.io/index.html',
+      href: 'https://functionhooktju.github.io/FuncBlog/',
       description: '神人东方&舟&母鸡卡 up主，内含计算机学习笔记',
       avatar: 'https://i.postimg.cc/J4PjtCGx/download.jpg',
     },
